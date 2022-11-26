@@ -2,6 +2,7 @@
 3004 F22 Team Project Repository
 
 ---- MEET THE TEAM ----
+
 Team 38:
 - Aiden Molyneaux
 - Patrick Kye Foley (Patrick Foley)
@@ -12,6 +13,7 @@ TA:
 - Ming Lei
 
 ---- CONTRIBUTIONS ----
+
 Aiden's contributions:
 
 
@@ -25,10 +27,12 @@ Bret's contributions:
 
 
 ---- DELIVERABLES ----
+
 Files included in this project:
 
 
 ---- TESTED SCENARIOS ----
+
 Tested scenarios that work:
 
 
