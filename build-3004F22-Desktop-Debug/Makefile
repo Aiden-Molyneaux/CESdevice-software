@@ -55,6 +55,7 @@ OBJECTS_DIR   = ./
 SOURCES       = ../3004F22/Button.cpp \
 		../3004F22/Device.cpp \
 		../3004F22/Group.cpp \
+		../3004F22/Light.cpp \
 		../3004F22/Session.cpp \
 		../3004F22/Widget.cpp \
 		../3004F22/main.cpp \
@@ -62,6 +63,7 @@ SOURCES       = ../3004F22/Button.cpp \
 OBJECTS       = Button.o \
 		Device.o \
 		Group.o \
+		Light.o \
 		Session.o \
 		Widget.o \
 		main.o \
@@ -147,11 +149,13 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../3004F22/Device.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Group.h \
+		../3004F22/Light.h \
 		../3004F22/Session.h \
 		../3004F22/Widget.h \
 		../3004F22/mainwindow.h ../3004F22/Button.cpp \
 		../3004F22/Device.cpp \
 		../3004F22/Group.cpp \
+		../3004F22/Light.cpp \
 		../3004F22/Session.cpp \
 		../3004F22/Widget.cpp \
 		../3004F22/main.cpp \
@@ -337,8 +341,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../3004F22/Button.h ../3004F22/Device.h ../3004F22/DeviceMediator.h ../3004F22/Group.h ../3004F22/Session.h ../3004F22/Widget.h ../3004F22/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../3004F22/Button.cpp ../3004F22/Device.cpp ../3004F22/Group.cpp ../3004F22/Session.cpp ../3004F22/Widget.cpp ../3004F22/main.cpp ../3004F22/mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../3004F22/Button.h ../3004F22/Device.h ../3004F22/DeviceMediator.h ../3004F22/Group.h ../3004F22/Light.h ../3004F22/Session.h ../3004F22/Widget.h ../3004F22/mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../3004F22/Button.cpp ../3004F22/Device.cpp ../3004F22/Group.cpp ../3004F22/Light.cpp ../3004F22/Session.cpp ../3004F22/Widget.cpp ../3004F22/main.cpp ../3004F22/mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../3004F22/mainwindow.ui $(DISTDIR)/
 
 
@@ -375,6 +379,12 @@ compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../3004F22/mainwindow.h \
+		../3004F22/Device.h \
+		../3004F22/Button.h \
+		../3004F22/Widget.h \
+		../3004F22/DeviceMediator.h \
+		../3004F22/Group.h \
+		../3004F22/Session.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /media/sf_SharedVMFolder/3004F22/build-3004F22-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/media/sf_SharedVMFolder/3004F22/3004F22 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../3004F22/mainwindow.h -o moc_mainwindow.cpp
@@ -418,6 +428,11 @@ Group.o: ../3004F22/Group.cpp ../3004F22/Group.h \
 		../3004F22/DeviceMediator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Group.o ../3004F22/Group.cpp
 
+Light.o: ../3004F22/Light.cpp ../3004F22/Light.h \
+		../3004F22/Widget.h \
+		../3004F22/DeviceMediator.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Light.o ../3004F22/Light.cpp
+
 Session.o: ../3004F22/Session.cpp ../3004F22/Session.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h
@@ -427,10 +442,22 @@ Widget.o: ../3004F22/Widget.cpp ../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Widget.o ../3004F22/Widget.cpp
 
-main.o: ../3004F22/main.cpp ../3004F22/mainwindow.h
+main.o: ../3004F22/main.cpp ../3004F22/mainwindow.h \
+		../3004F22/Device.h \
+		../3004F22/Button.h \
+		../3004F22/Widget.h \
+		../3004F22/DeviceMediator.h \
+		../3004F22/Group.h \
+		../3004F22/Session.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../3004F22/main.cpp
 
 mainwindow.o: ../3004F22/mainwindow.cpp ../3004F22/mainwindow.h \
+		../3004F22/Device.h \
+		../3004F22/Button.h \
+		../3004F22/Widget.h \
+		../3004F22/DeviceMediator.h \
+		../3004F22/Group.h \
+		../3004F22/Session.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../3004F22/mainwindow.cpp
 

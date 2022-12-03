@@ -7,8 +7,13 @@ using namespace std;
 
 class Button : public Widget {
     public:
-        Button(DeviceMediator* device);
+        Button(DeviceMediator* device, const string& name);
         ~Button();
+
+        void pressed();
+
+    private:
+        string buttonName;
 };
 
 #endif // BUTTON_H

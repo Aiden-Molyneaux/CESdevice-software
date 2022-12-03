@@ -19,6 +19,7 @@ SOURCES += \
     Button.cpp \
     Device.cpp \
     Group.cpp \
+    Light.cpp \
     Session.cpp \
     Widget.cpp \
     main.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     Device.h \
     DeviceMediator.h \
     Group.h \
+    Light.h \
     Session.h \
     Widget.h \
     mainwindow.h
