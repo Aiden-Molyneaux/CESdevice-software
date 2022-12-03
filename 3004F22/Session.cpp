@@ -1,6 +1,5 @@
 #include "Session.h"
 
-Session::Session()
-{
+Session::Session(DeviceMediator* device): Widget(device) {
 
 }

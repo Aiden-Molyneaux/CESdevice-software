@@ -1,6 +1,5 @@
 #include "Group.h"
 
-Group::Group()
-{
+Group::Group(DeviceMediator* device): Widget(device) {
 
 }

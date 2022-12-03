@@ -1,6 +1,5 @@
-#include "devicemediator.h"
+#include "DeviceMediator.h"
 
-DeviceMediator::DeviceMediator()
-{
+DeviceMediator::DeviceMediator() {
 
 }
