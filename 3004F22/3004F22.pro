@@ -20,6 +20,7 @@ SOURCES += \
     DeviceMediator.cpp \
     Group.cpp \
     Session.cpp \
+    Widget.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -28,6 +29,7 @@ HEADERS += \
     DeviceMediator.h \
     Group.h \
     Session.h \
+    Widget.h \
     mainwindow.h
 
 FORMS += \
