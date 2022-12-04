@@ -47,6 +47,8 @@ public:
     QTextBrowser *batteryLevel2;
     QTextBrowser *batteryLevel3;
     QTextBrowser *log;
+    QSlider *batterySlider;
+    QLabel *label_2;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -182,6 +184,16 @@ public:
         log = new QTextBrowser(centralwidget);
         log->setObjectName(QString::fromUtf8("log"));
         log->setGeometry(QRect(530, 170, 256, 91));
+        batterySlider = new QSlider(centralwidget);
+        batterySlider->setObjectName(QString::fromUtf8("batterySlider"));
+        batterySlider->setGeometry(QRect(460, 330, 160, 16));
+        batterySlider->setMinimum(0);
+        batterySlider->setMaximum(100);
+        batterySlider->setValue(100);
+        batterySlider->setOrientation(Qt::Horizontal);
+        label_2 = new QLabel(centralwidget);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setGeometry(QRect(500, 310, 81, 20));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -232,6 +244,7 @@ public:
         pushButton_9->setText(QString());
         pushButton_10->setText(QString());
         label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "Battery Level", nullptr));
     } // retranslateUi
 
 };

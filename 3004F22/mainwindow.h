@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow {
 
         void changeTextColor(QTextBrowser *text, QColor color);
         void blinkTopSection();
+        void blinkBattery();
         void sleepy(int sleepTime);
         QElapsedTimer elapsedTimer;
 
@@ -43,5 +44,6 @@ class MainWindow : public QMainWindow {
         void pressUpArrow();
         void pressDownArrow();
         void changeConnectionSlider();
+        void changeBatterySlider();
 };
 #endif // MAINWINDOW_H

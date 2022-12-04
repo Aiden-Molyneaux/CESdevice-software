@@ -5,9 +5,6 @@ Device::Device(const string& name): deviceName(name), isPowered(false), inSessio
 
     // Buttons initialization
     powerButton = new Button(this, "powerButton");
-    upArrowButton = new Button(this, "upArrowButton");
-    downArrowButton = new Button(this, "downArrowButton");
-    selectButton = new Button(this, "selectButton");
 
     // Lights initialization
     powerLight = new Light(this, "powerLight");
@@ -25,7 +22,18 @@ Device::Device(const string& name): deviceName(name), isPowered(false), inSessio
     }
 }
 
-Device::~Device(){}
+Device::~Device(){
+    delete battery;
+    delete powerButton;
+    delete powerLight;
+
+    for(int i=0; i<3; i++){
+        delete groupTypes[i];
+        for(int j=0; j<4; j++){
+            delete sessionTypes[i][j];
+        }
+    }
+}
 
 // Widget change handler function
 void Device::WidgetChanged(Widget*, const string& widgetName){

@@ -4,9 +4,7 @@ Button::Button(DeviceMediator* device, const string& name): buttonName(name), Wi
 
 }
 
-Button::~Button() {
-    delete this;
-}
+Button::~Button(){ delete this; }
 
 void Button::pressed(){
     changed(this->buttonName);
