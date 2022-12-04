@@ -1,6 +1,6 @@
 #include "Battery.h"
 
-Battery::Battery(DeviceMediator* device): batteryLevel(100), Widget(device) {}
+Battery::Battery(DeviceMediator* device): batteryLevel(50), Widget(device) {}
 
 Battery::~Battery(){
     delete this;

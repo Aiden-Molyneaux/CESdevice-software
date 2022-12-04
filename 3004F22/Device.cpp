@@ -1,6 +1,6 @@
 #include "Device.h"
 
-Device::Device(const string& name): deviceName(name), currentIntensity(0) {
+Device::Device(const string& name): deviceName(name), isPowered(false), inSession(false), currentIntensity(0) {
     battery = new Battery(this);
 
     // Buttons initialization
@@ -49,11 +49,22 @@ void Device::powerOn(){
 
 void Device::powerOff(){
     // implement soft-off
+    if(inSession){
+        for(int i=0; i<10; i++){
+            currentIntensity-=10;
+            if(currentIntensity<=0){
+                currentIntensity=0;
+                break;
+            }
+        }
+    }
     powerLight->setIsLightOn(false);
     isPowered = false;
 }
 
 // GETTERS AND SETTERS
+Battery* Device::getBattery(){ return this->battery; }
+
 Button* Device::getPowerButton(){ return this->powerButton; }
 
 Button* Device::getUpArrowButton(){ return this->upArrowButton; }
@@ -61,3 +72,5 @@ Button* Device::getUpArrowButton(){ return this->upArrowButton; }
 Button* Device::getDownArrowButton(){ return this->downArrowButton; }
 
 Light* Device::getPowerLight(){ return this->powerLight; }
+
+bool Device::getIsPoweredOn(){ return this->isPowered; }

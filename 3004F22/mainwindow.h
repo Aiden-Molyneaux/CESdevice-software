@@ -20,6 +20,9 @@ class MainWindow : public QMainWindow {
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
+        void ui_initializeBattery();
+        void ui_turnOffBattery();
+
     private:
         Ui::MainWindow *ui;
         Device* device;
@@ -32,9 +35,11 @@ class MainWindow : public QMainWindow {
         void changeTextColor(QTextBrowser *text, QColor color);
         void blinkTopSection();
         void sleepy(int sleepTime);
+        QElapsedTimer elapsedTimer;
 
     private slots:
         void pressPower();
+        void powerReleased();
         void pressUpArrow();
         void pressDownArrow();
         void changeConnectionSlider();
