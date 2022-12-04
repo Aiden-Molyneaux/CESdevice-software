@@ -22,10 +22,14 @@ class Device : public DeviceMediator {
         void powerOn();
         void powerOff();
 
+        Battery* getBattery();
         Button* getPowerButton();
         Button* getUpArrowButton();
         Button* getDownArrowButton();
+
         Light* getPowerLight();
+
+        bool getIsPoweredOn();
     private:
         string deviceName;
 
@@ -43,6 +47,7 @@ class Device : public DeviceMediator {
         int currentIntensity;
 
         bool isPowered;
+        bool inSession;
 };
 
 #endif // DEVICE_H

@@ -5,8 +5,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
 
     device = new Device("TimeToLive");
-
-    connect(ui->powerButton, SIGNAL(released()), this, SLOT (pressPower()));
+    connect(ui->powerButton, SIGNAL(pressed()), this, SLOT (pressPower()));
+    connect(ui->powerButton, SIGNAL(released()), this, SLOT (powerReleased()));
     connect(ui->upArrowButton, SIGNAL(released()), this, SLOT (pressUpArrow()));
     connect(ui->downArrowButton, SIGNAL(released()), this, SLOT (pressDownArrow()));
     connect(ui->connectionSlider, SIGNAL(sliderReleased()), this, SLOT (changeConnectionSlider()));
@@ -17,8 +17,29 @@ MainWindow::~MainWindow() {
     delete device;
 }
 
+void MainWindow::powerReleased(){
+    if(elapsedTimer.elapsed()>=2000){ // check if Power Button was held for 2 seconds
+        if(!device->getIsPoweredOn()){ // continue if DEVICE is OFF
+            ui_initializeBattery();
+            if(device->getBattery()->getBatteryLevel()<33){
+                ui->log->append("Battery level too low. Replace Batteries");
+                // implement battery blinking
+                return;
+            }
+        }else{ // continue if DEVICE is ON
+
+        }
+        cout << "Do something" << endl;
+
+
+        device->getPowerButton()->pressed();
+    }else{
+        cout << "Do something else" << endl;
+    }
+}
+
 void MainWindow::pressPower(){
-    device->getPowerButton()->pressed();
+    elapsedTimer.start();
 }
 
 void MainWindow::pressUpArrow(){
@@ -122,6 +143,15 @@ void MainWindow::blinkTopSection() {
         sleepy(100);
         changeTextColor(ui->connectionTop, "gray");
         sleepy(100);
+    }
+}
+void MainWindow::ui_initializeBattery(){
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
+    if(device->getBattery()->getBatteryLevel()>=33){
+        ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: yellow;}");
+        if(device->getBattery()->getBatteryLevel()>=67){
+                ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: green;}");
+        }
     }
 }
 
