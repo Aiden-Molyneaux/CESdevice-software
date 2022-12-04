@@ -23,5 +23,6 @@ class MainWindow : public QMainWindow {
 
     private slots:
         void pressPower();
+        void pressUpArrow();
 };
 #endif // MAINWINDOW_H

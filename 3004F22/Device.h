@@ -3,6 +3,7 @@
 
 #include "Button.h"
 #include "Light.h"
+#include "Battery.h"
 #include "Group.h"
 #include "Session.h"
 
@@ -18,11 +19,16 @@ class Device : public DeviceMediator {
 
         virtual void WidgetChanged(Widget*, const string& widgetName);
 
+        void powerOn();
+        void powerOff();
+
         Button* getPowerButton();
+        Button* getUpArrowButton();
         Light* getPowerLight();
     private:
         string deviceName;
 
+        Battery* battery;
         Button* powerButton;
         Button* upArrowButton;
         Button* downArrowButton;
@@ -32,6 +38,8 @@ class Device : public DeviceMediator {
 
         Group* groupTypes[3];
         Session* sessionTypes[3][4];
+
+        int currentIntensity;
 
         bool isPowered;
 };

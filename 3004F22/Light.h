@@ -10,9 +10,12 @@ class Light : public Widget {
         Light(DeviceMediator* device, const string& name);
         ~Light();
 
+        bool getIsLightOn();
+        void setIsLightOn(bool status);
+
     private:
         string lightName;
-        bool isOn;
+        bool isLightOn;
 };
 
 #endif // LIGHT_H

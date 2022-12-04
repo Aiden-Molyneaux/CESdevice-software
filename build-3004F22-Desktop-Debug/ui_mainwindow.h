@@ -24,6 +24,7 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QPushButton *powerButton;
+    QPushButton *upArrowButton;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -37,6 +38,9 @@ public:
         powerButton = new QPushButton(centralwidget);
         powerButton->setObjectName(QString::fromUtf8("powerButton"));
         powerButton->setGeometry(QRect(130, 70, 80, 25));
+        upArrowButton = new QPushButton(centralwidget);
+        upArrowButton->setObjectName(QString::fromUtf8("upArrowButton"));
+        upArrowButton->setGeometry(QRect(180, 250, 80, 25));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -55,6 +59,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         powerButton->setText(QApplication::translate("MainWindow", "POWER", nullptr));
+        upArrowButton->setText(QApplication::translate("MainWindow", "UP", nullptr));
     } // retranslateUi
 
 };
