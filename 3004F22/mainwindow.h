@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTextBrowser>
+#include <QElapsedTimer>
+#include <QTime>
 #include "Device.h"
 #include <string>
 #include <iostream>
@@ -22,10 +25,18 @@ class MainWindow : public QMainWindow {
         Device* device;
 
         int selectedSession = 1;
+        int connectionIntensity = 1;
+
+        QElapsedTimer blinkTimer;
+
+        void changeTextColor(QTextBrowser *text, QColor color);
+        void blinkTopSection();
+        void sleepy(int sleepTime);
 
     private slots:
         void pressPower();
         void pressUpArrow();
         void pressDownArrow();
+        void changeConnectionSlider();
 };
 #endif // MAINWINDOW_H
