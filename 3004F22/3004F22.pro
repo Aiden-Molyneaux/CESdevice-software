@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Battery.cpp \
     Button.cpp \
     Device.cpp \
     Group.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    Battery.h \
     Button.h \
     Device.h \
     DeviceMediator.h \

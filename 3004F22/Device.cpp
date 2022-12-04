@@ -1,6 +1,8 @@
 #include "Device.h"
 
-Device::Device(const string& name): deviceName(name) {
+Device::Device(const string& name): deviceName(name), currentIntensity(0) {
+    battery = new Battery(this);
+
     // Buttons initialization
     powerButton = new Button(this, "powerButton");
     upArrowButton = new Button(this, "upArrowButton");
@@ -15,7 +17,12 @@ Device::Device(const string& name): deviceName(name) {
     groupTypes[1] = new Group(this, "45min");
     groupTypes[2] = new Group(this, "userDesignated");
 
-    for(int i=0; i<3; i++){}
+    for(int i=0; i<3; i++){
+        sessionTypes[i][0] = new Session(this, "delta");
+        sessionTypes[i][1] = new Session(this, "theta");
+        sessionTypes[i][2] = new Session(this, "alpha");
+        sessionTypes[i][3] = new Session(this, "beta");
+    }
 }
 
 Device::~Device(){}
@@ -23,16 +30,33 @@ Device::~Device(){}
 // Widget change handler function
 void Device::WidgetChanged(Widget*, const string& widgetName){
     if(widgetName == "powerButton"){
-        if(isPowered){
-            isPowered=false;
-        } else {
-            isPowered = true;
-        }
+        isPowered ? powerOff() : powerOn();
+        cout << "Power: " << isPowered << endl;
+        cout << "powerLight: " << powerLight->getIsLightOn() << endl;
     }
-    cout << "Power: " << isPowered << endl;
+    else if(widgetName == "upArrowButton"){
+        cout << "Hola" << endl;
+    }
+}
+
+void Device::powerOn(){
+    if(battery->getBatteryLevel()<33){
+        cout << "Battery level too low" << endl;
+        return;
+    }
+    isPowered = true;
+    powerLight->setIsLightOn(true);
+}
+
+void Device::powerOff(){
+    // implement soft-off
+    powerLight->setIsLightOn(false);
+    isPowered = false;
 }
 
 // GETTERS AND SETTERS
 Button* Device::getPowerButton(){ return this->powerButton; }
+
+Button* Device::getUpArrowButton(){ return this->upArrowButton; }
 
 Light* Device::getPowerLight(){ return this->powerLight; }
