@@ -11,9 +11,11 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QWidget>
@@ -39,6 +41,8 @@ public:
     QPushButton *pushButton_8;
     QPushButton *pushButton_9;
     QPushButton *pushButton_10;
+    QSlider *connectionSlider;
+    QLabel *label;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -83,6 +87,7 @@ public:
         connectionMiddle = new QTextBrowser(centralwidget);
         connectionMiddle->setObjectName(QString::fromUtf8("connectionMiddle"));
         connectionMiddle->setGeometry(QRect(270, 310, 51, 121));
+        connectionMiddle->setStyleSheet(QString::fromUtf8(""));
         connectionTop = new QTextBrowser(centralwidget);
         connectionTop->setObjectName(QString::fromUtf8("connectionTop"));
         connectionTop->setGeometry(QRect(270, 230, 51, 81));
@@ -150,6 +155,15 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        connectionSlider = new QSlider(centralwidget);
+        connectionSlider->setObjectName(QString::fromUtf8("connectionSlider"));
+        connectionSlider->setGeometry(QRect(460, 290, 160, 16));
+        connectionSlider->setMinimum(1);
+        connectionSlider->setMaximum(3);
+        connectionSlider->setOrientation(Qt::Horizontal);
+        label = new QLabel(centralwidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(500, 270, 81, 20));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -175,22 +189,22 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#73d216;\">|3|</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#73d216;\">|2|</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#73d216;\">|1|</span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|3|</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|2|</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|1|</span></p></body></html>", nullptr));
         connectionMiddle->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#f57900;\">|6|</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#f57900;\">|5|</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#f57900;\">|4|</span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|6|</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|5|</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|4|</span></p></body></html>", nullptr));
         connectionTop->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#ef2929;\">|8|</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#ef2929;\">|7|</span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|8|</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#888a85;\">|7|</span></p></body></html>", nullptr));
         alphaButton->setText(QString());
         deltaButton->setText(QString());
         betaButton->setText(QString());
@@ -199,6 +213,7 @@ public:
         pushButton_8->setText(QString());
         pushButton_9->setText(QString());
         pushButton_10->setText(QString());
+        label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
     } // retranslateUi
 
 };
