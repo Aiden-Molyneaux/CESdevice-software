@@ -62,7 +62,8 @@ SOURCES       = ../3004F22/Battery.cpp \
 		../3004F22/main.cpp \
 		../3004F22/mainwindow.cpp qrc_res.cpp \
 		moc_mainwindow.cpp
-OBJECTS       = Button.o \
+OBJECTS       = Battery.o \
+		Button.o \
 		Device.o \
 		Group.o \
 		Light.o \
@@ -409,6 +410,7 @@ moc_mainwindow.cpp: ../3004F22/mainwindow.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
+		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h \
 		moc_predefs.h \
@@ -451,6 +453,7 @@ Device.o: ../3004F22/Device.cpp ../3004F22/Device.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
+		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Device.o ../3004F22/Device.cpp
@@ -480,6 +483,7 @@ main.o: ../3004F22/main.cpp ../3004F22/mainwindow.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
+		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../3004F22/main.cpp
@@ -490,6 +494,7 @@ mainwindow.o: ../3004F22/mainwindow.cpp ../3004F22/mainwindow.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
+		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h \
 		ui_mainwindow.h

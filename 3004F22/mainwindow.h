@@ -21,8 +21,11 @@ class MainWindow : public QMainWindow {
         Ui::MainWindow *ui;
         Device* device;
 
+        int selectedSession = 1;
+
     private slots:
         void pressPower();
         void pressUpArrow();
+        void pressDownArrow();
 };
 #endif // MAINWINDOW_H

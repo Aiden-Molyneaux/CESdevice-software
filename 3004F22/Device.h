@@ -24,6 +24,7 @@ class Device : public DeviceMediator {
 
         Button* getPowerButton();
         Button* getUpArrowButton();
+        Button* getDownArrowButton();
         Light* getPowerLight();
     private:
         string deviceName;
