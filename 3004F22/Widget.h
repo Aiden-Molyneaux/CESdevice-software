@@ -9,7 +9,7 @@ class Widget {
     public:
         Widget(DeviceMediator* device);
 
-        virtual void changed();
+        virtual void changed(const string& widgetName);
     private:
         DeviceMediator* device;
 };
