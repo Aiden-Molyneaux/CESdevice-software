@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = 3004F221.0.0
-DISTDIR = /media/sf_SharedVMFolder/3004F22/build-3004F22-Desktop-Debug/.tmp/3004F221.0.0
+DISTDIR = /media/sf_3004/GP/3004F22/build-3004F22-Desktop-Debug/.tmp/3004F221.0.0
 LINK          = g++
 LFLAGS        = 
 LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
@@ -60,9 +60,9 @@ SOURCES       = ../3004F22/Battery.cpp \
 		../3004F22/Session.cpp \
 		../3004F22/Widget.cpp \
 		../3004F22/main.cpp \
-		../3004F22/mainwindow.cpp moc_mainwindow.cpp
-OBJECTS       = Battery.o \
-		Button.o \
+		../3004F22/mainwindow.cpp qrc_res.cpp \
+		moc_mainwindow.cpp
+OBJECTS       = Button.o \
 		Device.o \
 		Group.o \
 		Light.o \
@@ -70,6 +70,7 @@ OBJECTS       = Battery.o \
 		Widget.o \
 		main.o \
 		mainwindow.o \
+		qrc_res.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -251,7 +252,8 @@ Makefile: ../3004F22/3004F22.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../3004F22/3004F22.pro
+		../3004F22/3004F22.pro \
+		../3004F22/res.qrc
 	$(QMAKE) -o Makefile ../3004F22/3004F22.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf:
@@ -330,6 +332,7 @@ Makefile: ../3004F22/3004F22.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 ../3004F22/3004F22.pro:
+../3004F22/res.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../3004F22/3004F22.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 
@@ -344,6 +347,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents ../3004F22/res.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../3004F22/Battery.h ../3004F22/Button.h ../3004F22/Device.h ../3004F22/DeviceMediator.h ../3004F22/Group.h ../3004F22/Light.h ../3004F22/Session.h ../3004F22/Widget.h ../3004F22/mainwindow.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../3004F22/Battery.cpp ../3004F22/Button.cpp ../3004F22/Device.cpp ../3004F22/Group.cpp ../3004F22/Light.cpp ../3004F22/Session.cpp ../3004F22/Widget.cpp ../3004F22/main.cpp ../3004F22/mainwindow.cpp $(DISTDIR)/
@@ -371,8 +375,25 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_res.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_res.cpp
+qrc_res.cpp: ../3004F22/res.qrc \
+		/usr/lib/qt5/bin/rcc \
+		../icons/up.png \
+		../icons/45.png \
+		../icons/down.png \
+		../icons/CES.png \
+		../icons/power.png \
+		../icons/beta.png \
+		../icons/theta.png \
+		../icons/delta.png \
+		../icons/alpha.png \
+		../icons/user.png \
+		../icons/check.png \
+		../icons/20.png
+	/usr/lib/qt5/bin/rcc -name res ../3004F22/res.qrc -o qrc_res.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -388,12 +409,11 @@ moc_mainwindow.cpp: ../3004F22/mainwindow.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
-		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /media/sf_SharedVMFolder/3004F22/build-3004F22-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/media/sf_SharedVMFolder/3004F22/3004F22 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../3004F22/mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /media/sf_3004/GP/3004F22/build-3004F22-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/media/sf_3004/GP/3004F22/3004F22 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../3004F22/mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -412,7 +432,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -431,7 +451,6 @@ Device.o: ../3004F22/Device.cpp ../3004F22/Device.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
-		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Device.o ../3004F22/Device.cpp
@@ -461,7 +480,6 @@ main.o: ../3004F22/main.cpp ../3004F22/mainwindow.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
-		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../3004F22/main.cpp
@@ -472,11 +490,13 @@ mainwindow.o: ../3004F22/mainwindow.cpp ../3004F22/mainwindow.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Light.h \
-		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../3004F22/mainwindow.cpp
+
+qrc_res.o: qrc_res.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_res.o qrc_res.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

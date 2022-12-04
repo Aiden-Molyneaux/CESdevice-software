@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../icons/CES.png</file>
+        <file>../icons/beta.png</file>
+        <file>../icons/alpha.png</file>
+        <file>../icons/20.png</file>
+        <file>../icons/user.png</file>
+        <file>../icons/up.png</file>
+        <file>../icons/theta.png</file>
+        <file>../icons/power.png</file>
+        <file>../icons/down.png</file>
+        <file>../icons/delta.png</file>
+        <file>../icons/check.png</file>
+        <file>../icons/45.png</file>
+    </qresource>
+</RCC>
