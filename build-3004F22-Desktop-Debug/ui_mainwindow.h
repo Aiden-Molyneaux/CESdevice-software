@@ -43,6 +43,10 @@ public:
     QPushButton *pushButton_10;
     QSlider *connectionSlider;
     QLabel *label;
+    QTextBrowser *batteryLevel1;
+    QTextBrowser *batteryLevel2;
+    QTextBrowser *batteryLevel3;
+    QTextBrowser *log;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -60,6 +64,8 @@ public:
 "	border-image: url(:/icons/power.png);\n"
 "	color: white;\n"
 "}"));
+        powerButton->setAutoRepeat(false);
+        powerButton->setAutoRepeatDelay(200);
         downArrowButton = new QPushButton(centralwidget);
         downArrowButton->setObjectName(QString::fromUtf8("downArrowButton"));
         downArrowButton->setGeometry(QRect(430, 440, 101, 71));
@@ -104,7 +110,7 @@ public:
         deltaButton->setGeometry(QRect(100, 120, 81, 81));
         deltaButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/delta.png);\n"
-"	background-color: green;\n"
+"	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
         betaButton = new QPushButton(centralwidget);
@@ -164,6 +170,18 @@ public:
         label = new QLabel(centralwidget);
         label->setObjectName(QString::fromUtf8("label"));
         label->setGeometry(QRect(500, 270, 81, 20));
+        batteryLevel1 = new QTextBrowser(centralwidget);
+        batteryLevel1->setObjectName(QString::fromUtf8("batteryLevel1"));
+        batteryLevel1->setGeometry(QRect(750, 70, 31, 31));
+        batteryLevel2 = new QTextBrowser(centralwidget);
+        batteryLevel2->setObjectName(QString::fromUtf8("batteryLevel2"));
+        batteryLevel2->setGeometry(QRect(750, 40, 31, 31));
+        batteryLevel3 = new QTextBrowser(centralwidget);
+        batteryLevel3->setObjectName(QString::fromUtf8("batteryLevel3"));
+        batteryLevel3->setGeometry(QRect(750, 10, 31, 31));
+        log = new QTextBrowser(centralwidget);
+        log->setObjectName(QString::fromUtf8("log"));
+        log->setGeometry(QRect(530, 170, 256, 91));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));

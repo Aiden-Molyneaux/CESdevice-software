@@ -187,7 +187,7 @@ p, li { white-space: pre-wrap; }
     <property name="styleSheet">
      <string notr="true">QPushButton {
 	border-image: url(:/icons/delta.png);
-	background-color: green;
+	background-color: white;
 	border-radius: 40;
 }</string>
     </property>
@@ -381,7 +381,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>220</y>
+      <y>170</y>
       <width>256</width>
       <height>91</height>
      </rect>
