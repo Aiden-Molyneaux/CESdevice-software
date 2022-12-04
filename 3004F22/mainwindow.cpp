@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     device = new Device("TimeToLive");
 
     connect(ui->powerButton, SIGNAL(released()), this, SLOT (pressPower()));
+
 }
 
 MainWindow::~MainWindow() {

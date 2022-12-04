@@ -22,9 +22,16 @@ class Device : public DeviceMediator {
         Light* getPowerLight();
     private:
         string deviceName;
+
         Button* powerButton;
+        Button* upArrowButton;
+        Button* downArrowButton;
+        Button* selectButton;
 
         Light* powerLight;
+
+        Group* groupTypes[3];
+        Session* sessionTypes[3][4];
 
         bool isPowered;
 };

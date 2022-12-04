@@ -1,5 +1,3 @@
 #include "Group.h"
 
-Group::Group(DeviceMediator* device): Widget(device) {
-
-}
+Group::Group(DeviceMediator* device, const string& name): groupName(name), Widget(device) {}

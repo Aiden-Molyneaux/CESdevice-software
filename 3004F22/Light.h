@@ -12,6 +12,7 @@ class Light : public Widget {
 
     private:
         string lightName;
+        bool isOn;
 };
 
 #endif // LIGHT_H
