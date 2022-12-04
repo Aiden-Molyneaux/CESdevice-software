@@ -25,16 +25,16 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QPushButton *powerButton;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_3;
+    QPushButton *downArrowButton;
+    QPushButton *upArrowButton;
     QPushButton *checkButton;
     QTextBrowser *connectionBottom;
     QTextBrowser *connectionMiddle;
     QTextBrowser *connectionTop;
-    QPushButton *pushButton;
-    QPushButton *pushButton_4;
-    QPushButton *pushButton_5;
-    QPushButton *pushButton_6;
+    QPushButton *alphaButton;
+    QPushButton *deltaButton;
+    QPushButton *betaButton;
+    QPushButton *thetaButton;
     QPushButton *pushButton_7;
     QPushButton *pushButton_8;
     QPushButton *pushButton_9;
@@ -56,17 +56,17 @@ public:
 "	border-image: url(:/icons/power.png);\n"
 "	color: white;\n"
 "}"));
-        pushButton_2 = new QPushButton(centralwidget);
-        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
-        pushButton_2->setGeometry(QRect(430, 440, 101, 71));
-        pushButton_2->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        downArrowButton = new QPushButton(centralwidget);
+        downArrowButton->setObjectName(QString::fromUtf8("downArrowButton"));
+        downArrowButton->setGeometry(QRect(430, 440, 101, 71));
+        downArrowButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/down.png);\n"
 "	color: white;\n"
 "}"));
-        pushButton_3 = new QPushButton(centralwidget);
-        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
-        pushButton_3->setGeometry(QRect(430, 350, 101, 71));
-        pushButton_3->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        upArrowButton = new QPushButton(centralwidget);
+        upArrowButton->setObjectName(QString::fromUtf8("upArrowButton"));
+        upArrowButton->setGeometry(QRect(430, 350, 101, 71));
+        upArrowButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/up.png);\n"
 "	color: white;\n"
 "}"));
@@ -86,34 +86,34 @@ public:
         connectionTop = new QTextBrowser(centralwidget);
         connectionTop->setObjectName(QString::fromUtf8("connectionTop"));
         connectionTop->setGeometry(QRect(270, 230, 51, 81));
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(320, 120, 81, 81));
-        pushButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        alphaButton = new QPushButton(centralwidget);
+        alphaButton->setObjectName(QString::fromUtf8("alphaButton"));
+        alphaButton->setGeometry(QRect(320, 120, 81, 81));
+        alphaButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/alpha.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_4 = new QPushButton(centralwidget);
-        pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
-        pushButton_4->setGeometry(QRect(100, 120, 81, 81));
-        pushButton_4->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        deltaButton = new QPushButton(centralwidget);
+        deltaButton->setObjectName(QString::fromUtf8("deltaButton"));
+        deltaButton->setGeometry(QRect(100, 120, 81, 81));
+        deltaButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/delta.png);\n"
-"	background-color: white;\n"
+"	background-color: green;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_5 = new QPushButton(centralwidget);
-        pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
-        pushButton_5->setGeometry(QRect(440, 120, 81, 81));
-        pushButton_5->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        betaButton = new QPushButton(centralwidget);
+        betaButton->setObjectName(QString::fromUtf8("betaButton"));
+        betaButton->setGeometry(QRect(440, 120, 81, 81));
+        betaButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/beta.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_6 = new QPushButton(centralwidget);
-        pushButton_6->setObjectName(QString::fromUtf8("pushButton_6"));
-        pushButton_6->setGeometry(QRect(210, 120, 81, 81));
-        pushButton_6->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        thetaButton = new QPushButton(centralwidget);
+        thetaButton->setObjectName(QString::fromUtf8("thetaButton"));
+        thetaButton->setGeometry(QRect(210, 120, 81, 81));
+        thetaButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/theta.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
@@ -168,8 +168,8 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         powerButton->setText(QString());
-        pushButton_2->setText(QString());
-        pushButton_3->setText(QString());
+        downArrowButton->setText(QString());
+        upArrowButton->setText(QString());
         checkButton->setText(QString());
         connectionBottom->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -191,10 +191,10 @@ public:
 "</style></head><body style=\" font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#ef2929;\">|8|</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:18pt; color:#ef2929;\">|7|</span></p></body></html>", nullptr));
-        pushButton->setText(QString());
-        pushButton_4->setText(QString());
-        pushButton_5->setText(QString());
-        pushButton_6->setText(QString());
+        alphaButton->setText(QString());
+        deltaButton->setText(QString());
+        betaButton->setText(QString());
+        thetaButton->setText(QString());
         pushButton_7->setText(QString());
         pushButton_8->setText(QString());
         pushButton_9->setText(QString());

@@ -35,7 +35,6 @@ void Device::WidgetChanged(Widget*, const string& widgetName){
         cout << "powerLight: " << powerLight->getIsLightOn() << endl;
     }
     else if(widgetName == "upArrowButton"){
-        cout << "Hola" << endl;
     }
 }
 
@@ -58,5 +57,7 @@ void Device::powerOff(){
 Button* Device::getPowerButton(){ return this->powerButton; }
 
 Button* Device::getUpArrowButton(){ return this->upArrowButton; }
+
+Button* Device::getDownArrowButton(){ return this->downArrowButton; }
 
 Light* Device::getPowerLight(){ return this->powerLight; }
