@@ -26,6 +26,7 @@ void MainWindow::powerReleased(){
                 // implement battery blinking
                 return;
             }
+            ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: green; border-radius: 40;}");
         }else{ // continue if DEVICE is ON
 
         }
@@ -33,6 +34,7 @@ void MainWindow::powerReleased(){
 
 
         device->getPowerButton()->pressed();
+        changeConnectionSlider();
     }else{
         cout << "Do something else" << endl;
     }
@@ -43,6 +45,8 @@ void MainWindow::pressPower(){
 }
 
 void MainWindow::pressUpArrow(){
+    if (!device->getIsPoweredOn()) {return;}
+
     device->getUpArrowButton()->pressed();
 
     switch (selectedSession) {
@@ -74,6 +78,8 @@ void MainWindow::pressUpArrow(){
 }
 
 void MainWindow::pressDownArrow(){
+    if (!device->getIsPoweredOn()) {return;}
+
     device->getDownArrowButton()->pressed();
 
     switch (selectedSession) {
@@ -105,6 +111,8 @@ void MainWindow::pressDownArrow(){
 }
 
 void MainWindow::changeConnectionSlider() {
+    if (!device->getIsPoweredOn()) {return;}
+
     connectionIntensity = ui->connectionSlider->value();
 
     switch (connectionIntensity) {
