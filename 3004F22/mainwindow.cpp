@@ -5,6 +5,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
 
     device = new Device("TimeToLive");
+
+    ui->batterySlider->setValue(device->getBattery()->getBatteryLevel());
+
     connect(ui->powerButton, SIGNAL(pressed()), this, SLOT (pressPower()));
     connect(ui->powerButton, SIGNAL(released()), this, SLOT (powerReleased()));
     connect(ui->upArrowButton, SIGNAL(released()), this, SLOT (pressUpArrow()));
@@ -19,7 +22,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::powerReleased(){
-    if(elapsedTimer.elapsed()>=2000){ // check if Power Button was held for 2 seconds
+    if(elapsedTimer.elapsed()>=1000){ // check if Power Button was held for 2 seconds
         if(!device->getIsPoweredOn()){ // continue if DEVICE is OFF
             ui_initializeBattery();
             if(device->getBattery()->getBatteryLevel()<33){
@@ -45,8 +48,6 @@ void MainWindow::pressPower(){
 
 void MainWindow::pressUpArrow(){
     if (!device->getIsPoweredOn()) {return;}
-
-    device->getUpArrowButton()->pressed();
 
     switch (selectedSession) {
         //DELTA IS LIT UP, WE WANT THETA LIT INSTEAD
@@ -140,6 +141,7 @@ void MainWindow::changeConnectionSlider() {
 
 void MainWindow::changeBatterySlider(){
     device->getBattery()->setBatteryLevel(ui->batterySlider->value());
+    ui_initializeBattery();
 }
 
 void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
@@ -172,8 +174,8 @@ void MainWindow::ui_initializeBattery(){
         ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: yellow;}");
         if(device->getBattery()->getBatteryLevel()>=67){
                 ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: green;}");
-        }
-    }
+        } else{ ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}"); }
+    }else{ ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}"); }
 }
 
 void MainWindow::sleepy(int sleepTime) {
