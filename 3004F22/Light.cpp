@@ -2,9 +2,7 @@
 
 Light::Light(DeviceMediator* device, const string& name): lightName(name), isLightOn(false), Widget(device){}
 
-Light::~Light(){
-    delete this;
-}
+Light::~Light(){ delete this; }
 
 bool Light::getIsLightOn(){ return this->isLightOn; }
 

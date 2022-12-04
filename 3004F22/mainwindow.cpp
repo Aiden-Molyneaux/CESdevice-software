@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->upArrowButton, SIGNAL(released()), this, SLOT (pressUpArrow()));
     connect(ui->downArrowButton, SIGNAL(released()), this, SLOT (pressDownArrow()));
     connect(ui->connectionSlider, SIGNAL(sliderReleased()), this, SLOT (changeConnectionSlider()));
+    connect(ui->batterySlider, SIGNAL(sliderReleased()), this, SLOT (changeBatterySlider()));
 }
 
 MainWindow::~MainWindow() {
@@ -23,15 +24,13 @@ void MainWindow::powerReleased(){
             ui_initializeBattery();
             if(device->getBattery()->getBatteryLevel()<33){
                 ui->log->append("Battery level too low. Replace Batteries");
-                // implement battery blinking
+                blinkBattery();
                 return;
             }
             ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: green; border-radius: 40;}");
         }else{ // continue if DEVICE is ON
 
         }
-        cout << "Do something" << endl;
-
 
         device->getPowerButton()->pressed();
         changeConnectionSlider();
@@ -139,6 +138,10 @@ void MainWindow::changeConnectionSlider() {
     }
 }
 
+void MainWindow::changeBatterySlider(){
+    device->getBattery()->setBatteryLevel(ui->batterySlider->value());
+}
+
 void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
     text->setTextColor(color);
     text->setFontPointSize(18);
@@ -153,6 +156,16 @@ void MainWindow::blinkTopSection() {
         sleepy(100);
     }
 }
+
+void MainWindow::blinkBattery(){
+    while (device->getBattery()->getBatteryLevel()<33) {
+        ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+        sleepy(100);
+        ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
+        sleepy(100);
+    }
+}
+
 void MainWindow::ui_initializeBattery(){
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
     if(device->getBattery()->getBatteryLevel()>=33){
