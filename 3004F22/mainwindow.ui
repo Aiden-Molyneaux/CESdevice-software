@@ -235,7 +235,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="group20Button">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -255,7 +255,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="group45Button">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -275,7 +275,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_9">
+   <widget class="QPushButton" name="groupUserButton">
     <property name="geometry">
      <rect>
       <x>400</x>
