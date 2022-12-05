@@ -6,6 +6,8 @@
 #include "Battery.h"
 #include "Group.h"
 #include "Session.h"
+#include "User.h"
+#include "Recording.h"
 
 #include <iostream>
 #include <string>
@@ -22,6 +24,10 @@ class Device : public DeviceMediator {
         void powerOn();
         void setSoftPower(bool value);
         void powerOff();
+        int addUser(const string& name, int intensity);
+        int addRecording(const string& name);
+        int getNumRecordings();
+        Recording* getRecordingAt(int index);
 
         Battery* getBattery();
         Button* getPowerButton();
@@ -45,8 +51,12 @@ class Device : public DeviceMediator {
 
         Group* groupTypes[3];
         Session* sessionTypes[3][4];
+        User* users[5];
+        Recording* recordings[100];
 
         int currentIntensity;
+        int numUsers = 0;
+        int numRecordings = 0;
 
         bool isPowered;
         bool isSoftPowered;

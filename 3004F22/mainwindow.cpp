@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->downArrowButton, SIGNAL(released()), this, SLOT (pressDownArrow()));
     connect(ui->connectionSlider, SIGNAL(sliderReleased()), this, SLOT (changeConnectionSlider()));
     connect(ui->batterySlider, SIGNAL(sliderReleased()), this, SLOT (changeBatterySlider()));
+    connect(ui->addUserButton, SIGNAL(released()), this, SLOT (addUserButtonClicked()));
+    connect(ui->addFakeRecordingButton, SIGNAL(released()), this, SLOT (addRecordingButtonClicked()));
+    connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -274,3 +277,43 @@ void MainWindow::sleepy(int sleepTime) {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
+void MainWindow::addUserButtonClicked() {
+    string name = ui->userNameInput->toPlainText().toStdString();
+    int intensity = ui->userIntensityInput->toPlainText().toInt();
+
+    if (device->addUser(name, intensity) == -1) {
+        ui->log->append("**COULD NOT ADD USER**");
+        return;
+    } else {
+        ui->log->append("**ADDED USER " + QString::fromStdString(name) + "**");
+    }
+
+    ui->nameComboBox->addItem(QString::fromStdString(name));
+}
+
+void MainWindow::addRecordingButtonClicked() {
+    string name = ui->nameComboBox->currentText().toStdString();
+
+    if (device->addRecording(name) == -1) {
+        ui->log->append("**COULD NOT ADD RECORDING**");
+        return;
+    } else {
+        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
+    }
+}
+
+void MainWindow::printHistoryButtonClicked() {
+    string name = ui->nameComboBox->currentText().toStdString();
+
+    int numRecordings = 0;
+    for (int i = 0; i < device->getNumRecordings(); i++) {
+        Recording* recording = device->getRecordingAt(i);
+        if (recording->getName() == name) {
+            if (numRecordings == 0) {ui->historySpinBox->setMinimum(1);}
+
+            numRecordings++;
+            ui->log->append(QString::number(numRecordings) + ". **RECORDING INFORMATION**");
+        }
+    }
+    ui->historySpinBox->setMaximum(numRecordings);
+}

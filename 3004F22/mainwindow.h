@@ -50,5 +50,8 @@ class MainWindow : public QMainWindow {
         void pressDownArrow();
         void changeConnectionSlider();
         void changeBatterySlider();
+        void addUserButtonClicked();
+        void addRecordingButtonClicked();
+        void printHistoryButtonClicked();
 };
 #endif // MAINWINDOW_H

@@ -74,6 +74,22 @@ void Device::powerOff(){
     isPowered = false;
 }
 
+int Device::addUser(const string& name, int intensity) {
+    if (numUsers == 5) { return -1; }
+
+    users[numUsers] = new User(this, name, intensity);
+    numUsers++;
+    return numUsers;
+}
+
+int Device::addRecording(const string& name) {
+    if (numRecordings == 100) { return -1; }
+
+    recordings[numRecordings] = new Recording(this, name);
+    numRecordings++;
+    return numRecordings;
+}
+
 // GETTERS AND SETTERS
 Battery* Device::getBattery(){ return this->battery; }
 
@@ -88,3 +104,7 @@ Light* Device::getPowerLight(){ return this->powerLight; }
 bool Device::getIsPoweredOn(){ return this->isPowered; }
 
 bool Device::getIsSoftPoweredOn(){ return this->isSoftPowered; }
+
+Recording* Device::getRecordingAt(int index) { return this->recordings[index]; }
+
+int Device::getNumRecordings() { return this->numRecordings; }
