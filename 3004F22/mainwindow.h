@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTextBrowser>
 #include <QElapsedTimer>
+#include <QPushButton>
 #include <QTime>
 #include "Device.h"
 #include <string>
@@ -28,14 +29,17 @@ class MainWindow : public QMainWindow {
         Device* device;
 
         int selectedSession = 1;
+        int selectedGroup = 1;
         int connectionIntensity = 1;
 
         QElapsedTimer blinkTimer;
 
         void changeTextColor(QTextBrowser *text, QColor color);
+        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
         void blinkTopSection();
         void blinkBattery();
         void sleepy(int sleepTime);
+        void cycleGroupButton();
         QElapsedTimer elapsedTimer;
 
     private slots:

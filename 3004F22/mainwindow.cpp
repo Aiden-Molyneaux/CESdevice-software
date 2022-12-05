@@ -19,7 +19,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::powerReleased(){
-    if(elapsedTimer.elapsed()>=2000){ // check if Power Button was held for 2 seconds
+    if(elapsedTimer.elapsed()>=200){ // check if Power Button was held for 2 seconds
         if(!device->getIsPoweredOn()){ // continue if DEVICE is OFF
             ui_initializeBattery();
             if(device->getBattery()->getBatteryLevel()<33){
@@ -27,7 +27,8 @@ void MainWindow::powerReleased(){
                 blinkBattery();
                 return;
             }
-            ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->deltaButton, "green", "delta");
+            changeBackgroundColor(ui->group20Button, "green", "20");
         }else{ // continue if DEVICE is ON
 
         }
@@ -35,7 +36,7 @@ void MainWindow::powerReleased(){
         device->getPowerButton()->pressed();
         changeConnectionSlider();
     }else{
-        cout << "Do something else" << endl;
+        cycleGroupButton();
     }
 }
 
@@ -46,31 +47,29 @@ void MainWindow::pressPower(){
 void MainWindow::pressUpArrow(){
     if (!device->getIsPoweredOn()) {return;}
 
-    device->getUpArrowButton()->pressed();
-
     switch (selectedSession) {
         //DELTA IS LIT UP, WE WANT THETA LIT INSTEAD
         case 1:
-            ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: white; border-radius: 40;}");
-            ui->thetaButton->setStyleSheet("QPushButton {border-image: url(:/icons/theta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->deltaButton, "white", "delta");
+            changeBackgroundColor(ui->thetaButton, "green", "theta");
             selectedSession++;
         break;
         //THETA IS LIT UP, WE WANT ALPHA LIT INSTEAD
         case 2:
-            ui->thetaButton->setStyleSheet("QPushButton {border-image: url(:/icons/theta.png); background-color: white; border-radius: 40;}");
-            ui->alphaButton->setStyleSheet("QPushButton {border-image: url(:/icons/alpha.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->thetaButton, "white", "theta");
+            changeBackgroundColor(ui->alphaButton, "green", "alpha");
             selectedSession++;
         break;
         //ALPHA IS LIT UP, WE WANT BETA LIT INSTEAD
         case 3:
-            ui->alphaButton->setStyleSheet("QPushButton {border-image: url(:/icons/alpha.png); background-color: white; border-radius: 40;}");
-            ui->betaButton->setStyleSheet("QPushButton {border-image: url(:/icons/beta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->alphaButton, "white", "alpha");
+            changeBackgroundColor(ui->betaButton, "green", "beta");
             selectedSession++;
         break;
         //BETA IS LIT UP, WE WANT DELTA LIT INSTEAD
         case 4:
-            ui->betaButton->setStyleSheet("QPushButton {border-image: url(:/icons/beta.png); background-color: white; border-radius: 40;}");
-            ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->betaButton, "white", "beta");
+            changeBackgroundColor(ui->deltaButton, "green", "delta");
             selectedSession = 1;
         break;
     }
@@ -79,32 +78,59 @@ void MainWindow::pressUpArrow(){
 void MainWindow::pressDownArrow(){
     if (!device->getIsPoweredOn()) {return;}
 
-    device->getDownArrowButton()->pressed();
-
     switch (selectedSession) {
         //DELTA IS LIT UP, WE WANT BETA LIT INSTEAD
         case 1:
-            ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: white; border-radius: 40;}");
-            ui->betaButton->setStyleSheet("QPushButton {border-image: url(:/icons/beta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->deltaButton, "white", "delta");
+            changeBackgroundColor(ui->betaButton, "green", "beta");
             selectedSession = 4;
         break;
         //THETA IS LIT UP, WE WANT DELTA LIT INSTEAD
         case 2:
-            ui->thetaButton->setStyleSheet("QPushButton {border-image: url(:/icons/theta.png); background-color: white; border-radius: 40;}");
-            ui->deltaButton->setStyleSheet("QPushButton {border-image: url(:/icons/delta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->thetaButton, "white", "theta");
+            changeBackgroundColor(ui->deltaButton, "green", "delta");
             selectedSession--;
         break;
         //ALPHA IS LIT UP, WE WANT THETA LIT INSTEAD
         case 3:
-            ui->alphaButton->setStyleSheet("QPushButton {border-image: url(:/icons/alpha.png); background-color: white; border-radius: 40;}");
-            ui->thetaButton->setStyleSheet("QPushButton {border-image: url(:/icons/theta.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->alphaButton, "white", "alpha");
+            changeBackgroundColor(ui->thetaButton, "green", "theta");
             selectedSession--;
         break;
         //BETA IS LIT UP, WE WANT APLHA LIT INSTEAD
         case 4:
-            ui->betaButton->setStyleSheet("QPushButton {border-image: url(:/icons/beta.png); background-color: white; border-radius: 40;}");
-            ui->alphaButton->setStyleSheet("QPushButton {border-image: url(:/icons/alpha.png); background-color: green; border-radius: 40;}");
+            changeBackgroundColor(ui->betaButton, "white", "beta");
+            changeBackgroundColor(ui->alphaButton, "green", "alpha");
             selectedSession--;
+        break;
+    }
+}
+
+void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image) {
+    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: 40;}");
+}
+
+void MainWindow::cycleGroupButton() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    switch (selectedGroup) {
+        //20 IS LIT UP, WE WANT 45 LIT INSTEAD
+        case 1:
+            changeBackgroundColor(ui->group20Button, "white", "20");
+            changeBackgroundColor(ui->group45Button, "green", "45");
+            selectedGroup++;
+        break;
+        //45 IS LIT UP, WE WANT USER LIT INSTEAD
+        case 2:
+            changeBackgroundColor(ui->group45Button, "white", "45");
+            changeBackgroundColor(ui->groupUserButton, "green", "user");
+            selectedGroup++;
+        break;
+        //USER IS LIT UP, WE WANT 20 LIT INSTEAD
+        case 3:
+            changeBackgroundColor(ui->groupUserButton, "white", "user");
+            changeBackgroundColor(ui->group20Button, "green", "20");
+            selectedGroup = 1;
         break;
     }
 }
