@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[11];
-    char stringdata0[181];
+    QByteArrayData data[7];
+    char stringdata0[88];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -46,7 +46,7 @@ QT_MOC_LITERAL(10, 155, 25) // "printHistoryButtonClicked"
     },
     "MainWindow\0pressPower\0\0powerReleased\0"
     "pressUpArrow\0pressDownArrow\0"
-    "changeConnectionSlider\0changeBatterySlider\0"
+    "changeConnectionSlider\0"
     "addUserButtonClicked\0addRecordingButtonClicked\0"
     "printHistoryButtonClicked"
 };
@@ -85,7 +85,6 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
 
        0        // eod
 };
@@ -101,7 +100,6 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 2: _t->pressUpArrow(); break;
         case 3: _t->pressDownArrow(); break;
         case 4: _t->changeConnectionSlider(); break;
-        case 5: _t->changeBatterySlider(); break;
         case 6: _t->addUserButtonClicked(); break;
         case 7: _t->addRecordingButtonClicked(); break;
         case 8: _t->printHistoryButtonClicked(); break;
