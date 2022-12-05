@@ -7,11 +7,14 @@ using namespace std;
 
 class Group : public Widget {
     public:
-        Group(DeviceMediator* device, const string& name);
+        Group(DeviceMediator* device, const string& name, int lengthMS);
         ~Group();
+
+        int getLengthMS();
 
     private:
         string groupName;
+        int lengthMS;
 };
 
 #endif // GROUP_H

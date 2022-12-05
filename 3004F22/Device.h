@@ -20,6 +20,7 @@ class Device : public DeviceMediator {
         virtual void WidgetChanged(Widget*, const string& widgetName);
 
         void powerOn();
+        void setSoftPower(bool value);
         void powerOff();
 
         Battery* getBattery();
@@ -29,7 +30,17 @@ class Device : public DeviceMediator {
 
         Light* getPowerLight();
 
+        Group* getGroups(int groupNum);
+        Session* getSessions(int groupNum, int sessionNum);
+
         bool getIsPoweredOn();
+        bool getIsSoftPoweredOn();
+        bool getIsInSession();
+        void setIsInSession(bool status);
+
+        int getCurrentIntensity();
+        void setCurrentIntensity(int intensity);
+
     private:
         string deviceName;
 
@@ -47,6 +58,7 @@ class Device : public DeviceMediator {
         int currentIntensity;
 
         bool isPowered;
+        bool isSoftPowered;
         bool inSession;
 };
 
