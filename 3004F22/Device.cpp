@@ -10,15 +10,15 @@ Device::Device(const string& name): deviceName(name), isPowered(false), inSessio
     powerLight = new Light(this, "powerLight");
 
     // Group and Sessions initialization
-    groupTypes[0] = new Group(this, "20min");
-    groupTypes[1] = new Group(this, "45min");
-    groupTypes[2] = new Group(this, "userDesignated");
+    groupTypes[0] = new Group(this, "20min", 4000);
+    groupTypes[1] = new Group(this, "45min", 8500);
+    groupTypes[2] = new Group(this, "userDesignated", 5000);
 
     for(int i=0; i<3; i++){
-        sessionTypes[i][0] = new Session(this, "delta");
-        sessionTypes[i][1] = new Session(this, "theta");
-        sessionTypes[i][2] = new Session(this, "alpha");
-        sessionTypes[i][3] = new Session(this, "beta");
+        sessionTypes[i][0] = new Session(this, "delta", 5);
+        sessionTypes[i][1] = new Session(this, "theta", 8);
+        sessionTypes[i][2] = new Session(this, "alpha", 11);
+        sessionTypes[i][3] = new Session(this, "beta", 15);
     }
 }
 
@@ -69,6 +69,7 @@ void Device::powerOff(){
                 break;
             }
         }
+        inSession=false;
     }
     powerLight->setIsLightOn(false);
     isPowered = false;
@@ -85,6 +86,18 @@ Button* Device::getDownArrowButton(){ return this->downArrowButton; }
 
 Light* Device::getPowerLight(){ return this->powerLight; }
 
+Group* Device::getGroups(int groupNum){ return this->groupTypes[groupNum]; }
+
+Session* Device::getSessions(int groupNum, int sessionNum){ return this->sessionTypes[groupNum][sessionNum]; }
+
 bool Device::getIsPoweredOn(){ return this->isPowered; }
 
 bool Device::getIsSoftPoweredOn(){ return this->isSoftPowered; }
+
+bool Device::getIsInSession(){ return this->inSession; }
+
+void Device::setIsInSession(bool status){ this->inSession = status; }
+
+int Device::getCurrentIntensity(){ return this->currentIntensity; }
+
+void Device::setCurrentIntensity(int intensity){ this->currentIntensity = intensity; }

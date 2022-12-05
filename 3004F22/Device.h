@@ -30,8 +30,17 @@ class Device : public DeviceMediator {
 
         Light* getPowerLight();
 
+        Group* getGroups(int groupNum);
+        Session* getSessions(int groupNum, int sessionNum);
+
         bool getIsPoweredOn();
         bool getIsSoftPoweredOn();
+        bool getIsInSession();
+        void setIsInSession(bool status);
+
+        int getCurrentIntensity();
+        void setCurrentIntensity(int intensity);
+
     private:
         string deviceName;
 

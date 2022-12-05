@@ -37,9 +37,9 @@ public:
     QPushButton *deltaButton;
     QPushButton *betaButton;
     QPushButton *thetaButton;
-    QPushButton *group20Button;
-    QPushButton *group45Button;
-    QPushButton *groupUserButton;
+    QPushButton *pushButton_7;
+    QPushButton *pushButton_8;
+    QPushButton *pushButton_9;
     QPushButton *pushButton_10;
     QSlider *connectionSlider;
     QLabel *label;
@@ -131,26 +131,26 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        group20Button = new QPushButton(centralwidget);
-        group20Button->setObjectName(QString::fromUtf8("group20Button"));
-        group20Button->setGeometry(QRect(170, 20, 81, 81));
-        group20Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_7 = new QPushButton(centralwidget);
+        pushButton_7->setObjectName(QString::fromUtf8("pushButton_7"));
+        pushButton_7->setGeometry(QRect(170, 20, 81, 81));
+        pushButton_7->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/20.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        group45Button = new QPushButton(centralwidget);
-        group45Button->setObjectName(QString::fromUtf8("group45Button"));
-        group45Button->setGeometry(QRect(290, 20, 81, 81));
-        group45Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_8 = new QPushButton(centralwidget);
+        pushButton_8->setObjectName(QString::fromUtf8("pushButton_8"));
+        pushButton_8->setGeometry(QRect(290, 20, 81, 81));
+        pushButton_8->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/45.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        groupUserButton = new QPushButton(centralwidget);
-        groupUserButton->setObjectName(QString::fromUtf8("groupUserButton"));
-        groupUserButton->setGeometry(QRect(400, 20, 81, 81));
-        groupUserButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        pushButton_9 = new QPushButton(centralwidget);
+        pushButton_9->setObjectName(QString::fromUtf8("pushButton_9"));
+        pushButton_9->setGeometry(QRect(400, 20, 81, 81));
+        pushButton_9->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/user.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
@@ -239,9 +239,9 @@ public:
         deltaButton->setText(QString());
         betaButton->setText(QString());
         thetaButton->setText(QString());
-        group20Button->setText(QString());
-        group45Button->setText(QString());
-        groupUserButton->setText(QString());
+        pushButton_7->setText(QString());
+        pushButton_8->setText(QString());
+        pushButton_9->setText(QString());
         pushButton_10->setText(QString());
         label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Battery Level", nullptr));

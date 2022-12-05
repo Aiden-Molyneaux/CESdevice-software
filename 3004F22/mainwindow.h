@@ -33,22 +33,31 @@ class MainWindow : public QMainWindow {
         int connectionIntensity = 1;
 
         QElapsedTimer blinkTimer;
+        QElapsedTimer elapsedTimer;
+        QElapsedTimer therapyTimer;
 
         void changeTextColor(QTextBrowser *text, QColor color);
         void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
         void blinkTopSection();
         void blinkBattery();
+        void blinkSession(int sessionNum);
         void sleepy(int sleepTime);
         void cycleGroupButton();
         void turnOff();
-        QElapsedTimer elapsedTimer;
+
+        void therapy(int groupNum, int sessionNum);
+        void drainBattery();
+        bool checkBattery();
 
     private slots:
         void pressPower();
         void powerReleased();
         void pressUpArrow();
         void pressDownArrow();
+        void pressSelect();
         void changeConnectionSlider();
         void changeBatterySlider();
+        void connectEarClips();
+        void disconnectEarClips();
 };
 #endif // MAINWINDOW_H
