@@ -59,5 +59,8 @@ class MainWindow : public QMainWindow {
         void changeBatterySlider();
         void connectEarClips();
         void disconnectEarClips();
+        void addUserButtonClicked();
+        void addRecordingButtonClicked();
+        void printHistoryButtonClicked();
 };
 #endif // MAINWINDOW_H

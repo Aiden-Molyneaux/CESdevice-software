@@ -75,6 +75,22 @@ void Device::powerOff(){
     isPowered = false;
 }
 
+int Device::addUser(const string& name, int intensity) {
+    if (numUsers == 5) { return -1; }
+
+    users[numUsers] = new User(this, name, intensity);
+    numUsers++;
+    return numUsers;
+}
+
+int Device::addRecording(const string& name) {
+    if (numRecordings == 100) { return -1; }
+
+    recordings[numRecordings] = new Recording(this, name);
+    numRecordings++;
+    return numRecordings;
+}
+
 // GETTERS AND SETTERS
 Battery* Device::getBattery(){ return this->battery; }
 
@@ -101,3 +117,7 @@ void Device::setIsInSession(bool status){ this->inSession = status; }
 int Device::getCurrentIntensity(){ return this->currentIntensity; }
 
 void Device::setCurrentIntensity(int intensity){ this->currentIntensity = intensity; }
+
+Recording* Device::getRecordingAt(int index) { return this->recordings[index]; }
+
+int Device::getNumRecordings() { return this->numRecordings; }

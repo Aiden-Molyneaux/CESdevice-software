@@ -57,7 +57,9 @@ SOURCES       = ../3004F22/Battery.cpp \
 		../3004F22/Device.cpp \
 		../3004F22/Group.cpp \
 		../3004F22/Light.cpp \
+		../3004F22/Recording.cpp \
 		../3004F22/Session.cpp \
+		../3004F22/User.cpp \
 		../3004F22/Widget.cpp \
 		../3004F22/main.cpp \
 		../3004F22/mainwindow.cpp qrc_res.cpp \
@@ -67,7 +69,9 @@ OBJECTS       = Battery.o \
 		Device.o \
 		Group.o \
 		Light.o \
+		Recording.o \
 		Session.o \
+		User.o \
 		Widget.o \
 		main.o \
 		mainwindow.o \
@@ -155,14 +159,18 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../3004F22/DeviceMediator.h \
 		../3004F22/Group.h \
 		../3004F22/Light.h \
+		../3004F22/Recording.h \
 		../3004F22/Session.h \
+		../3004F22/User.h \
 		../3004F22/Widget.h \
 		../3004F22/mainwindow.h ../3004F22/Battery.cpp \
 		../3004F22/Button.cpp \
 		../3004F22/Device.cpp \
 		../3004F22/Group.cpp \
 		../3004F22/Light.cpp \
+		../3004F22/Recording.cpp \
 		../3004F22/Session.cpp \
+		../3004F22/User.cpp \
 		../3004F22/Widget.cpp \
 		../3004F22/main.cpp \
 		../3004F22/mainwindow.cpp
@@ -350,8 +358,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../3004F22/res.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../3004F22/Battery.h ../3004F22/Button.h ../3004F22/Device.h ../3004F22/DeviceMediator.h ../3004F22/Group.h ../3004F22/Light.h ../3004F22/Session.h ../3004F22/Widget.h ../3004F22/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../3004F22/Battery.cpp ../3004F22/Button.cpp ../3004F22/Device.cpp ../3004F22/Group.cpp ../3004F22/Light.cpp ../3004F22/Session.cpp ../3004F22/Widget.cpp ../3004F22/main.cpp ../3004F22/mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../3004F22/Battery.h ../3004F22/Button.h ../3004F22/Device.h ../3004F22/DeviceMediator.h ../3004F22/Group.h ../3004F22/Light.h ../3004F22/Recording.h ../3004F22/Session.h ../3004F22/User.h ../3004F22/Widget.h ../3004F22/mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../3004F22/Battery.cpp ../3004F22/Button.cpp ../3004F22/Device.cpp ../3004F22/Group.cpp ../3004F22/Light.cpp ../3004F22/Recording.cpp ../3004F22/Session.cpp ../3004F22/User.cpp ../3004F22/Widget.cpp ../3004F22/main.cpp ../3004F22/mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../3004F22/mainwindow.ui $(DISTDIR)/
 
 
@@ -413,6 +421,8 @@ moc_mainwindow.cpp: ../3004F22/mainwindow.h \
 		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h \
+		../3004F22/User.h \
+		../3004F22/Recording.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /media/sf_3004/GP/3004F22/build-3004F22-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/media/sf_3004/GP/3004F22/3004F22 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../3004F22/mainwindow.h -o moc_mainwindow.cpp
@@ -455,7 +465,9 @@ Device.o: ../3004F22/Device.cpp ../3004F22/Device.h \
 		../3004F22/Light.h \
 		../3004F22/Battery.h \
 		../3004F22/Group.h \
-		../3004F22/Session.h
+		../3004F22/Session.h \
+		../3004F22/User.h \
+		../3004F22/Recording.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Device.o ../3004F22/Device.cpp
 
 Group.o: ../3004F22/Group.cpp ../3004F22/Group.h \
@@ -468,10 +480,20 @@ Light.o: ../3004F22/Light.cpp ../3004F22/Light.h \
 		../3004F22/DeviceMediator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Light.o ../3004F22/Light.cpp
 
+Recording.o: ../3004F22/Recording.cpp ../3004F22/Recording.h \
+		../3004F22/Widget.h \
+		../3004F22/DeviceMediator.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Recording.o ../3004F22/Recording.cpp
+
 Session.o: ../3004F22/Session.cpp ../3004F22/Session.h \
 		../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Session.o ../3004F22/Session.cpp
+
+User.o: ../3004F22/User.cpp ../3004F22/User.h \
+		../3004F22/Widget.h \
+		../3004F22/DeviceMediator.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o User.o ../3004F22/User.cpp
 
 Widget.o: ../3004F22/Widget.cpp ../3004F22/Widget.h \
 		../3004F22/DeviceMediator.h
@@ -485,7 +507,9 @@ main.o: ../3004F22/main.cpp ../3004F22/mainwindow.h \
 		../3004F22/Light.h \
 		../3004F22/Battery.h \
 		../3004F22/Group.h \
-		../3004F22/Session.h
+		../3004F22/Session.h \
+		../3004F22/User.h \
+		../3004F22/Recording.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../3004F22/main.cpp
 
 mainwindow.o: ../3004F22/mainwindow.cpp ../3004F22/mainwindow.h \
@@ -497,6 +521,8 @@ mainwindow.o: ../3004F22/mainwindow.cpp ../3004F22/mainwindow.h \
 		../3004F22/Battery.h \
 		../3004F22/Group.h \
 		../3004F22/Session.h \
+		../3004F22/User.h \
+		../3004F22/Recording.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../3004F22/mainwindow.cpp
 

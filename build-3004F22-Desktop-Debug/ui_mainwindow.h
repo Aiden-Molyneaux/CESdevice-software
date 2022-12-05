@@ -11,11 +11,15 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QWidget>
@@ -41,14 +45,28 @@ public:
     QPushButton *pushButton_8;
     QPushButton *pushButton_9;
     QPushButton *pushButton_10;
-    QSlider *connectionSlider;
-    QLabel *label;
     QTextBrowser *batteryLevel1;
     QTextBrowser *batteryLevel2;
     QTextBrowser *batteryLevel3;
+    QGroupBox *groupBox;
+    QGroupBox *groupBox_2;
     QTextBrowser *log;
+    QLabel *label_3;
+    QSlider *connectionSlider;
+    QLabel *label;
     QSlider *batterySlider;
     QLabel *label_2;
+    QGroupBox *groupBox_3;
+    QPushButton *addUserButton;
+    QPlainTextEdit *userNameInput;
+    QLabel *label_4;
+    QPlainTextEdit *userIntensityInput;
+    QLabel *label_5;
+    QComboBox *nameComboBox;
+    QPushButton *printHistoryButton;
+    QSpinBox *historySpinBox;
+    QPushButton *playReplayButton;
+    QPushButton *addFakeRecordingButton;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -56,7 +74,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(800, 600);
+        MainWindow->resize(1599, 590);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         powerButton = new QPushButton(centralwidget);
@@ -163,15 +181,6 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        connectionSlider = new QSlider(centralwidget);
-        connectionSlider->setObjectName(QString::fromUtf8("connectionSlider"));
-        connectionSlider->setGeometry(QRect(460, 290, 160, 16));
-        connectionSlider->setMinimum(1);
-        connectionSlider->setMaximum(3);
-        connectionSlider->setOrientation(Qt::Horizontal);
-        label = new QLabel(centralwidget);
-        label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(500, 270, 81, 20));
         batteryLevel1 = new QTextBrowser(centralwidget);
         batteryLevel1->setObjectName(QString::fromUtf8("batteryLevel1"));
         batteryLevel1->setGeometry(QRect(750, 70, 31, 31));
@@ -181,23 +190,94 @@ public:
         batteryLevel3 = new QTextBrowser(centralwidget);
         batteryLevel3->setObjectName(QString::fromUtf8("batteryLevel3"));
         batteryLevel3->setGeometry(QRect(750, 10, 31, 31));
-        log = new QTextBrowser(centralwidget);
+        groupBox = new QGroupBox(centralwidget);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setGeometry(QRect(19, -21, 781, 581));
+        groupBox_2 = new QGroupBox(centralwidget);
+        groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
+        groupBox_2->setGeometry(QRect(820, -20, 771, 571));
+        log = new QTextBrowser(groupBox_2);
         log->setObjectName(QString::fromUtf8("log"));
-        log->setGeometry(QRect(530, 170, 256, 91));
-        batterySlider = new QSlider(centralwidget);
+        log->setGeometry(QRect(10, 70, 256, 291));
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setGeometry(QRect(100, 50, 81, 20));
+        connectionSlider = new QSlider(groupBox_2);
+        connectionSlider->setObjectName(QString::fromUtf8("connectionSlider"));
+        connectionSlider->setGeometry(QRect(60, 410, 160, 16));
+        connectionSlider->setMinimum(1);
+        connectionSlider->setMaximum(3);
+        connectionSlider->setOrientation(Qt::Horizontal);
+        label = new QLabel(groupBox_2);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(100, 390, 81, 20));
+        batterySlider = new QSlider(groupBox_2);
         batterySlider->setObjectName(QString::fromUtf8("batterySlider"));
-        batterySlider->setGeometry(QRect(460, 330, 160, 16));
+        batterySlider->setGeometry(QRect(60, 460, 160, 16));
         batterySlider->setMinimum(0);
         batterySlider->setMaximum(100);
         batterySlider->setValue(100);
         batterySlider->setOrientation(Qt::Horizontal);
-        label_2 = new QLabel(centralwidget);
+        label_2 = new QLabel(groupBox_2);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(500, 310, 81, 20));
+        label_2->setGeometry(QRect(90, 440, 81, 20));
+        groupBox_3 = new QGroupBox(groupBox_2);
+        groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
+        groupBox_3->setGeometry(QRect(280, 70, 441, 191));
+        addUserButton = new QPushButton(groupBox_3);
+        addUserButton->setObjectName(QString::fromUtf8("addUserButton"));
+        addUserButton->setGeometry(QRect(90, 90, 80, 25));
+        userNameInput = new QPlainTextEdit(groupBox_3);
+        userNameInput->setObjectName(QString::fromUtf8("userNameInput"));
+        userNameInput->setGeometry(QRect(30, 40, 104, 41));
+        label_4 = new QLabel(groupBox_3);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setGeometry(QRect(60, 20, 54, 17));
+        userIntensityInput = new QPlainTextEdit(groupBox_3);
+        userIntensityInput->setObjectName(QString::fromUtf8("userIntensityInput"));
+        userIntensityInput->setGeometry(QRect(140, 40, 104, 41));
+        label_5 = new QLabel(groupBox_3);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setGeometry(QRect(160, 20, 54, 17));
+        nameComboBox = new QComboBox(groupBox_3);
+        nameComboBox->setObjectName(QString::fromUtf8("nameComboBox"));
+        nameComboBox->setGeometry(QRect(280, 40, 72, 25));
+        printHistoryButton = new QPushButton(groupBox_3);
+        printHistoryButton->setObjectName(QString::fromUtf8("printHistoryButton"));
+        printHistoryButton->setGeometry(QRect(350, 40, 80, 25));
+        historySpinBox = new QSpinBox(groupBox_3);
+        historySpinBox->setObjectName(QString::fromUtf8("historySpinBox"));
+        historySpinBox->setGeometry(QRect(290, 80, 45, 26));
+        playReplayButton = new QPushButton(groupBox_3);
+        playReplayButton->setObjectName(QString::fromUtf8("playReplayButton"));
+        playReplayButton->setGeometry(QRect(350, 80, 80, 25));
+        addFakeRecordingButton = new QPushButton(groupBox_3);
+        addFakeRecordingButton->setObjectName(QString::fromUtf8("addFakeRecordingButton"));
+        addFakeRecordingButton->setGeometry(QRect(279, 140, 111, 25));
         MainWindow->setCentralWidget(centralwidget);
+        groupBox->raise();
+        powerButton->raise();
+        downArrowButton->raise();
+        upArrowButton->raise();
+        checkButton->raise();
+        connectionBottom->raise();
+        connectionMiddle->raise();
+        connectionTop->raise();
+        alphaButton->raise();
+        deltaButton->raise();
+        betaButton->raise();
+        thetaButton->raise();
+        group20Button->raise();
+        group45Button->raise();
+        groupUserButton->raise();
+        pushButton_10->raise();
+        batteryLevel1->raise();
+        batteryLevel2->raise();
+        batteryLevel3->raise();
+        groupBox_2->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 22));
+        menubar->setGeometry(QRect(0, 0, 1599, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -243,8 +323,18 @@ public:
         pushButton_8->setText(QString());
         pushButton_9->setText(QString());
         pushButton_10->setText(QString());
+        groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "CONSOLE", nullptr));
         label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Battery Level", nullptr));
+        groupBox_3->setTitle(QApplication::translate("MainWindow", "USER STUFF", nullptr));
+        addUserButton->setText(QApplication::translate("MainWindow", "Add User", nullptr));
+        label_4->setText(QApplication::translate("MainWindow", "Name", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "Intensity", nullptr));
+        printHistoryButton->setText(QApplication::translate("MainWindow", "Print history", nullptr));
+        playReplayButton->setText(QApplication::translate("MainWindow", "Play replay", nullptr));
+        addFakeRecordingButton->setText(QApplication::translate("MainWindow", "add fake recording", nullptr));
     } // retranslateUi
 
 };

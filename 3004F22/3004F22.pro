@@ -21,7 +21,9 @@ SOURCES += \
     Device.cpp \
     Group.cpp \
     Light.cpp \
+    Recording.cpp \
     Session.cpp \
+    User.cpp \
     Widget.cpp \
     main.cpp \
     mainwindow.cpp
@@ -33,7 +35,9 @@ HEADERS += \
     DeviceMediator.h \
     Group.h \
     Light.h \
+    Recording.h \
     Session.h \
+    User.h \
     Widget.h \
     mainwindow.h
 
