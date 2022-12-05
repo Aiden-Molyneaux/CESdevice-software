@@ -7,3 +7,7 @@ Battery::~Battery(){ delete this; }
 int Battery::getBatteryLevel(){ return this->batteryLevel; }
 
 void Battery::setBatteryLevel(int newBatteryLevel){ this->batteryLevel = newBatteryLevel; }
+
+void Battery::setBlinkFlag(bool flag) { this->blinkFlag = flag; }
+
+bool Battery::getBlinkFlag() { return this->blinkFlag; }

@@ -20,6 +20,7 @@ class Device : public DeviceMediator {
         virtual void WidgetChanged(Widget*, const string& widgetName);
 
         void powerOn();
+        void setSoftPower(bool value);
         void powerOff();
 
         Battery* getBattery();
@@ -30,6 +31,7 @@ class Device : public DeviceMediator {
         Light* getPowerLight();
 
         bool getIsPoweredOn();
+        bool getIsSoftPoweredOn();
     private:
         string deviceName;
 
@@ -47,6 +49,7 @@ class Device : public DeviceMediator {
         int currentIntensity;
 
         bool isPowered;
+        bool isSoftPowered;
         bool inSession;
 };
 
