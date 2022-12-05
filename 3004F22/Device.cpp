@@ -75,18 +75,18 @@ void Device::powerOff(){
     isPowered = false;
 }
 
-int Device::addUser(const string& name, int intensity) {
+int Device::addUser(const string& name, int duration) {
     if (numUsers == 5) { return -1; }
 
-    users[numUsers] = new User(this, name, intensity);
+    users[numUsers] = new User(this, name, duration);
     numUsers++;
     return numUsers;
 }
 
-int Device::addRecording(const string& name) {
+int Device::addRecording(const string& name, int intensity, int group, int batteryPercent) {
     if (numRecordings == 100) { return -1; }
 
-    recordings[numRecordings] = new Recording(this, name);
+    recordings[numRecordings] = new Recording(this, name, intensity, group, batteryPercent);
     numRecordings++;
     return numRecordings;
 }
@@ -121,3 +121,12 @@ void Device::setCurrentIntensity(int intensity){ this->currentIntensity = intens
 Recording* Device::getRecordingAt(int index) { return this->recordings[index]; }
 
 int Device::getNumRecordings() { return this->numRecordings; }
+
+User* Device::getUserByName(const string& name) {
+    for (int i = 0; i < numUsers; i++) {
+        if (users[i]->getName() == name) {
+            return users[i];
+        }
+    }
+    return NULL;
+}

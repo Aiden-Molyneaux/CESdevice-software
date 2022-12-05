@@ -185,6 +185,8 @@ void MainWindow::pressSelect(){
 }
 
 void MainWindow::therapy(int groupNum, int sessionNum){
+    if (ui->recordSessionRadioButton->isChecked()) { addRecordingButtonClicked(); }
+
     // Initial check to see if Battery needs to be replaced
     if(!checkBattery()){
         ui->log->append("Battery level too low. Replace Batteries");
@@ -282,7 +284,6 @@ void MainWindow::cycleGroupButton() {
 
 void MainWindow::changeConnectionSlider() {
     if (!device->getIsPoweredOn()) {return;}
-
     connectionIntensity = ui->connectionSlider->value();
 
     switch (connectionIntensity) {
@@ -405,11 +406,21 @@ void MainWindow::disconnectEarClips(){
 }
 
 void MainWindow::addUserButtonClicked() {
-    string name = ui->userNameInput->toPlainText().toStdString();
-    int intensity = ui->userIntensityInput->toPlainText().toInt();
+    if (!device->getIsPoweredOn()) {return;}
 
-    if (device->addUser(name, intensity) == -1) {
-        ui->log->append("**COULD NOT ADD USER**");
+    string name = ui->userNameInput->toPlainText().toStdString();
+    int duration = ui->userDurationInput->toPlainText().toInt();
+
+    if (device->getUserByName(name)) {
+        ui->log->append("**USER " + QString::fromStdString(name) + " ALREADY EXISTS**");
+        return;
+    }
+
+    if (name == "" || duration == 0) {
+        ui->log->append("**COULD NOT ADD USER - BAD INPUT**");
+        return;
+    } else if (device->addUser(name, duration) == -1) {
+        ui->log->append("**COULD NOT ADD USER - MAX USERS**");
         return;
     } else {
         ui->log->append("**ADDED USER " + QString::fromStdString(name) + "**");
@@ -419,9 +430,13 @@ void MainWindow::addUserButtonClicked() {
 }
 
 void MainWindow::addRecordingButtonClicked() {
-    string name = ui->nameComboBox->currentText().toStdString();
 
-    if (device->addRecording(name) == -1) {
+    string name = ui->nameComboBox->currentText().toStdString();
+    int group = selectedGroup;
+    int batteryPercent = device->getBattery()->getBatteryLevel();
+    int intensity = device->getSessions(group-1, selectedSession-1)->getIntensity();
+
+    if (device->addRecording(name, intensity, group, batteryPercent) == -1) {
         ui->log->append("**COULD NOT ADD RECORDING**");
         return;
     } else {
@@ -437,9 +452,22 @@ void MainWindow::printHistoryButtonClicked() {
         Recording* recording = device->getRecordingAt(i);
         if (recording->getName() == name) {
             if (numRecordings == 0) {ui->historySpinBox->setMinimum(1);}
-
             numRecordings++;
-            ui->log->append(QString::number(numRecordings) + ". **RECORDING INFORMATION**");
+
+            int intensity = recording->getIntensity();
+            int group = recording->getGroup();
+            int duration;
+
+            switch (group) {
+                case 1: duration = 20;
+                break;
+                case 2: duration = 45;
+                break;
+                case 3: duration = device->getUserByName(name)->getDuration();
+                break;
+            }
+
+            ui->log->append(QString::number(numRecordings) + ".\t INTENSITY: " + QString::number(intensity) + "\n\t DURATION: " + QString::number(duration));
         }
     }
     ui->historySpinBox->setMaximum(numRecordings);

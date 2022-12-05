@@ -235,7 +235,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="group20Button">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -255,7 +255,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="group45Button">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -275,7 +275,7 @@ p, li { white-space: pre-wrap; }
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_9">
+   <widget class="QPushButton" name="groupUserButton">
     <property name="geometry">
      <rect>
       <x>400</x>
@@ -508,7 +508,7 @@ p, li { white-space: pre-wrap; }
        <string>Name</string>
       </property>
      </widget>
-     <widget class="QPlainTextEdit" name="userIntensityInput">
+     <widget class="QPlainTextEdit" name="userDurationInput">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -528,7 +528,7 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>Intensity</string>
+       <string>Duration</string>
       </property>
      </widget>
      <widget class="QComboBox" name="nameComboBox">
@@ -590,9 +590,52 @@ p, li { white-space: pre-wrap; }
        <string>add fake recording</string>
       </property>
      </widget>
+     <widget class="QRadioButton" name="recordSessionRadioButton">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>140</y>
+        <width>131</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Record next session</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QPushButton" name="connectEarclipsButton">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>320</y>
+       <width>141</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>connect ear clips</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="disconnectEarclipsButton">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>360</y>
+       <width>141</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>disconnect ear clips</string>
+     </property>
     </widget>
    </widget>
+   <zorder>groupBox_2</zorder>
    <zorder>groupBox</zorder>
+   <zorder>group20Button</zorder>
+   <zorder>group45Button</zorder>
+   <zorder>groupUserButton</zorder>
    <zorder>powerButton</zorder>
    <zorder>downArrowButton</zorder>
    <zorder>upArrowButton</zorder>
@@ -604,14 +647,10 @@ p, li { white-space: pre-wrap; }
    <zorder>deltaButton</zorder>
    <zorder>betaButton</zorder>
    <zorder>thetaButton</zorder>
-   <zorder>group20Button</zorder>
-   <zorder>group45Button</zorder>
-   <zorder>groupUserButton</zorder>
    <zorder>pushButton_10</zorder>
    <zorder>batteryLevel1</zorder>
    <zorder>batteryLevel2</zorder>
    <zorder>batteryLevel3</zorder>
-   <zorder>groupBox_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

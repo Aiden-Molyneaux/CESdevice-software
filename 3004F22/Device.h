@@ -25,9 +25,10 @@ class Device : public DeviceMediator {
         void setSoftPower(bool value);
         void powerOff();
         int addUser(const string& name, int intensity);
-        int addRecording(const string& name);
+        int addRecording(const string& name, int intensity, int group, int batteryPercent);
         int getNumRecordings();
         Recording* getRecordingAt(int index);
+        User* getUserByName(const string& name);
 
         Battery* getBattery();
         Button* getPowerButton();
