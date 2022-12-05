@@ -12,8 +12,11 @@ class Battery : public Widget{
 
         int getBatteryLevel();
         void setBatteryLevel(int newBatteryLevel);
+        void setBlinkFlag(bool flag);
+        bool getBlinkFlag();
     private:
         int batteryLevel;
+        bool blinkFlag = false;
 };
 
 #endif // BATTERY_H

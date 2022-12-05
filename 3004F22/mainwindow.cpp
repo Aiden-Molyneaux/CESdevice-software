@@ -19,25 +19,90 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::powerReleased(){
-    if(elapsedTimer.elapsed()>=200){ // check if Power Button was held for 2 seconds
-        if(!device->getIsPoweredOn()){ // continue if DEVICE is OFF
+    if(elapsedTimer.elapsed() >= 200){ // check if Power Button was held for 2 seconds
+        if(!device->getIsPoweredOn() && !device->getIsSoftPoweredOn()){ // continue if DEVICE is OFF
             ui_initializeBattery();
-            if(device->getBattery()->getBatteryLevel()<33){
+            if(device->getBattery()->getBatteryLevel() < 33){
+                device->setSoftPower(true);
+                device->getBattery()->setBlinkFlag(true);
+
                 ui->log->append("Battery level too low. Replace Batteries");
                 blinkBattery();
                 return;
             }
+
             changeBackgroundColor(ui->deltaButton, "green", "delta");
             changeBackgroundColor(ui->group20Button, "green", "20");
-        }else{ // continue if DEVICE is ON
-
+        } else { // continue if DEVICE is ON - turn off
+            turnOff();
         }
 
         device->getPowerButton()->pressed();
         changeConnectionSlider();
-    }else{
+    } else {
         cycleGroupButton();
     }
+}
+
+void MainWindow::turnOff() {
+    device->setSoftPower(false);
+
+    //TURN OFF GROUP BUTTON
+    switch (selectedGroup) {
+        case 1:
+            changeBackgroundColor(ui->group20Button, "white", "20");
+        break;
+        case 2:
+            changeBackgroundColor(ui->group45Button, "white", "45");
+        break;
+        case 3:
+            changeBackgroundColor(ui->groupUserButton, "white", "user");
+        break;
+    }
+
+    //TURN OFF SESSION BUTTON
+    switch (selectedSession) {
+        case 1:
+            changeBackgroundColor(ui->deltaButton, "white", "delta");
+        break;
+        case 2:
+            changeBackgroundColor(ui->thetaButton, "white", "theta");
+        break;
+        case 3:
+            changeBackgroundColor(ui->alphaButton, "white", "alpha");
+        break;
+        case 4:
+            changeBackgroundColor(ui->betaButton, "white", "beta");
+        break;
+    }
+
+    //TURN OFF CONNECTION INDICATOR
+    switch (connectionIntensity) {
+        case 1:
+            changeTextColor(ui->connectionTop, "gray");
+        break;
+        case 2:
+            changeTextColor(ui->connectionMiddle, "gray");
+        break;
+        case 3:
+            changeTextColor(ui->connectionBottom, "gray");
+        break;
+    }
+
+    //QUICKLY BREAK WHILE LOOP IN blinkTopSection() IF IT IS BLINKING
+    if (connectionIntensity == 1) {
+        connectionIntensity = 2;
+    }
+
+    //QUICKLY BREAK WHILE LOOP IN blinkBattery() IF IT IS BLINKING
+    if (device->getBattery()->getBlinkFlag()) {
+        device->getBattery()->setBlinkFlag(false);
+    }
+
+    //TURN OFF BATERY INDICATORS
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+    ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
+    ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
 }
 
 void MainWindow::pressPower(){
@@ -184,12 +249,13 @@ void MainWindow::blinkTopSection() {
 }
 
 void MainWindow::blinkBattery(){
-    while (device->getBattery()->getBatteryLevel()<33) {
+    while (device->getBattery()->getBlinkFlag()) {
         ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
         sleepy(100);
         ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
         sleepy(100);
     }
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
 }
 
 void MainWindow::ui_initializeBattery(){

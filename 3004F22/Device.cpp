@@ -55,6 +55,10 @@ void Device::powerOn(){
     powerLight->setIsLightOn(true);
 }
 
+void Device::setSoftPower(bool value){
+    isSoftPowered = value;
+}
+
 void Device::powerOff(){
     // implement soft-off
     if(inSession){
@@ -82,3 +86,5 @@ Button* Device::getDownArrowButton(){ return this->downArrowButton; }
 Light* Device::getPowerLight(){ return this->powerLight; }
 
 bool Device::getIsPoweredOn(){ return this->isPowered; }
+
+bool Device::getIsSoftPoweredOn(){ return this->isSoftPowered; }

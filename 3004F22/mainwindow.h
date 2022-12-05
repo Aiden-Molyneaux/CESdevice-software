@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow {
         void blinkBattery();
         void sleepy(int sleepTime);
         void cycleGroupButton();
+        void turnOff();
         QElapsedTimer elapsedTimer;
 
     private slots:
