@@ -18,6 +18,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
@@ -41,9 +42,9 @@ public:
     QPushButton *deltaButton;
     QPushButton *betaButton;
     QPushButton *thetaButton;
-    QPushButton *pushButton_7;
-    QPushButton *pushButton_8;
-    QPushButton *pushButton_9;
+    QPushButton *group20Button;
+    QPushButton *group45Button;
+    QPushButton *groupUserButton;
     QPushButton *pushButton_10;
     QTextBrowser *batteryLevel1;
     QTextBrowser *batteryLevel2;
@@ -60,13 +61,16 @@ public:
     QPushButton *addUserButton;
     QPlainTextEdit *userNameInput;
     QLabel *label_4;
-    QPlainTextEdit *userIntensityInput;
+    QPlainTextEdit *userDurationInput;
     QLabel *label_5;
     QComboBox *nameComboBox;
     QPushButton *printHistoryButton;
     QSpinBox *historySpinBox;
     QPushButton *playReplayButton;
     QPushButton *addFakeRecordingButton;
+    QRadioButton *recordSessionRadioButton;
+    QPushButton *connectEarclipsButton;
+    QPushButton *disconnectEarclipsButton;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -149,26 +153,26 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_7 = new QPushButton(centralwidget);
-        pushButton_7->setObjectName(QString::fromUtf8("pushButton_7"));
-        pushButton_7->setGeometry(QRect(170, 20, 81, 81));
-        pushButton_7->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        group20Button = new QPushButton(centralwidget);
+        group20Button->setObjectName(QString::fromUtf8("group20Button"));
+        group20Button->setGeometry(QRect(170, 20, 81, 81));
+        group20Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/20.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_8 = new QPushButton(centralwidget);
-        pushButton_8->setObjectName(QString::fromUtf8("pushButton_8"));
-        pushButton_8->setGeometry(QRect(290, 20, 81, 81));
-        pushButton_8->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        group45Button = new QPushButton(centralwidget);
+        group45Button->setObjectName(QString::fromUtf8("group45Button"));
+        group45Button->setGeometry(QRect(290, 20, 81, 81));
+        group45Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/45.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_9 = new QPushButton(centralwidget);
-        pushButton_9->setObjectName(QString::fromUtf8("pushButton_9"));
-        pushButton_9->setGeometry(QRect(400, 20, 81, 81));
-        pushButton_9->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        groupUserButton = new QPushButton(centralwidget);
+        groupUserButton->setObjectName(QString::fromUtf8("groupUserButton"));
+        groupUserButton->setGeometry(QRect(400, 20, 81, 81));
+        groupUserButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/user.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
@@ -233,9 +237,9 @@ public:
         label_4 = new QLabel(groupBox_3);
         label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setGeometry(QRect(60, 20, 54, 17));
-        userIntensityInput = new QPlainTextEdit(groupBox_3);
-        userIntensityInput->setObjectName(QString::fromUtf8("userIntensityInput"));
-        userIntensityInput->setGeometry(QRect(140, 40, 104, 41));
+        userDurationInput = new QPlainTextEdit(groupBox_3);
+        userDurationInput->setObjectName(QString::fromUtf8("userDurationInput"));
+        userDurationInput->setGeometry(QRect(140, 40, 104, 41));
         label_5 = new QLabel(groupBox_3);
         label_5->setObjectName(QString::fromUtf8("label_5"));
         label_5->setGeometry(QRect(160, 20, 54, 17));
@@ -254,8 +258,21 @@ public:
         addFakeRecordingButton = new QPushButton(groupBox_3);
         addFakeRecordingButton->setObjectName(QString::fromUtf8("addFakeRecordingButton"));
         addFakeRecordingButton->setGeometry(QRect(279, 140, 111, 25));
+        recordSessionRadioButton = new QRadioButton(groupBox_3);
+        recordSessionRadioButton->setObjectName(QString::fromUtf8("recordSessionRadioButton"));
+        recordSessionRadioButton->setGeometry(QRect(50, 140, 131, 23));
+        connectEarclipsButton = new QPushButton(groupBox_2);
+        connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
+        connectEarclipsButton->setGeometry(QRect(320, 320, 141, 25));
+        disconnectEarclipsButton = new QPushButton(groupBox_2);
+        disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
+        disconnectEarclipsButton->setGeometry(QRect(320, 360, 141, 25));
         MainWindow->setCentralWidget(centralwidget);
+        groupBox_2->raise();
         groupBox->raise();
+        group20Button->raise();
+        group45Button->raise();
+        groupUserButton->raise();
         powerButton->raise();
         downArrowButton->raise();
         upArrowButton->raise();
@@ -267,14 +284,10 @@ public:
         deltaButton->raise();
         betaButton->raise();
         thetaButton->raise();
-        group20Button->raise();
-        group45Button->raise();
-        groupUserButton->raise();
         pushButton_10->raise();
         batteryLevel1->raise();
         batteryLevel2->raise();
         batteryLevel3->raise();
-        groupBox_2->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1599, 22));
@@ -319,9 +332,9 @@ public:
         deltaButton->setText(QString());
         betaButton->setText(QString());
         thetaButton->setText(QString());
-        pushButton_7->setText(QString());
-        pushButton_8->setText(QString());
-        pushButton_9->setText(QString());
+        group20Button->setText(QString());
+        group45Button->setText(QString());
+        groupUserButton->setText(QString());
         pushButton_10->setText(QString());
         groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
@@ -331,10 +344,13 @@ public:
         groupBox_3->setTitle(QApplication::translate("MainWindow", "USER STUFF", nullptr));
         addUserButton->setText(QApplication::translate("MainWindow", "Add User", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Name", nullptr));
-        label_5->setText(QApplication::translate("MainWindow", "Intensity", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "Duration", nullptr));
         printHistoryButton->setText(QApplication::translate("MainWindow", "Print history", nullptr));
         playReplayButton->setText(QApplication::translate("MainWindow", "Play replay", nullptr));
         addFakeRecordingButton->setText(QApplication::translate("MainWindow", "add fake recording", nullptr));
+        recordSessionRadioButton->setText(QApplication::translate("MainWindow", "Record next session", nullptr));
+        connectEarclipsButton->setText(QApplication::translate("MainWindow", "connect ear clips", nullptr));
+        disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "disconnect ear clips", nullptr));
     } // retranslateUi
 
 };
