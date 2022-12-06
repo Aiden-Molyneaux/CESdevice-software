@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->addUserButton, SIGNAL(released()), this, SLOT (addUserButtonClicked()));
     connect(ui->addFakeRecordingButton, SIGNAL(released()), this, SLOT (addRecordingButtonClicked()));
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
+    connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -180,11 +181,11 @@ void MainWindow::pressDownArrow(){
 }
 
 void MainWindow::pressSelect(){
-    therapy(selectedGroup, selectedSession);
+    therapy(selectedGroup, selectedSession, 0);
 }
 
-void MainWindow::therapy(int groupNum, int sessionNum){
-    if (ui->recordSessionRadioButton->isChecked()) { addRecordingButtonClicked(); }
+void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
+    if (ui->recordSessionRadioButton->isChecked() && !recordingFlag) { addRecordingButtonClicked(); }
 
     // Initial check to see if Battery needs to be replaced
     if(!checkBattery()){
@@ -495,7 +496,7 @@ void MainWindow::addRecordingButtonClicked() {
     int batteryPercent = device->getBattery()->getBatteryLevel();
     int intensity = device->getSessions(group-1, selectedSession-1)->getIntensity();
 
-    if (device->addRecording(name, intensity, group, batteryPercent) == -1) {
+    if (device->addRecording(name, intensity, group, batteryPercent, connectionIntensity) == -1) {
         ui->log->append("**COULD NOT ADD RECORDING**");
         return;
     } else {
@@ -540,3 +541,74 @@ void MainWindow::setConnectionLock(bool status){
 }
 
 
+
+void MainWindow::playReplayButtonClicked() {
+    int desiredNum = ui->historySpinBox->value();
+    if (desiredNum == 0) { return; }
+
+    string name = ui->nameComboBox->currentText().toStdString();
+    Recording* desiredRecording;
+
+    int counter = 0;
+    for (int i = 0; i < device->getNumRecordings(); i ++) {
+        if (device->getRecordingAt(i)->getName() == name) {
+            counter++;
+            if (counter == desiredNum) {
+                desiredRecording = device->getRecordingAt(i);
+            }
+        }
+    }
+    replayRecording(desiredRecording);
+}
+
+void MainWindow::replayRecording(Recording *recording) {
+    int group = recording->getGroup();
+    int intensity = recording->getIntensity();
+    int batteryPercent = recording->getBatteryPercent();
+    int connection = recording->getConnection();
+    int session;
+
+    switch (intensity) {
+        case 5: session = 1;
+        break;
+        case 8: session = 2;
+        break;
+        case 11: session = 3;
+        break;
+        case 15: session = 4;
+        break;
+    }
+
+    //GET TO PROPER GROUP BUTTON
+    while (group != selectedGroup) {
+        cycleGroupButton();
+        sleepy(200);
+    }
+
+    //GET TO PROPER SESSION BUTTON
+    while (session != selectedSession) {
+        pressUpArrow();
+        sleepy(200);
+    }
+
+    //SET CONNECTION AND SLIDER
+    connectionIntensity = connection;
+    ui->connectionSlider->setValue(connectionIntensity);
+    sleepy(200);
+
+    //SET BATTERY AND SLIDER
+    device->getBattery()->setBatteryLevel(batteryPercent);
+    while (ui->batterySlider->value() != batteryPercent) {
+        if (ui->batterySlider->value() < batteryPercent) {
+            ui->batterySlider->setValue(ui->batterySlider->value() + 1);
+            sleepy(10);
+        } else {
+            ui->batterySlider->setValue(ui->batterySlider->value() - 1);
+            sleepy(10);
+        }
+    }
+    ui_initializeBattery();
+
+    //START THERAPY
+    therapy(group, session, 1);
+}

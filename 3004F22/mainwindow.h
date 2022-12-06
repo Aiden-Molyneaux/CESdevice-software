@@ -45,7 +45,8 @@ class MainWindow : public QMainWindow {
         void cycleGroupButton();
         void turnOff();
 
-        void therapy(int groupNum, int sessionNum);
+        void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
+        void replayRecording(Recording* recording);
         void drainBattery();
         bool checkBattery();
         void setConnectionLock(bool status);
@@ -63,5 +64,6 @@ class MainWindow : public QMainWindow {
         void addUserButtonClicked();
         void addRecordingButtonClicked();
         void printHistoryButtonClicked();
+        void playReplayButtonClicked();
 };
 #endif // MAINWINDOW_H

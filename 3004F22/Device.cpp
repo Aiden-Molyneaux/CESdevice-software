@@ -83,10 +83,10 @@ int Device::addUser(const string& name, int duration) {
     return numUsers;
 }
 
-int Device::addRecording(const string& name, int intensity, int group, int batteryPercent) {
+int Device::addRecording(const string& name, int intensity, int group, int batteryPercent, int connection) {
     if (numRecordings == 100) { return -1; }
 
-    recordings[numRecordings] = new Recording(this, name, intensity, group, batteryPercent);
+    recordings[numRecordings] = new Recording(this, name, intensity, group, batteryPercent, connection);
     numRecordings++;
     return numRecordings;
 }
