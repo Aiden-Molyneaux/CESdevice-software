@@ -130,3 +130,7 @@ User* Device::getUserByName(const string& name) {
     }
     return NULL;
 }
+
+void Device::setFirstBoot(bool value) { this->firstBoot = value; }
+
+bool Device::getFirstBoot() { return this->firstBoot; }

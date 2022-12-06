@@ -46,7 +46,7 @@ public:
     QPushButton *group45Button;
     QPushButton *groupUserButton;
     QGroupBox *groupBox;
-    QPushButton *pushButton_10;
+    QPushButton *CESButton;
     QGroupBox *groupBox_4;
     QTextBrowser *batteryLevel1;
     QTextBrowser *batteryLevel2;
@@ -157,6 +157,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        thetaButton->setCheckable(false);
         group20Button = new QPushButton(centralwidget);
         group20Button->setObjectName(QString::fromUtf8("group20Button"));
         group20Button->setGeometry(QRect(170, 20, 81, 81));
@@ -165,6 +166,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        group20Button->setCheckable(false);
         group45Button = new QPushButton(centralwidget);
         group45Button->setObjectName(QString::fromUtf8("group45Button"));
         group45Button->setGeometry(QRect(290, 20, 81, 81));
@@ -173,6 +175,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        group45Button->setCheckable(false);
         groupUserButton = new QPushButton(centralwidget);
         groupUserButton->setObjectName(QString::fromUtf8("groupUserButton"));
         groupUserButton->setGeometry(QRect(400, 20, 81, 81));
@@ -185,10 +188,10 @@ public:
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(20, -20, 781, 581));
-        pushButton_10 = new QPushButton(groupBox);
-        pushButton_10->setObjectName(QString::fromUtf8("pushButton_10"));
-        pushButton_10->setGeometry(QRect(560, 40, 81, 81));
-        pushButton_10->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        CESButton = new QPushButton(groupBox);
+        CESButton->setObjectName(QString::fromUtf8("CESButton"));
+        CESButton->setGeometry(QRect(560, 40, 81, 81));
+        CESButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/CES.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
@@ -216,6 +219,7 @@ public:
         label_3->setGeometry(QRect(100, 50, 81, 20));
         connectionSlider = new QSlider(groupBox_2);
         connectionSlider->setObjectName(QString::fromUtf8("connectionSlider"));
+        connectionSlider->setEnabled(false);
         connectionSlider->setGeometry(QRect(60, 410, 160, 16));
         connectionSlider->setMinimum(1);
         connectionSlider->setMaximum(3);
@@ -271,22 +275,14 @@ public:
         recordSessionRadioButton->setGeometry(QRect(50, 140, 131, 23));
         connectEarclipsButton = new QPushButton(groupBox_2);
         connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
-        connectEarclipsButton->setGeometry(QRect(320, 320, 141, 25));
-        disconnectEarclipsButton = new QPushButton(groupBox_2);
-        disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
-        disconnectEarclipsButton->setGeometry(QRect(320, 360, 141, 25));
-        connectEarclipsButton = new QPushButton(groupBox_2);
-        connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
         connectEarclipsButton->setGeometry(QRect(280, 280, 121, 25));
         disconnectEarclipsButton = new QPushButton(groupBox_2);
         disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
         disconnectEarclipsButton->setGeometry(QRect(280, 310, 121, 25));
         MainWindow->setCentralWidget(centralwidget);
-        groupBox_2->raise();
-        groupBox->raise();
-        group20Button->raise();
         group45Button->raise();
         groupUserButton->raise();
+        groupBox->raise();
         powerButton->raise();
         downArrowButton->raise();
         upArrowButton->raise();
@@ -298,6 +294,8 @@ public:
         deltaButton->raise();
         betaButton->raise();
         thetaButton->raise();
+        group20Button->raise();
+        groupBox_2->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1599, 22));
@@ -345,9 +343,8 @@ public:
         group20Button->setText(QString());
         group45Button->setText(QString());
         groupUserButton->setText(QString());
-        pushButton_10->setText(QString());
         groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
-        pushButton_10->setText(QString());
+        CESButton->setText(QString());
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Battery", nullptr));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "CONSOLE", nullptr));
@@ -361,8 +358,6 @@ public:
         playReplayButton->setText(QApplication::translate("MainWindow", "Play replay", nullptr));
         addFakeRecordingButton->setText(QApplication::translate("MainWindow", "add fake recording", nullptr));
         recordSessionRadioButton->setText(QApplication::translate("MainWindow", "Record next session", nullptr));
-        connectEarclipsButton->setText(QApplication::translate("MainWindow", "connect ear clips", nullptr));
-        disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "disconnect ear clips", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
     } // retranslateUi

@@ -31,6 +31,12 @@ MainWindow::~MainWindow() {
 void MainWindow::powerReleased(){
     if(elapsedTimer.elapsed() >= 200){ // check if Power Button was held for 2 seconds
         if(!device->getIsPoweredOn() && !device->getIsSoftPoweredOn()){ // continue if DEVICE is OFF
+            if (device->getFirstBoot()) {
+                ui->connectionSlider->setEnabled(true);
+                bootConnectionTest();
+                device->setFirstBoot(false);
+            }
+
             ui_initializeBattery();
             if(device->getBattery()->getBatteryLevel() < 33){
                 device->setSoftPower(true);
@@ -44,6 +50,12 @@ void MainWindow::powerReleased(){
             changeBackgroundColor(ui->group20Button, "green", "20");
         } else { // continue if DEVICE is ON - turn off
             turnOff();
+
+            //ENSURE BOOT CONNECTION TEST
+            device->setFirstBoot(true);
+            ui->connectionSlider->setValue(1);
+            connectionIntensity = 1;
+            ui->connectionSlider->setEnabled(false);
         }
 
         device->getPowerButton()->pressed();
@@ -320,8 +332,8 @@ void MainWindow::cycleGroupButton() {
 }
 
 void MainWindow::changeConnectionSlider() {
-    if (!device->getIsPoweredOn()) {return;}
     connectionIntensity = ui->connectionSlider->value();
+    if (!device->getIsPoweredOn()) {return;}
 
     switch (connectionIntensity) {
         //NO CONNECTION - TOP SECTION BLINKS
@@ -396,6 +408,15 @@ void MainWindow::connectionTest() {
     changeTextColor(ui->connectionBottom, "gray");
     ui->log->append("Please connect now.");
     setConnectionLock(true); // unlock the UI connection components
+}
+
+void MainWindow::bootConnectionTest() {
+    while (connectionIntensity == 1) {
+        changeBackgroundColor(ui->CESButton, "green", "CES");
+        sleepy(100);
+        changeBackgroundColor(ui->CESButton, "white", "CES");
+        sleepy(100);
+    }
 }
 
 void MainWindow::blinkBattery(){
