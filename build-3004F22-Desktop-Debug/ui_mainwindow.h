@@ -72,8 +72,6 @@ public:
     QRadioButton *recordSessionRadioButton;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
-    QPushButton *connectEarclipsButton;
-    QPushButton *disconnectEarclipsButton;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
