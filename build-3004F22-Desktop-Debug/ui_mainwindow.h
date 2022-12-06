@@ -45,11 +45,12 @@ public:
     QPushButton *group20Button;
     QPushButton *group45Button;
     QPushButton *groupUserButton;
+    QGroupBox *groupBox;
     QPushButton *pushButton_10;
+    QGroupBox *groupBox_4;
     QTextBrowser *batteryLevel1;
     QTextBrowser *batteryLevel2;
     QTextBrowser *batteryLevel3;
-    QGroupBox *groupBox;
     QGroupBox *groupBox_2;
     QTextBrowser *log;
     QLabel *label_3;
@@ -69,6 +70,8 @@ public:
     QPushButton *playReplayButton;
     QPushButton *addFakeRecordingButton;
     QRadioButton *recordSessionRadioButton;
+    QPushButton *connectEarclipsButton;
+    QPushButton *disconnectEarclipsButton;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
     QMenuBar *menubar;
@@ -129,6 +132,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        alphaButton->setCheckable(false);
         deltaButton = new QPushButton(centralwidget);
         deltaButton->setObjectName(QString::fromUtf8("deltaButton"));
         deltaButton->setGeometry(QRect(100, 120, 81, 81));
@@ -137,6 +141,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        deltaButton->setCheckable(false);
         betaButton = new QPushButton(centralwidget);
         betaButton->setObjectName(QString::fromUtf8("betaButton"));
         betaButton->setGeometry(QRect(440, 120, 81, 81));
@@ -145,6 +150,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        betaButton->setCheckable(false);
         thetaButton = new QPushButton(centralwidget);
         thetaButton->setObjectName(QString::fromUtf8("thetaButton"));
         thetaButton->setGeometry(QRect(210, 120, 81, 81));
@@ -177,26 +183,30 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        pushButton_10 = new QPushButton(centralwidget);
+        groupUserButton->setCheckable(false);
+        groupBox = new QGroupBox(centralwidget);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        groupBox->setGeometry(QRect(20, -20, 781, 581));
+        pushButton_10 = new QPushButton(groupBox);
         pushButton_10->setObjectName(QString::fromUtf8("pushButton_10"));
-        pushButton_10->setGeometry(QRect(630, 30, 81, 81));
+        pushButton_10->setGeometry(QRect(560, 40, 81, 81));
         pushButton_10->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/CES.png);\n"
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
-        batteryLevel1 = new QTextBrowser(centralwidget);
+        groupBox_4 = new QGroupBox(groupBox);
+        groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
+        groupBox_4->setGeometry(QRect(680, 40, 71, 141));
+        batteryLevel1 = new QTextBrowser(groupBox_4);
         batteryLevel1->setObjectName(QString::fromUtf8("batteryLevel1"));
-        batteryLevel1->setGeometry(QRect(750, 70, 31, 31));
-        batteryLevel2 = new QTextBrowser(centralwidget);
+        batteryLevel1->setGeometry(QRect(20, 100, 31, 31));
+        batteryLevel2 = new QTextBrowser(groupBox_4);
         batteryLevel2->setObjectName(QString::fromUtf8("batteryLevel2"));
-        batteryLevel2->setGeometry(QRect(750, 40, 31, 31));
-        batteryLevel3 = new QTextBrowser(centralwidget);
+        batteryLevel2->setGeometry(QRect(20, 70, 31, 31));
+        batteryLevel3 = new QTextBrowser(groupBox_4);
         batteryLevel3->setObjectName(QString::fromUtf8("batteryLevel3"));
-        batteryLevel3->setGeometry(QRect(750, 10, 31, 31));
-        groupBox = new QGroupBox(centralwidget);
-        groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(19, -21, 781, 581));
+        batteryLevel3->setGeometry(QRect(20, 40, 31, 31));
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(820, -20, 771, 571));
@@ -267,6 +277,12 @@ public:
         disconnectEarclipsButton = new QPushButton(groupBox_2);
         disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
         disconnectEarclipsButton->setGeometry(QRect(320, 360, 141, 25));
+        connectEarclipsButton = new QPushButton(groupBox_2);
+        connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
+        connectEarclipsButton->setGeometry(QRect(280, 280, 121, 25));
+        disconnectEarclipsButton = new QPushButton(groupBox_2);
+        disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
+        disconnectEarclipsButton->setGeometry(QRect(280, 310, 121, 25));
         MainWindow->setCentralWidget(centralwidget);
         groupBox_2->raise();
         groupBox->raise();
@@ -284,10 +300,6 @@ public:
         deltaButton->raise();
         betaButton->raise();
         thetaButton->raise();
-        pushButton_10->raise();
-        batteryLevel1->raise();
-        batteryLevel2->raise();
-        batteryLevel3->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1599, 22));
@@ -337,6 +349,8 @@ public:
         groupUserButton->setText(QString());
         pushButton_10->setText(QString());
         groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
+        pushButton_10->setText(QString());
+        groupBox_4->setTitle(QApplication::translate("MainWindow", "Battery", nullptr));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "CONSOLE", nullptr));
         label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
@@ -351,6 +365,8 @@ public:
         recordSessionRadioButton->setText(QApplication::translate("MainWindow", "Record next session", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "connect ear clips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "disconnect ear clips", nullptr));
+        connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
+        disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
     } // retranslateUi
 
 };

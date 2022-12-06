@@ -349,7 +349,7 @@ void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
     text->setText(text->toPlainText());
 }
 
-// controlTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
+// connectionTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
 void MainWindow::connectionTest() {
     ui->log->append("Connection lost. Please try again in a moment."); // report connection loss to control log
 
