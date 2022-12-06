@@ -6,6 +6,7 @@
 #include <QElapsedTimer>
 #include <QPushButton>
 #include <QTime>
+#include <cmath>
 #include "Device.h"
 #include <string>
 #include <iostream>
