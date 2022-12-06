@@ -39,7 +39,7 @@ class MainWindow : public QMainWindow {
         QElapsedTimer timeoutTimer;
 
         void changeTextColor(QTextBrowser *text, QColor color);
-        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
+        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius = "40");
         void connectionTest(); // formally blinkTopSection()
         void bootConnectionTest();
         void blinkBattery();

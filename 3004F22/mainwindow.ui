@@ -331,17 +331,17 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="CESButton">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>40</y>
-       <width>81</width>
-       <height>81</height>
+       <x>510</x>
+       <y>50</y>
+       <width>71</width>
+       <height>71</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	border-image: url(:/icons/CES.png);
 	background-color: white;
-	border-radius: 40;
+	border-radius: 34;
 }</string>
      </property>
      <property name="text">
@@ -390,6 +390,26 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
      </widget>
+    </widget>
+    <widget class="QPushButton" name="CES2Button">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>50</y>
+       <width>71</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border-image: url(:/icons/CES2.png);
+	background-color: white;
+	border-radius: 35;
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
@@ -668,9 +688,9 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
+   <zorder>groupBox</zorder>
    <zorder>group45Button</zorder>
    <zorder>groupUserButton</zorder>
-   <zorder>groupBox</zorder>
    <zorder>powerButton</zorder>
    <zorder>downArrowButton</zorder>
    <zorder>upArrowButton</zorder>

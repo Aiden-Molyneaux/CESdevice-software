@@ -132,6 +132,9 @@ void MainWindow::turnOff() {
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
+
+    //TURN OFF CES INDICATOR
+    changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
 }
 
 void MainWindow::pressPower(){
@@ -310,8 +313,8 @@ bool MainWindow::checkBattery(){
     return false;
 }
 
-void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image) {
-    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: 40;}");
+void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius) {
+    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: " + radius + ";}");
 }
 
 void MainWindow::cycleGroupButton() {
@@ -422,9 +425,11 @@ void MainWindow::bootConnectionTest() {
     timeoutTimer.start();
 
     while (connectionIntensity == 1) {
-        changeBackgroundColor(ui->CESButton, "green", "CES");
+        changeBackgroundColor(ui->CESButton, "green", "CES", "34");
+        changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
         sleepy(100);
-        changeBackgroundColor(ui->CESButton, "white", "CES");
+        changeBackgroundColor(ui->CESButton, "white", "CES", "34");
+        changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
         sleepy(100);
 
         //CHECK FOR TIMEOUT - 2 MINS IS 120000 MS
@@ -434,6 +439,7 @@ void MainWindow::bootConnectionTest() {
             return;
         }
     }
+    changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
 }
 
 void MainWindow::blinkBattery(){

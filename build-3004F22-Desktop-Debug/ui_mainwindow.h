@@ -51,6 +51,7 @@ public:
     QTextBrowser *batteryLevel1;
     QTextBrowser *batteryLevel2;
     QTextBrowser *batteryLevel3;
+    QPushButton *CES2Button;
     QGroupBox *groupBox_2;
     QTextBrowser *log;
     QLabel *label_3;
@@ -190,11 +191,11 @@ public:
         groupBox->setGeometry(QRect(20, -20, 781, 581));
         CESButton = new QPushButton(groupBox);
         CESButton->setObjectName(QString::fromUtf8("CESButton"));
-        CESButton->setGeometry(QRect(560, 40, 81, 81));
+        CESButton->setGeometry(QRect(510, 50, 71, 71));
         CESButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/CES.png);\n"
 "	background-color: white;\n"
-"	border-radius: 40;\n"
+"	border-radius: 34;\n"
 "}"));
         groupBox_4 = new QGroupBox(groupBox);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
@@ -208,6 +209,14 @@ public:
         batteryLevel3 = new QTextBrowser(groupBox_4);
         batteryLevel3->setObjectName(QString::fromUtf8("batteryLevel3"));
         batteryLevel3->setGeometry(QRect(20, 40, 31, 31));
+        CES2Button = new QPushButton(groupBox);
+        CES2Button->setObjectName(QString::fromUtf8("CES2Button"));
+        CES2Button->setGeometry(QRect(590, 50, 71, 71));
+        CES2Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"	border-image: url(:/icons/CES2.png);\n"
+"	background-color: white;\n"
+"	border-radius: 35;\n"
+"}"));
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(820, -20, 771, 571));
@@ -280,9 +289,9 @@ public:
         disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
         disconnectEarclipsButton->setGeometry(QRect(280, 310, 121, 25));
         MainWindow->setCentralWidget(centralwidget);
+        groupBox->raise();
         group45Button->raise();
         groupUserButton->raise();
-        groupBox->raise();
         powerButton->raise();
         downArrowButton->raise();
         upArrowButton->raise();
@@ -346,6 +355,7 @@ public:
         groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         CESButton->setText(QString());
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Battery", nullptr));
+        CES2Button->setText(QString());
         groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "CONSOLE", nullptr));
         label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
