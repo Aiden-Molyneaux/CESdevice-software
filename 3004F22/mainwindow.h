@@ -38,7 +38,7 @@ class MainWindow : public QMainWindow {
 
         void changeTextColor(QTextBrowser *text, QColor color);
         void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
-        void blinkTopSection();
+        void connectionTest(); // formally blinkTopSection()
         void blinkBattery();
         void blinkSession(int sessionNum);
         void sleepy(int sleepTime);
@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow {
         void therapy(int groupNum, int sessionNum);
         void drainBattery();
         bool checkBattery();
+        void setConnectionLock(bool status);
 
     private slots:
         void pressPower();
