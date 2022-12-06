@@ -33,44 +33,54 @@ class MainWindow : public QMainWindow {
         int selectedGroup = 1;
         int connectionIntensity = 1;
         int timesIntensityAdjusted;
+        bool endSessionEarlyFlag;
 
         QElapsedTimer blinkTimer;
-        QElapsedTimer elapsedTimer;
+        QElapsedTimer powerPressedTimer;
         QElapsedTimer therapyTimer;
 
+        // MAIN FUNCTIONS
+        void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
+        void connectionTest();
+        void replayRecording(Recording* recording);
+
+        // HELPER FUNCTIONS
         void changeTextColor(QTextBrowser *text, QColor color);
         void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
-        void connectionTest(); // formally blinkTopSection()
-        void blinkBattery();
         void blinkSession(int sessionNum);
-        void sleepy(int sleepTime);
         void cycleGroupButton();
-        void turnOff();
+        void turnOffUI();
+        void softOff();
+        void powerLightOnOff(bool status);
+        void setConnectionLock(bool status);
+        void updateIntensityLog();
+        void displayIntensityOnGraph();
+        void endSessionEarly();
 
-        void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
-        void replayRecording(Recording* recording);
+        // Battery functions
+        void blinkBattery();
         void drainBattery(int intensity);
         bool checkBattery();
         void batteryWarning();
-        void setConnectionLock(bool status);
 
-        void updateIntensityLog();
-        void displayIntensityOnGraph();
-        void displayIntensityWarning(int flag);
+        void sleepy(int sleepTime);
 
     private slots:
+        // DEVICE UI SLOTS
         void pressPower();
         void powerReleased();
         void pressUpArrow();
         void pressDownArrow();
         void pressSelect();
-        void changeConnectionSlider();
-        void changeBatterySlider();
+
+        // CONTROL PANEL UI SLOTS
         void connectEarClips();
         void disconnectEarClips();
         void addUserButtonClicked();
         void addRecordingButtonClicked();
         void printHistoryButtonClicked();
         void playReplayButtonClicked();
+        void changeConnectionSlider();
+        void changeBatterySlider();
 };
 #endif // MAINWINDOW_H
