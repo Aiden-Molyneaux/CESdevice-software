@@ -134,3 +134,7 @@ User* Device::getUserByName(const string& name) {
 void Device::setFirstBoot(bool value) { this->firstBoot = value; }
 
 bool Device::getFirstBoot() { return this->firstBoot; }
+
+void Device::setTimeout(bool value) { this->timeout = value; }
+
+bool Device::getTimeout() { return this->timeout; }

@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow {
         QElapsedTimer blinkTimer;
         QElapsedTimer elapsedTimer;
         QElapsedTimer therapyTimer;
+        QElapsedTimer timeoutTimer;
 
         void changeTextColor(QTextBrowser *text, QColor color);
         void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);

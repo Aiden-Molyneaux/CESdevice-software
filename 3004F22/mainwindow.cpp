@@ -34,6 +34,14 @@ void MainWindow::powerReleased(){
             if (device->getFirstBoot()) {
                 ui->connectionSlider->setEnabled(true);
                 bootConnectionTest();
+
+                //CHECK IF TIMED OUT
+                if (device->getTimeout()) {
+                    cout << "DEVICE TIMED OUT" << endl;
+                    device->setTimeout(false);
+                    return;
+                }
+
                 device->setFirstBoot(false);
             }
 
@@ -411,11 +419,20 @@ void MainWindow::connectionTest() {
 }
 
 void MainWindow::bootConnectionTest() {
+    timeoutTimer.start();
+
     while (connectionIntensity == 1) {
         changeBackgroundColor(ui->CESButton, "green", "CES");
         sleepy(100);
         changeBackgroundColor(ui->CESButton, "white", "CES");
         sleepy(100);
+
+        //CHECK FOR TIMEOUT - 2 MINS IS 120000 MS
+        if (timeoutTimer.elapsed() >= 15000) {
+            ui->log->append("**DEVICE TIMED OUT**");
+            device->setTimeout(true);
+            return;
+        }
     }
 }
 

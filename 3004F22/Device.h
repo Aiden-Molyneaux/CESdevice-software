@@ -46,6 +46,8 @@ class Device : public DeviceMediator {
         void setIsInSession(bool status);
         bool getFirstBoot();
         void setFirstBoot(bool value);
+        bool getTimeout();
+        void setTimeout(bool value);
 
         int getCurrentIntensity();
         void setCurrentIntensity(int intensity);
@@ -74,6 +76,7 @@ class Device : public DeviceMediator {
         bool isSoftPowered;
         bool inSession;
         bool firstBoot = true;
+        bool timeout = false;
 };
 
 #endif // DEVICE_H
