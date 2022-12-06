@@ -46,11 +46,14 @@ public:
     QPushButton *group45Button;
     QPushButton *groupUserButton;
     QGroupBox *groupBox;
-    QPushButton *pushButton_10;
+    QPushButton *CESButton;
     QGroupBox *groupBox_4;
     QTextBrowser *batteryLevel1;
     QTextBrowser *batteryLevel2;
     QTextBrowser *batteryLevel3;
+    QPushButton *CES2Button;
+    QPushButton *stopButton;
+    QLabel *graphLabel;
     QGroupBox *groupBox_2;
     QTextBrowser *log;
     QLabel *label_3;
@@ -72,6 +75,8 @@ public:
     QRadioButton *recordSessionRadioButton;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
+    QTextBrowser *currentIntensityLog;
+    QLabel *label_6;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -157,6 +162,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        thetaButton->setCheckable(false);
         group20Button = new QPushButton(centralwidget);
         group20Button->setObjectName(QString::fromUtf8("group20Button"));
         group20Button->setGeometry(QRect(170, 20, 81, 81));
@@ -165,6 +171,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        group20Button->setCheckable(false);
         group45Button = new QPushButton(centralwidget);
         group45Button->setObjectName(QString::fromUtf8("group45Button"));
         group45Button->setGeometry(QRect(290, 20, 81, 81));
@@ -173,6 +180,7 @@ public:
 "	background-color: white;\n"
 "	border-radius: 40;\n"
 "}"));
+        group45Button->setCheckable(false);
         groupUserButton = new QPushButton(centralwidget);
         groupUserButton->setObjectName(QString::fromUtf8("groupUserButton"));
         groupUserButton->setGeometry(QRect(400, 20, 81, 81));
@@ -185,13 +193,13 @@ public:
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
         groupBox->setGeometry(QRect(20, -20, 781, 581));
-        pushButton_10 = new QPushButton(groupBox);
-        pushButton_10->setObjectName(QString::fromUtf8("pushButton_10"));
-        pushButton_10->setGeometry(QRect(560, 40, 81, 81));
-        pushButton_10->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+        CESButton = new QPushButton(groupBox);
+        CESButton->setObjectName(QString::fromUtf8("CESButton"));
+        CESButton->setGeometry(QRect(510, 50, 71, 71));
+        CESButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	border-image: url(:/icons/CES.png);\n"
 "	background-color: white;\n"
-"	border-radius: 40;\n"
+"	border-radius: 34;\n"
 "}"));
         groupBox_4 = new QGroupBox(groupBox);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
@@ -205,6 +213,26 @@ public:
         batteryLevel3 = new QTextBrowser(groupBox_4);
         batteryLevel3->setObjectName(QString::fromUtf8("batteryLevel3"));
         batteryLevel3->setGeometry(QRect(20, 40, 31, 31));
+        CES2Button = new QPushButton(groupBox);
+        CES2Button->setObjectName(QString::fromUtf8("CES2Button"));
+        CES2Button->setGeometry(QRect(590, 50, 71, 71));
+        CES2Button->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"	border-image: url(:/icons/CES2.png);\n"
+"	background-color: white;\n"
+"	border-radius: 35;\n"
+"}"));
+        stopButton = new QPushButton(groupBox);
+        stopButton->setObjectName(QString::fromUtf8("stopButton"));
+        stopButton->setEnabled(true);
+        stopButton->setGeometry(QRect(190, 500, 41, 41));
+        stopButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"	border-image: url(:/icons/stop.png);\n"
+"	background-color: white;\n"
+"	border-radius: 20;\n"
+"}"));
+        graphLabel = new QLabel(groupBox);
+        graphLabel->setObjectName(QString::fromUtf8("graphLabel"));
+        graphLabel->setGeometry(QRect(180, 230, 181, 17));
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(820, -20, 771, 571));
@@ -216,6 +244,7 @@ public:
         label_3->setGeometry(QRect(100, 50, 81, 20));
         connectionSlider = new QSlider(groupBox_2);
         connectionSlider->setObjectName(QString::fromUtf8("connectionSlider"));
+        connectionSlider->setEnabled(false);
         connectionSlider->setGeometry(QRect(60, 410, 160, 16));
         connectionSlider->setMinimum(1);
         connectionSlider->setMaximum(3);
@@ -232,7 +261,7 @@ public:
         batterySlider->setOrientation(Qt::Horizontal);
         label_2 = new QLabel(groupBox_2);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(90, 440, 81, 20));
+        label_2->setGeometry(QRect(100, 440, 81, 20));
         groupBox_3 = new QGroupBox(groupBox_2);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setGeometry(QRect(280, 70, 441, 191));
@@ -271,20 +300,19 @@ public:
         recordSessionRadioButton->setGeometry(QRect(50, 140, 131, 23));
         connectEarclipsButton = new QPushButton(groupBox_2);
         connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
-        connectEarclipsButton->setGeometry(QRect(320, 320, 141, 25));
-        disconnectEarclipsButton = new QPushButton(groupBox_2);
-        disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
-        disconnectEarclipsButton->setGeometry(QRect(320, 360, 141, 25));
-        connectEarclipsButton = new QPushButton(groupBox_2);
-        connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
         connectEarclipsButton->setGeometry(QRect(280, 280, 121, 25));
         disconnectEarclipsButton = new QPushButton(groupBox_2);
         disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
         disconnectEarclipsButton->setGeometry(QRect(280, 310, 121, 25));
+        currentIntensityLog = new QTextBrowser(groupBox_2);
+        currentIntensityLog->setObjectName(QString::fromUtf8("currentIntensityLog"));
+        currentIntensityLog->setGeometry(QRect(110, 510, 61, 21));
+        currentIntensityLog->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        label_6 = new QLabel(groupBox_2);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setGeometry(QRect(90, 490, 101, 17));
         MainWindow->setCentralWidget(centralwidget);
-        groupBox_2->raise();
         groupBox->raise();
-        group20Button->raise();
         group45Button->raise();
         groupUserButton->raise();
         powerButton->raise();
@@ -298,6 +326,8 @@ public:
         deltaButton->raise();
         betaButton->raise();
         thetaButton->raise();
+        group20Button->raise();
+        groupBox_2->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1599, 22));
@@ -345,13 +375,15 @@ public:
         group20Button->setText(QString());
         group45Button->setText(QString());
         groupUserButton->setText(QString());
-        pushButton_10->setText(QString());
         groupBox->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
-        pushButton_10->setText(QString());
+        CESButton->setText(QString());
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Battery", nullptr));
+        CES2Button->setText(QString());
+        stopButton->setText(QString());
+        graphLabel->setText(QApplication::translate("MainWindow", "Currently indicating: ", nullptr));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "CONSOLE", nullptr));
-        label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
+        label->setText(QApplication::translate("MainWindow", "Connection", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Battery Level", nullptr));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "USER STUFF", nullptr));
         addUserButton->setText(QApplication::translate("MainWindow", "Add User", nullptr));
@@ -361,10 +393,9 @@ public:
         playReplayButton->setText(QApplication::translate("MainWindow", "Play replay", nullptr));
         addFakeRecordingButton->setText(QApplication::translate("MainWindow", "add fake recording", nullptr));
         recordSessionRadioButton->setText(QApplication::translate("MainWindow", "Record next session", nullptr));
-        connectEarclipsButton->setText(QApplication::translate("MainWindow", "connect ear clips", nullptr));
-        disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "disconnect ear clips", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "Current Intensity", nullptr));
     } // retranslateUi
 
 };

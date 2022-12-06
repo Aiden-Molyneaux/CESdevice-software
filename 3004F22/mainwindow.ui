@@ -328,20 +328,20 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>GroupBox</string>
     </property>
-    <widget class="QPushButton" name="pushButton_10">
+    <widget class="QPushButton" name="CESButton">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>40</y>
-       <width>81</width>
-       <height>81</height>
+       <x>510</x>
+       <y>50</y>
+       <width>71</width>
+       <height>71</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	border-image: url(:/icons/CES.png);
 	background-color: white;
-	border-radius: 40;
+	border-radius: 34;
 }</string>
      </property>
      <property name="text">
@@ -390,6 +390,49 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
      </widget>
+    </widget>
+    <widget class="QPushButton" name="CES2Button">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>50</y>
+       <width>71</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border-image: url(:/icons/CES2.png);
+	background-color: white;
+	border-radius: 35;
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stopButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>500</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border-image: url(:/icons/stop.png);
+	background-color: white;
+	border-radius: 20;
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
     </widget>
     <widget class="QLabel" name="graphLabel">
      <property name="geometry">
@@ -441,6 +484,9 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
     <widget class="QSlider" name="connectionSlider">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>60</x>
@@ -704,9 +750,9 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </widget>
+   <zorder>groupBox</zorder>
    <zorder>group45Button</zorder>
    <zorder>groupUserButton</zorder>
-   <zorder>groupBox</zorder>
    <zorder>powerButton</zorder>
    <zorder>downArrowButton</zorder>
    <zorder>upArrowButton</zorder>

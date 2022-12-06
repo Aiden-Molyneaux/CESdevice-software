@@ -36,11 +36,15 @@ class MainWindow : public QMainWindow {
 
         QElapsedTimer blinkTimer;
         QElapsedTimer elapsedTimer;
+        QElapsedTimer selectTimer;
+        QElapsedTimer pauseTimer;
         QElapsedTimer therapyTimer;
+        QElapsedTimer timeoutTimer;
 
         void changeTextColor(QTextBrowser *text, QColor color);
-        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
+        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius = "40");
         void connectionTest(); // formally blinkTopSection()
+        void bootConnectionTest();
         void blinkBattery();
         void blinkSession(int sessionNum);
         void sleepy(int sleepTime);
@@ -49,6 +53,7 @@ class MainWindow : public QMainWindow {
 
         void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
         void replayRecording(Recording* recording);
+        void addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity = -1);
         void drainBattery(int intensity);
         bool checkBattery();
         void batteryWarning();
@@ -64,13 +69,14 @@ class MainWindow : public QMainWindow {
         void pressUpArrow();
         void pressDownArrow();
         void pressSelect();
+        void releaseSelect();
         void changeConnectionSlider();
         void changeBatterySlider();
         void connectEarClips();
         void disconnectEarClips();
         void addUserButtonClicked();
-        void addRecordingButtonClicked();
         void printHistoryButtonClicked();
         void playReplayButtonClicked();
+        void stopPressed();
 };
 #endif // MAINWINDOW_H

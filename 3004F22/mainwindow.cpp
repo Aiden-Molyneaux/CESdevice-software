@@ -14,13 +14,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->downArrowButton, SIGNAL(released()), this, SLOT (pressDownArrow()));
     connect(ui->connectionSlider, SIGNAL(sliderReleased()), this, SLOT (changeConnectionSlider()));
     connect(ui->batterySlider, SIGNAL(sliderReleased()), this, SLOT (changeBatterySlider()));
-    connect(ui->checkButton, SIGNAL(released()), this, SLOT (pressSelect()));
+    connect(ui->checkButton, SIGNAL(pressed()), this, SLOT (pressSelect()));
+    connect(ui->checkButton, SIGNAL(released()), this, SLOT (releaseSelect()));
     connect(ui->connectEarclipsButton, SIGNAL(released()), this, SLOT (connectEarClips()));
     connect(ui->disconnectEarclipsButton, SIGNAL(released()), this, SLOT (disconnectEarClips()));
     connect(ui->addUserButton, SIGNAL(released()), this, SLOT (addUserButtonClicked()));
-    connect(ui->addFakeRecordingButton, SIGNAL(released()), this, SLOT (addRecordingButtonClicked()));
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
     connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
+    connect(ui->stopButton, SIGNAL(pressed()), this, SLOT (stopPressed()));
 }
 
 MainWindow::~MainWindow() {
@@ -31,6 +32,20 @@ MainWindow::~MainWindow() {
 void MainWindow::powerReleased(){
     if(elapsedTimer.elapsed() >= 200){ // check if Power Button was held for 2 seconds
         if(!device->getIsPoweredOn() && !device->getIsSoftPoweredOn()){ // continue if DEVICE is OFF
+            if (device->getFirstBoot()) {
+                ui->connectionSlider->setEnabled(true);
+                bootConnectionTest();
+
+                //CHECK IF TIMED OUT
+                if (device->getTimeout()) {
+                    cout << "DEVICE TIMED OUT" << endl;
+                    device->setTimeout(false);
+                    return;
+                }
+
+                device->setFirstBoot(false);
+            }
+
             ui_initializeBattery();
             if(device->getBattery()->getBatteryLevel() < 33){
                 device->setSoftPower(true);
@@ -45,6 +60,12 @@ void MainWindow::powerReleased(){
             changeBackgroundColor(ui->group20Button, "green", "20");
         } else { // continue if DEVICE is ON - turn off
             turnOff();
+
+            //ENSURE BOOT CONNECTION TEST
+            device->setFirstBoot(true);
+            ui->connectionSlider->setValue(1);
+            connectionIntensity = 1;
+            ui->connectionSlider->setEnabled(false);
         }
 
         device->getPowerButton()->pressed();
@@ -113,6 +134,9 @@ void MainWindow::turnOff() {
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
+
+    //TURN OFF CES INDICATOR
+    changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
 }
 
 // pressPower() is called when the UI power button is pressed (before release) - starts a timer to get the elapsed time between press and release ...
@@ -216,12 +240,56 @@ void MainWindow::pressDownArrow(){
 }
 
 void MainWindow::pressSelect(){
-    therapy(selectedGroup, selectedSession, 0);
+    selectTimer.start();
+}
+
+void MainWindow::releaseSelect() {
+    if (selectTimer.elapsed() >= 1000) {
+        therapy(selectedGroup, selectedSession, 1);
+    } else {
+        therapy(selectedGroup, selectedSession, 0);
+    }
+}
+
+void MainWindow::stopPressed() {
+    device->setRecordingFlag(true);
 }
 
 // therapy() is the provides the main functionality of the device - initiating and performing therapy sessions
 void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
-    if (ui->recordSessionRadioButton->isChecked() && !recordingFlag && (ui->nameComboBox->currentText() != NULL)) { addRecordingButtonClicked(); }
+    string name = ui->nameComboBox->currentText().toStdString();
+    int group = selectedGroup;
+    int initialIntensity = device->getSessions(selectedGroup-1, selectedSession-1)->getIntensity();
+    double batteryPercent = device->getBattery()->getBatteryLevel();
+
+    if (recordingFlag) {
+        if (ui->nameComboBox->currentText() == NULL) {
+            ui->log->append("CANNOT RECORD - NO USER SPECIFIED");
+            recordingFlag = 0;
+        } else {
+            ui->log->append("THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name));
+        }
+    }
+
+    //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
+    changeBackgroundColor(ui->stopButton, "green", "stop", "20");
+    sleepy(20);
+
+    pauseTimer.start();
+    while (pauseTimer.elapsed() < 2000){
+        if (device->getRecordingFlag()){
+            //DO RECORDING NOW - DEFAULT INTENSITY
+            addRecording(name, group, batteryPercent, initialIntensity);
+            changeBackgroundColor(ui->stopButton, "white", "stop", "20");
+            return;
+        }
+    }
+
+    //SET STOP BUTTON BACK TO WHITE
+    changeBackgroundColor(ui->stopButton, "white", "stop", "20");
+
+    //TO BE USED FOR RECORDING
+    int highestIntensity = initialIntensity;
 
     // Initial check to see if Battery needs to be replaced
     if(!checkBattery()){
@@ -275,6 +343,8 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
         if(timesIntensityAdjusted){
             therapyLengthMS+=(750*timesIntensityAdjusted);
             timesIntensityAdjusted=0;
+
+            if (device->getCurrentIntensity() > highestIntensity) { highestIntensity = device->getCurrentIntensity(); }
         }
 
         // During each loop (where the Device is not disconnected) record how long remains of the session
@@ -320,6 +390,9 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
         sleepy(150);
         cout << device->getBattery()->getBatteryLevel() << endl;
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
+            //DO RECORDING HERE
+            if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
+
             ui->log->append("Session Complete.");
             device->setIsInSession(false);
             break; // session ends, break therapy loop
@@ -327,20 +400,15 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     }
 }
 
-void MainWindow::drainBattery(int intensity){
+void MainWindow::drainBattery(int intensity) {
     // Standard battery life on initialization is 100 units
-    double drainRate = 0.25; // 0.5 is the base rate at which the battery depletes
+    double drainRate = 0.5; // 0.5 is the base rate at which the battery depletes
 
-    // Simulating the device to not drain too quickly.
-    // at max intensity levels (>75hz) and strong connection status, battery will drain 2.5 units per loop
-    // at weak intensity levels (<10hz) and strong connection status, battery wll drain 1 units per loop
-    if(intensity>75){ drainRate +=2; }
-    else if(intensity>50){ drainRate+=1.5; }
-    else if(intensity>25){ drainRate+=1; }
-    else if(intensity>10){ drainRate+=.5; }
-
-    if(connectionIntensity==3){ drainRate += 0.25; } // strong connection yields higher efficiency
-    else if(connectionIntensity==2){ drainRate += 0.5; } // medium connection yields more inefficient battery use
+    // Simulating the device to not drain too quickly. Around max intensity battery will drain 2.5 units per loop
+    if(intensity>75){drainRate +=2;}
+    else if(intensity>50){drainRate+=1.5;}
+    else if(intensity>25){drainRate+=1;}
+    else if(intensity>10){drainRate+=.5;}
 
     device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-drainRate); // decrement battery life by 1 unit
 
@@ -363,8 +431,8 @@ void MainWindow::batteryWarning(){
     blinkBattery();
 }
 
-void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image) {
-    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: 40;}");
+void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius) {
+    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: " + radius + ";}");
 }
 
 void MainWindow::cycleGroupButton() {
@@ -393,11 +461,8 @@ void MainWindow::cycleGroupButton() {
 }
 
 void MainWindow::changeConnectionSlider() {
-    if (!device->getIsPoweredOn()) {return;}
-
-    ui->graphLabel->setText("Currently indicating: Connection");
-
     connectionIntensity = ui->connectionSlider->value();
+    if (!device->getIsPoweredOn()) {return;}
 
     switch (connectionIntensity) {
         //NO CONNECTION - TOP SECTION BLINKS
@@ -478,6 +543,27 @@ void MainWindow::connectionTest() {
     ui->log->append("Please connect now.");
     ui->log->append("");
     setConnectionLock(true); // unlock the UI connection components
+}
+
+void MainWindow::bootConnectionTest() {
+    timeoutTimer.start();
+
+    while (connectionIntensity == 1) {
+        changeBackgroundColor(ui->CESButton, "green", "CES", "34");
+        changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
+        sleepy(100);
+        changeBackgroundColor(ui->CESButton, "white", "CES", "34");
+        changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
+        sleepy(100);
+
+        //CHECK FOR TIMEOUT - 2 MINS IS 120000 MS
+        if (timeoutTimer.elapsed() >= 15000) {
+            ui->log->append("**DEVICE TIMED OUT**");
+            device->setTimeout(true);
+            return;
+        }
+    }
+    changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
 }
 
 void MainWindow::blinkBattery(){
@@ -579,14 +665,11 @@ void MainWindow::addUserButtonClicked() {
     ui->nameComboBox->addItem(QString::fromStdString(name));
 }
 
-void MainWindow::addRecordingButtonClicked() {
+void MainWindow::addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity) {
+    //CHECK IF WE ARE USING DEFAULT INTENSITY
+    if (intensity == -1) { intensity = device->getSessions(group-1, selectedSession-1)->getIntensity(); }
 
-    string name = ui->nameComboBox->currentText().toStdString();
-    int group = selectedGroup;
-    int batteryPercent = device->getBattery()->getBatteryLevel();
-    int intensity = device->getSessions(group-1, selectedSession-1)->getIntensity();
-
-    if (device->addRecording(name, intensity, group, batteryPercent, connectionIntensity) == -1) {
+    if (device->addRecording(name, intensity, initialIntensity, group, batteryPercent, connectionIntensity) == -1) {
         ui->log->append("**COULD NOT ADD RECORDING**");
         return;
     } else {
@@ -664,13 +747,15 @@ void MainWindow::replayRecording(Recording *recording) {
 
     //GRAB PARAMETERS FROM RECORDING OBJECT
     int group = recording->getGroup();
-    int intensity = recording->getIntensity();
+    int initialIntensity = recording->getInitialIntensity();
     double batteryPercent = recording->getBatteryPercent();
     int connection = recording->getConnection();
     int session;
 
+    cout << initialIntensity << endl;
+
     //MAP INTENSITY TO SESSION
-    switch (intensity) {
+    switch (initialIntensity) {
         case 5: session = 1;
         break;
         case 8: session = 2;
@@ -714,7 +799,7 @@ void MainWindow::replayRecording(Recording *recording) {
     //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
     //(DO NOT RECORD THIS THERAPY)
     ui->log->append("**STARTING REPLAY**\n");
-    therapy(group, session, 1);
+    therapy(group, session, 0);
 }
 
 void MainWindow::updateIntensityLog(){

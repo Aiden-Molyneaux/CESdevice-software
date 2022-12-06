@@ -7,11 +7,12 @@ using namespace std;
 
 class Recording : public Widget {
     public:
-        Recording(DeviceMediator *device, const string& name, int intensity, int group, double batteryPercent, int connection);
+        Recording(DeviceMediator *device, const string& name, int intensity, int initialIntensity, int group, double batteryPercent, int connection);
         ~Recording();
 
         string getName();
         int getIntensity();
+        int getInitialIntensity();
         int getGroup();
         double getBatteryPercent();
         int getConnection();
@@ -19,6 +20,7 @@ class Recording : public Widget {
     private:
         string name;
         int intensity;
+        int initialIntensity;
         double batteryPercent;
         int group;
         int connection;

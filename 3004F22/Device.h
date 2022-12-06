@@ -25,7 +25,7 @@ class Device : public DeviceMediator {
         void setSoftPower(bool value);
         void powerOff();
         int addUser(const string& name, int intensity);
-        int addRecording(const string& name, int intensity, int group, int batteryPercent, int connection);
+        int addRecording(const string& name, int intensity, int initialIntensity, int group, int batteryPercent, int connection);
         int getNumRecordings();
         Recording* getRecordingAt(int index);
         User* getUserByName(const string& name);
@@ -44,6 +44,12 @@ class Device : public DeviceMediator {
         bool getIsSoftPoweredOn();
         bool getIsInSession();
         void setIsInSession(bool status);
+        bool getFirstBoot();
+        void setFirstBoot(bool value);
+        bool getTimeout();
+        void setTimeout(bool value);
+        bool getRecordingFlag();
+        void setRecordingFlag(bool value);
 
         int getCurrentIntensity();
         void setCurrentIntensity(int intensity);
@@ -71,6 +77,9 @@ class Device : public DeviceMediator {
         bool isPowered;
         bool isSoftPowered;
         bool inSession;
+        bool firstBoot = true;
+        bool timeout = false;
+        bool recordingFlag = false;
 };
 
 #endif // DEVICE_H
