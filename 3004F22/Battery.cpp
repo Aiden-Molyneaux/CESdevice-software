@@ -4,9 +4,9 @@ Battery::Battery(DeviceMediator* device): batteryLevel(100), Widget(device) {}
 
 Battery::~Battery(){ delete this; }
 
-int Battery::getBatteryLevel(){ return this->batteryLevel; }
+double Battery::getBatteryLevel(){ return this->batteryLevel; }
 
-void Battery::setBatteryLevel(int newBatteryLevel){ this->batteryLevel = newBatteryLevel; }
+void Battery::setBatteryLevel(double newBatteryLevel){ this->batteryLevel = newBatteryLevel; }
 
 void Battery::setBlinkFlag(bool flag) { this->blinkFlag = flag; }
 

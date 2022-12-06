@@ -47,7 +47,7 @@ class MainWindow : public QMainWindow {
 
         void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
         void replayRecording(Recording* recording);
-        void drainBattery();
+        void drainBattery(int intensity);
         bool checkBattery();
         void setConnectionLock(bool status);
 

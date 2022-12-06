@@ -213,7 +213,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     }
 
     int therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); // get Group's associated therapy time length (in milliseconds)
-//    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
+    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
 //    int sessionIntensity = device->getCurrentIntensity();
 
     setConnectionLock(true); // unlock Connection setting UI
@@ -246,7 +246,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
             ui->log->append("Resuming Session.");
             therapyTimer.restart(); // restart and begin timer again
             while(therapyTimer.elapsed() < remainingTime){ // execute the remaining time of the session
-                drainBattery(); // deplete battery
+                drainBattery(device->getCurrentIntensity()); // deplete battery
                 sleepy(150); // simulate real time
                 cout << device->getBattery()->getBatteryLevel() << endl; // monitor the battery level in the output
             }
@@ -256,7 +256,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
         }
 
         // Remainder of this function executes if session does not disconnect (standard use case)
-        drainBattery();
+        drainBattery(device->getCurrentIntensity());
         sleepy(150);
         cout << device->getBattery()->getBatteryLevel() << endl;
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
@@ -267,9 +267,17 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     }
 }
 
-void MainWindow::drainBattery(){
+void MainWindow::drainBattery(int intensity){
     // Standard battery life on initialization is 100 units
-    device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-1); // decrement battery life by 1 unit
+    double drainRate = 0.5; // 0.5 is the base rate at which the battery depletes
+
+    // Simulating the device to not drain too quickly. Around max intensity battery will drain 2.5 units per loop
+    if(intensity>75){drainRate +=2;}
+    else if(intensity>50){drainRate+=1.5;}
+    else if(intensity>25){drainRate+=1;}
+    else if(intensity>10){drainRate+=.5;}
+
+    device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-drainRate); // decrement battery life by 1 unit
 
     // Reflect battery life change on UI battery elements
     ui->batterySlider->setValue(device->getBattery()->getBatteryLevel());
