@@ -31,6 +31,7 @@ class MainWindow : public QMainWindow {
         int selectedSession = 1;
         int selectedGroup = 1;
         int connectionIntensity = 1;
+        int timesIntensityAdjusted;
 
         QElapsedTimer blinkTimer;
         QElapsedTimer elapsedTimer;
@@ -49,7 +50,12 @@ class MainWindow : public QMainWindow {
         void replayRecording(Recording* recording);
         void drainBattery(int intensity);
         bool checkBattery();
+        void batteryWarning();
         void setConnectionLock(bool status);
+
+        void updateIntensityLog();
+        void displayIntensityOnGraph();
+        void displayIntensityWarning(int flag);
 
     private slots:
         void pressPower();

@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    device = new Device("TimeToLive");
+    device = new Device("oasis pro");
 
     ui->batterySlider->setValue(device->getBattery()->getBatteryLevel());
 
@@ -37,6 +37,7 @@ void MainWindow::powerReleased(){
                 device->getBattery()->setBlinkFlag(true);
 
                 ui->log->append("Battery level too low. Replace Batteries");
+                ui->log->append("");
                 blinkBattery();
                 return;
             }
@@ -108,12 +109,14 @@ void MainWindow::turnOff() {
         device->getBattery()->setBlinkFlag(false);
     }
 
-    //TURN OFF BATERY INDICATORS
+    //TURN OFF BATTERY INDICATORS
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
 }
 
+// pressPower() is called when the UI power button is pressed (before release) - starts a timer to get the elapsed time between press and release ...
+// so that we can differentiate between a button "press and release" and a button "press, hold, and release"
 void MainWindow::pressPower(){
     elapsedTimer.start();
 }
@@ -121,6 +124,22 @@ void MainWindow::pressPower(){
 void MainWindow::pressUpArrow(){
     if (!device->getIsPoweredOn()) {return;}
 
+    // 1 of 2 uses for the upArrowButton - if in session, buttons adjust intensity
+    if(device->getIsInSession()){
+        timesIntensityAdjusted++;
+        if(device->getCurrentIntensity()==100){
+            ui->log->append("Warning: Device's maximum intensity reached");
+            ui->log->append("");
+            displayIntensityOnGraph();
+            return;
+        }
+        device->setCurrentIntensity(device->getCurrentIntensity()+1);
+        updateIntensityLog();
+        displayIntensityOnGraph();
+        return;
+    }
+
+    // 2 of 2 uses for the upArrowButton - navigate through the Session types in UI
     switch (selectedSession) {
         //DELTA IS LIT UP, WE WANT THETA LIT INSTEAD
         case 1:
@@ -152,6 +171,22 @@ void MainWindow::pressUpArrow(){
 void MainWindow::pressDownArrow(){
     if (!device->getIsPoweredOn()) {return;}
 
+    // 1 of 2 uses for the downArrowButton - if in session, button decrements intensity
+    if(device->getIsInSession()){
+        timesIntensityAdjusted++;
+        if(device->getCurrentIntensity()==1){
+            ui->log->append("Warning: Device's minimum intensity reached");
+            ui->log->append("");
+            displayIntensityOnGraph();
+            return;
+        }
+        device->setCurrentIntensity(device->getCurrentIntensity()-1);
+        updateIntensityLog();
+        displayIntensityOnGraph();
+        return;
+    }
+
+    // 2 of 2 uses for the downArrowButton - navigate between Session types in UI
     switch (selectedSession) {
         //DELTA IS LIT UP, WE WANT BETA LIT INSTEAD
         case 1:
@@ -184,18 +219,21 @@ void MainWindow::pressSelect(){
     therapy(selectedGroup, selectedSession, 0);
 }
 
+// therapy() is the provides the main functionality of the device - initiating and performing therapy sessions
 void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     if (ui->recordSessionRadioButton->isChecked() && !recordingFlag) { addRecordingButtonClicked(); }
 
     // Initial check to see if Battery needs to be replaced
     if(!checkBattery()){
-        ui->log->append("Battery level too low. Replace Batteries");
+        batteryWarning();
+        device->setIsInSession(false);;
         return;
     }
 
     // Also check the connection strength
     if(connectionIntensity==1){
         ui->log->append("Connection level is poor. Please adjust.");
+        ui->log->append("");
         return;
     }
     setConnectionLock(false); // lock all Connection setting UI until Session begins
@@ -211,26 +249,35 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
         ui->log->append(text);
         sleepy(100); // small sleep to simulate count down
     }
+    ui->log->append("");
 
     int therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); // get Group's associated therapy time length (in milliseconds)
-    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
-//    int sessionIntensity = device->getCurrentIntensity();
+    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity()); // get Session's associated intensity level
+    updateIntensityLog(); // update Intensity log in UI
 
     setConnectionLock(true); // unlock Connection setting UI
 
     therapyTimer.start(); // Timer tracks elapsed time
     int remainingTime = 0;
+    timesIntensityAdjusted = 0;
     while(true){
         int flag = 0; // flag for if Session pauses due to Connection interruption
 
         // Check that Battery levels are sufficient - if not, end the session early
         if(!checkBattery()){
-            ui->log->append("Battery level too low. Replace Batteries");
-            ui->log->append("Session will now end early. Device will now power down via Soft Off protocol.");
+            batteryWarning();
+            device->setIsInSession(false);
             return;
         }
 
-        // During each loop (where the Device is not disconnected) record long remains of the session
+        // When intensity is adjusted, about 750ms of therapy time is lost due to UI animation and processing
+        // This check simply adds the lost time back onto the clock
+        if(timesIntensityAdjusted){
+            therapyLengthMS+=(750*timesIntensityAdjusted);
+            timesIntensityAdjusted=0;
+        }
+
+        // During each loop (where the Device is not disconnected) record how long remains of the session
         if(connectionIntensity!=1){
             remainingTime = therapyLengthMS - therapyTimer.elapsed();
         }
@@ -242,15 +289,28 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
             ui->log->append("");
             sleepy(2000);
         }
+
         if(flag){ // return to session
             ui->log->append("Resuming Session.");
+            ui->log->append("");
             therapyTimer.restart(); // restart and begin timer again
             while(therapyTimer.elapsed() < remainingTime){ // execute the remaining time of the session
+                // Battery level must be checked inside this loop as well
+                if(!checkBattery()){
+                    batteryWarning();
+                    device->setIsInSession(false);;
+                    return;
+                }
+                if(timesIntensityAdjusted){
+                    therapyLengthMS+(750*timesIntensityAdjusted);
+                    timesIntensityAdjusted=0;
+                }
                 drainBattery(device->getCurrentIntensity()); // deplete battery
                 sleepy(150); // simulate real time
                 cout << device->getBattery()->getBatteryLevel() << endl; // monitor the battery level in the output
             }
             ui->log->append("Session Complete."); // log to control that session has completed
+            ui->log->append("");
             device->setIsInSession(false);
             break; // session ends, break therapy loop
         }
@@ -269,13 +329,18 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
 
 void MainWindow::drainBattery(int intensity){
     // Standard battery life on initialization is 100 units
-    double drainRate = 0.5; // 0.5 is the base rate at which the battery depletes
+    double drainRate = 0.25; // 0.5 is the base rate at which the battery depletes
 
-    // Simulating the device to not drain too quickly. Around max intensity battery will drain 2.5 units per loop
-    if(intensity>75){drainRate +=2;}
-    else if(intensity>50){drainRate+=1.5;}
-    else if(intensity>25){drainRate+=1;}
-    else if(intensity>10){drainRate+=.5;}
+    // Simulating the device to not drain too quickly.
+    // at max intensity levels (>75hz) and strong connection status, battery will drain 2.5 units per loop
+    // at weak intensity levels (<10hz) and strong connection status, battery wll drain 1 units per loop
+    if(intensity>75){ drainRate +=2; }
+    else if(intensity>50){ drainRate+=1.5; }
+    else if(intensity>25){ drainRate+=1; }
+    else if(intensity>10){ drainRate+=.5; }
+
+    if(connectionIntensity==3){ drainRate += 0.25; } // strong connection yields higher efficiency
+    else if(connectionIntensity==2){ drainRate += 0.5; } // medium connection yields more inefficient battery use
 
     device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-drainRate); // decrement battery life by 1 unit
 
@@ -288,6 +353,14 @@ bool MainWindow::checkBattery(){
     // if battery life is >32 units than Device can turn on and session can start
     if(device->getBattery()->getBatteryLevel()>32){ return true; }
     return false;
+}
+
+void MainWindow::batteryWarning(){
+    ui->log->append("Battery level too low. Replace Batteries");
+    ui->log->append("");
+    ui->log->append("Session will now end early. Device will now power down via Soft Off protocol.");
+    device->getBattery()->setBlinkFlag(true);
+    blinkBattery();
 }
 
 void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image) {
@@ -321,6 +394,9 @@ void MainWindow::cycleGroupButton() {
 
 void MainWindow::changeConnectionSlider() {
     if (!device->getIsPoweredOn()) {return;}
+
+    ui->graphLabel->setText("Currently indicating: Connection");
+
     connectionIntensity = ui->connectionSlider->value();
 
     switch (connectionIntensity) {
@@ -349,6 +425,9 @@ void MainWindow::changeConnectionSlider() {
 
 void MainWindow::changeBatterySlider(){
     device->getBattery()->setBatteryLevel(ui->batterySlider->value());
+    if(device->getBattery()->getBatteryLevel()>32){
+        device->getBattery()->setBlinkFlag(false);
+    }
     ui_initializeBattery();
 }
 
@@ -360,7 +439,9 @@ void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
 
 // connectionTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
 void MainWindow::connectionTest() {
+    ui->graphLabel->setText("Currently indicating: Connection");
     ui->log->append("Connection lost. Please try again in a moment."); // report connection loss to control log
+    ui->log->append("");
 
     setConnectionLock(false); // lock connection UI components for a moment
 
@@ -395,6 +476,7 @@ void MainWindow::connectionTest() {
     changeTextColor(ui->connectionMiddle, "gray");
     changeTextColor(ui->connectionBottom, "gray");
     ui->log->append("Please connect now.");
+    ui->log->append("");
     setConnectionLock(true); // unlock the UI connection components
 }
 
@@ -548,8 +630,6 @@ void MainWindow::setConnectionLock(bool status){
     ui->connectionSlider->setEnabled(status);
 }
 
-
-
 void MainWindow::playReplayButtonClicked() {
     int desiredNum = ui->historySpinBox->value();
     if (desiredNum == 0) { return; }
@@ -619,4 +699,43 @@ void MainWindow::replayRecording(Recording *recording) {
 
     //START THERAPY
     therapy(group, session, 1);
+}
+
+void MainWindow::updateIntensityLog(){
+    QString text = "";
+    text.append(QString::number(device->getCurrentIntensity()));
+    ui->currentIntensityLog->setText(text);
+}
+
+// displayIntensityOnGraph() is used to have the graph blink the relative intensity level
+// note that everytime that the intensity level is changed during a session, this function (the UI animation this function does) ...
+// consumes 750ms of the therapy time... (5 x (sleepy(75) x 2)) = 750ms per call
+// this loss in time is made up for within the therapy() function
+void MainWindow::displayIntensityOnGraph(){
+    ui->graphLabel->setText("Currently indicating: Intensity");
+    changeTextColor(ui->connectionTop, "gray");
+    changeTextColor(ui->connectionMiddle, "gray");
+    changeTextColor(ui->connectionBottom, "gray");
+
+    for(int i=0; i<5; i++){
+        if(device->getCurrentIntensity()>66){
+            changeTextColor(ui->connectionTop, "red");
+            sleepy(75);
+            changeTextColor(ui->connectionTop, "gray");
+            sleepy(75);
+        }
+        else if(device->getCurrentIntensity()>32){
+            changeTextColor(ui->connectionMiddle, "yellow");
+            sleepy(75);
+            changeTextColor(ui->connectionMiddle, "gray");
+            sleepy(75);
+        }
+        else{
+            changeTextColor(ui->connectionBottom, "green");
+            sleepy(75);
+            changeTextColor(ui->connectionBottom, "gray");
+            sleepy(75);
+        }
+    }
+    changeConnectionSlider();
 }
