@@ -10,12 +10,12 @@ class Battery : public Widget{
         Battery(DeviceMediator* device);
         ~Battery();
 
-        int getBatteryLevel();
-        void setBatteryLevel(int newBatteryLevel);
+        double getBatteryLevel();
+        void setBatteryLevel(double newBatteryLevel);
         void setBlinkFlag(bool flag);
         bool getBlinkFlag();
     private:
-        int batteryLevel;
+        double batteryLevel;
         bool blinkFlag = false;
 };
 
