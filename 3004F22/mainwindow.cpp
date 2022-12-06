@@ -185,7 +185,7 @@ void MainWindow::pressSelect(){
 }
 
 void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
-    if (ui->recordSessionRadioButton->isChecked() && !recordingFlag) { addRecordingButtonClicked(); }
+    if (ui->recordSessionRadioButton->isChecked() && !recordingFlag && (ui->nameComboBox->currentText() != NULL)) { addRecordingButtonClicked(); }
 
     // Initial check to see if Battery needs to be replaced
     if(!checkBattery()){
@@ -548,34 +548,45 @@ void MainWindow::setConnectionLock(bool status){
     ui->connectionSlider->setEnabled(status);
 }
 
-
-
+//USE STATE OF CONTROL WINDOW TO DETERMINE THE DESIRED RECORDING
 void MainWindow::playReplayButtonClicked() {
+    //GET RECORDING NUMBER OF SPECIFIED USER, DO NOTHING IF 0
     int desiredNum = ui->historySpinBox->value();
     if (desiredNum == 0) { return; }
 
+    //GET USER NAME
     string name = ui->nameComboBox->currentText().toStdString();
     Recording* desiredRecording;
 
+    //LOOP THROUGH EACH RECORDING, COUNTING NUMBER OF RECORDINGS
+    //OF SPECIFIED USER, STOP WHEN COUNT IS EQUAL TO DESIRED NUM
     int counter = 0;
     for (int i = 0; i < device->getNumRecordings(); i ++) {
         if (device->getRecordingAt(i)->getName() == name) {
             counter++;
             if (counter == desiredNum) {
                 desiredRecording = device->getRecordingAt(i);
+                break;
             }
         }
     }
+
+    //REPLAY THE DESIRED RECORDING
     replayRecording(desiredRecording);
 }
 
+//REPLAY THE RECORDING SPECIFIED IN CONTROL WINDOW
 void MainWindow::replayRecording(Recording *recording) {
+    ui->log->append("\n**SETTING MACHINE STATE FOR REPLAY**");
+
+    //GRAB PARAMETERS FROM RECORDING OBJECT
     int group = recording->getGroup();
     int intensity = recording->getIntensity();
-    int batteryPercent = recording->getBatteryPercent();
+    double batteryPercent = recording->getBatteryPercent();
     int connection = recording->getConnection();
     int session;
 
+    //MAP INTENSITY TO SESSION
     switch (intensity) {
         case 5: session = 1;
         break;
@@ -606,7 +617,7 @@ void MainWindow::replayRecording(Recording *recording) {
 
     //SET BATTERY AND SLIDER
     device->getBattery()->setBatteryLevel(batteryPercent);
-    while (ui->batterySlider->value() != batteryPercent) {
+    while (ui->batterySlider->value() != ceil(batteryPercent)) {
         if (ui->batterySlider->value() < batteryPercent) {
             ui->batterySlider->setValue(ui->batterySlider->value() + 1);
             sleepy(10);
@@ -617,6 +628,8 @@ void MainWindow::replayRecording(Recording *recording) {
     }
     ui_initializeBattery();
 
-    //START THERAPY
+    //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
+    //(DO NOT RECORD THIS THERAPY)
+    ui->log->append("**STARTING REPLAY**\n");
     therapy(group, session, 1);
 }
