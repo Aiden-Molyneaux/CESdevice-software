@@ -38,7 +38,7 @@ class MainWindow : public QMainWindow {
 
         void changeTextColor(QTextBrowser *text, QColor color);
         void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
-        void blinkTopSection();
+        void connectionTest(); // formally blinkTopSection()
         void blinkBattery();
         void blinkSession(int sessionNum);
         void sleepy(int sleepTime);

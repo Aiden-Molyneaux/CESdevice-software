@@ -248,6 +248,7 @@ void MainWindow::therapy(int groupNum, int sessionNum){
                 cout << device->getBattery()->getBatteryLevel() << endl; // monitor the battery level in the output
             }
             ui->log->append("Session Complete."); // log to control that session has completed
+            device->setIsInSession(false);
             break; // session ends, break therapy loop
         }
 
@@ -257,6 +258,7 @@ void MainWindow::therapy(int groupNum, int sessionNum){
         cout << device->getBattery()->getBatteryLevel() << endl;
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
             ui->log->append("Session Complete.");
+            device->setIsInSession(false);
             break; // session ends, break therapy loop
         }
     }
@@ -318,7 +320,7 @@ void MainWindow::changeConnectionSlider() {
             changeTextColor(ui->connectionMiddle, "gray");
             changeTextColor(ui->connectionBottom, "gray");
 
-            controlTest();
+            connectionTest();
         break;
         //OKAY CONNECTION - MIDDLE SECTION ON - ORANGE
         case 2:
