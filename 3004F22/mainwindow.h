@@ -25,6 +25,8 @@ class MainWindow : public QMainWindow {
         void ui_initializeBattery();
         void ui_turnOffBattery();
 
+        bool flag = false;
+
     private:
         Ui::MainWindow *ui;
         Device* device;

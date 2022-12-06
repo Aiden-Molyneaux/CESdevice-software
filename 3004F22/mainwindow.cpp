@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->addUserButton, SIGNAL(released()), this, SLOT (addUserButtonClicked()));
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
     connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
-    connect(ui->stopButton, SIGNAL(pressed()), this, SLOT (stopPressed()));
+    connect(ui->stopButton, SIGNAL(released()), this, SLOT (stopPressed()));
 }
 
 MainWindow::~MainWindow() {
@@ -268,20 +268,24 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
             recordingFlag = 0;
         } else {
             ui->log->append("THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name));
-        }
-    }
 
-    //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
-    changeBackgroundColor(ui->stopButton, "green", "stop", "20");
-    sleepy(20);
+            //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
+            changeBackgroundColor(ui->stopButton, "green", "stop", "20");
+            sleepy(1);
 
-    pauseTimer.start();
-    while (pauseTimer.elapsed() < 2000){
-        if (device->getRecordingFlag()){
-            //DO RECORDING NOW - DEFAULT INTENSITY
-            addRecording(name, group, batteryPercent, initialIntensity);
-            changeBackgroundColor(ui->stopButton, "white", "stop", "20");
-            return;
+            device->setRecordingFlag(false);
+            pauseTimer.restart();
+            pauseTimer.start();
+            while (pauseTimer.elapsed() < 5000){
+                sleepy(1);
+                if (device->getRecordingFlag()) {
+                    //DO RECORDING NOW - DEFAULT INTENSITY
+                    addRecording(name, group, batteryPercent, initialIntensity);
+                    changeBackgroundColor(ui->stopButton, "white", "stop", "20");
+                    device->setRecordingFlag(false);
+                    return;
+                }
+            }
         }
     }
 
