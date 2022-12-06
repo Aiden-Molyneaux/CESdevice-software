@@ -52,6 +52,8 @@ public:
     QTextBrowser *batteryLevel2;
     QTextBrowser *batteryLevel3;
     QPushButton *CES2Button;
+    QPushButton *stopButton;
+    QLabel *graphLabel;
     QGroupBox *groupBox_2;
     QTextBrowser *log;
     QLabel *label_3;
@@ -73,6 +75,8 @@ public:
     QRadioButton *recordSessionRadioButton;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
+    QTextBrowser *currentIntensityLog;
+    QLabel *label_6;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -217,6 +221,18 @@ public:
 "	background-color: white;\n"
 "	border-radius: 35;\n"
 "}"));
+        stopButton = new QPushButton(groupBox);
+        stopButton->setObjectName(QString::fromUtf8("stopButton"));
+        stopButton->setEnabled(true);
+        stopButton->setGeometry(QRect(190, 500, 41, 41));
+        stopButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"	border-image: url(:/icons/stop.png);\n"
+"	background-color: white;\n"
+"	border-radius: 20;\n"
+"}"));
+        graphLabel = new QLabel(groupBox);
+        graphLabel->setObjectName(QString::fromUtf8("graphLabel"));
+        graphLabel->setGeometry(QRect(180, 230, 181, 17));
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(820, -20, 771, 571));
@@ -245,7 +261,7 @@ public:
         batterySlider->setOrientation(Qt::Horizontal);
         label_2 = new QLabel(groupBox_2);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(90, 440, 81, 20));
+        label_2->setGeometry(QRect(100, 440, 81, 20));
         groupBox_3 = new QGroupBox(groupBox_2);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
         groupBox_3->setGeometry(QRect(280, 70, 441, 191));
@@ -288,6 +304,13 @@ public:
         disconnectEarclipsButton = new QPushButton(groupBox_2);
         disconnectEarclipsButton->setObjectName(QString::fromUtf8("disconnectEarclipsButton"));
         disconnectEarclipsButton->setGeometry(QRect(280, 310, 121, 25));
+        currentIntensityLog = new QTextBrowser(groupBox_2);
+        currentIntensityLog->setObjectName(QString::fromUtf8("currentIntensityLog"));
+        currentIntensityLog->setGeometry(QRect(110, 510, 61, 21));
+        currentIntensityLog->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        label_6 = new QLabel(groupBox_2);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setGeometry(QRect(90, 490, 101, 17));
         MainWindow->setCentralWidget(centralwidget);
         groupBox->raise();
         group45Button->raise();
@@ -356,9 +379,11 @@ public:
         CESButton->setText(QString());
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Battery", nullptr));
         CES2Button->setText(QString());
+        stopButton->setText(QString());
+        graphLabel->setText(QApplication::translate("MainWindow", "Currently indicating: ", nullptr));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "CONSOLE", nullptr));
-        label->setText(QApplication::translate("MainWindow", "CONNECTION", nullptr));
+        label->setText(QApplication::translate("MainWindow", "Connection", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Battery Level", nullptr));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "USER STUFF", nullptr));
         addUserButton->setText(QApplication::translate("MainWindow", "Add User", nullptr));
@@ -370,6 +395,7 @@ public:
         recordSessionRadioButton->setText(QApplication::translate("MainWindow", "Record next session", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "Current Intensity", nullptr));
     } // retranslateUi
 
 };

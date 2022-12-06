@@ -32,9 +32,12 @@ class MainWindow : public QMainWindow {
         int selectedSession = 1;
         int selectedGroup = 1;
         int connectionIntensity = 1;
+        int timesIntensityAdjusted;
 
         QElapsedTimer blinkTimer;
         QElapsedTimer elapsedTimer;
+        QElapsedTimer selectTimer;
+        QElapsedTimer pauseTimer;
         QElapsedTimer therapyTimer;
         QElapsedTimer timeoutTimer;
 
@@ -50,9 +53,15 @@ class MainWindow : public QMainWindow {
 
         void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
         void replayRecording(Recording* recording);
+        void addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity = -1);
         void drainBattery(int intensity);
         bool checkBattery();
+        void batteryWarning();
         void setConnectionLock(bool status);
+
+        void updateIntensityLog();
+        void displayIntensityOnGraph();
+        void displayIntensityWarning(int flag);
 
     private slots:
         void pressPower();
@@ -60,13 +69,14 @@ class MainWindow : public QMainWindow {
         void pressUpArrow();
         void pressDownArrow();
         void pressSelect();
+        void releaseSelect();
         void changeConnectionSlider();
         void changeBatterySlider();
         void connectEarClips();
         void disconnectEarClips();
         void addUserButtonClicked();
-        void addRecordingButtonClicked();
         void printHistoryButtonClicked();
         void playReplayButtonClicked();
+        void stopPressed();
 };
 #endif // MAINWINDOW_H

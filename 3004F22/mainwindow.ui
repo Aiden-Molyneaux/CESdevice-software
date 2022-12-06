@@ -411,6 +411,42 @@ p, li { white-space: pre-wrap; }
       <string/>
      </property>
     </widget>
+    <widget class="QPushButton" name="stopButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>500</y>
+       <width>41</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	border-image: url(:/icons/stop.png);
+	background-color: white;
+	border-radius: 20;
+}</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="graphLabel">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>230</y>
+       <width>181</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Currently indicating: </string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
@@ -479,7 +515,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="text">
-      <string>CONNECTION</string>
+      <string>Connection</string>
      </property>
     </widget>
     <widget class="QSlider" name="batterySlider">
@@ -507,7 +543,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>100</x>
        <y>440</y>
        <width>81</width>
        <height>20</height>
@@ -685,6 +721,32 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string>Disconnect Earclips</string>
+     </property>
+    </widget>
+    <widget class="QTextBrowser" name="currentIntensityLog">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>510</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>490</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Current Intensity</string>
      </property>
     </widget>
    </widget>

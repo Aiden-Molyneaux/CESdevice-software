@@ -389,6 +389,7 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_res.cpp
 qrc_res.cpp: ../3004F22/res.qrc \
 		/usr/lib/qt5/bin/rcc \
+		../icons/stop.png \
 		../icons/up.png \
 		../icons/45.png \
 		../icons/CES2.png \

@@ -83,10 +83,10 @@ int Device::addUser(const string& name, int duration) {
     return numUsers;
 }
 
-int Device::addRecording(const string& name, int intensity, int group, int batteryPercent, int connection) {
+int Device::addRecording(const string& name, int intensity, int initialIntensity, int group, int batteryPercent, int connection) {
     if (numRecordings == 100) { return -1; }
 
-    recordings[numRecordings] = new Recording(this, name, intensity, group, batteryPercent, connection);
+    recordings[numRecordings] = new Recording(this, name, intensity, initialIntensity, group, batteryPercent, connection);
     numRecordings++;
     return numRecordings;
 }
@@ -138,3 +138,7 @@ bool Device::getFirstBoot() { return this->firstBoot; }
 void Device::setTimeout(bool value) { this->timeout = value; }
 
 bool Device::getTimeout() { return this->timeout; }
+
+void Device::setRecordingFlag(bool value) { this->recordingFlag = value; }
+
+bool Device::getRecordingFlag() { return this->recordingFlag; }
