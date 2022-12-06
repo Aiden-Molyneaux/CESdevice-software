@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow {
         void therapy(int groupNum, int sessionNum);
         void drainBattery();
         bool checkBattery();
+        void setConnectionLock(bool status);
 
     private slots:
         void pressPower();

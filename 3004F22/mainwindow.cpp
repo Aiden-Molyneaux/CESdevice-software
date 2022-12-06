@@ -39,7 +39,6 @@ void MainWindow::powerReleased(){
                 blinkBattery();
                 return;
             }
-
             changeBackgroundColor(ui->deltaButton, "green", "delta");
             changeBackgroundColor(ui->group20Button, "green", "20");
         } else { // continue if DEVICE is ON - turn off
@@ -98,7 +97,7 @@ void MainWindow::turnOff() {
         break;
     }
 
-    //QUICKLY BREAK WHILE LOOP IN blinkTopSection() IF IT IS BLINKING
+    //QUICKLY BREAK WHILE LOOP IN controlTest() IF IT IS BLINKING
     if (connectionIntensity == 1) {
         connectionIntensity = 2;
     }
@@ -196,12 +195,13 @@ void MainWindow::therapy(int groupNum, int sessionNum){
         ui->log->append("Connection level is poor. Please adjust.");
         return;
     }
+    setConnectionLock(false); // lock all Connection setting UI until Session begins
 
-    // Begin session with blinking session icon and 5 second count down
     device->setIsInSession(true);
     ui->log->append("Therapy session will begin in 5 seconds:");
     blinkSession(sessionNum); // make the session icon blink for a couple seconds
 
+    // Begin session with blinking session icon and 5 second count down
     for(int i=5; i>0; i--){
         QString text = "";
         text.append(QString::number(i));
@@ -209,12 +209,17 @@ void MainWindow::therapy(int groupNum, int sessionNum){
         sleepy(100); // small sleep to simulate count down
     }
 
-    int therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS();
+    int therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); // get Group's associated therapy time length (in milliseconds)
 //    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
 //    int sessionIntensity = device->getCurrentIntensity();
 
+    setConnectionLock(true); // unlock Connection setting UI
+
     therapyTimer.start(); // Timer tracks elapsed time
-    while(therapyTimer.elapsed() < therapyLengthMS){
+    int remainingTime = 0;
+    while(true){
+        int flag = 0; // flag for if Session pauses due to Connection interruption
+
         // Check that Battery levels are sufficient - if not, end the session early
         if(!checkBattery()){
             ui->log->append("Battery level too low. Replace Batteries");
@@ -222,31 +227,52 @@ void MainWindow::therapy(int groupNum, int sessionNum){
             return;
         }
 
-        // Check that connection strength is sufficient - if not pause the session
-        // PROBLEM AREA - if you press "Disconnect Earclips" while session is running, session will quit, but it won't enter this conditional
-        // additionally, connectionIntensity is set to 1, but this cout will say that it's still 3 (which is why it doesn't enter the loop)
-
-        cout << "Connection: " << connectionIntensity << endl;
-        if(connectionIntensity==1){
-            cout << "Hello" << endl;
-            ui->log->append("Connection level is poor. Please adjust.");
-            sleepy(4000);
-            return;
+        // During each loop (where the Device is not disconnected) record long remains of the session
+        if(connectionIntensity!=1){
+            remainingTime = therapyLengthMS - therapyTimer.elapsed();
         }
 
+        // This loop functions such that if the Device disconnects during a session, the device will wait until Connection returns and sets a flag to let the Device know it needs to resume a session
+        while(connectionIntensity==1){
+            flag = 1;
+            ui->log->append("Connection level is poor. Please adjust."); // prompt user to reconnect
+            ui->log->append("");
+            sleepy(2000);
+        }
+        if(flag){ // return to session
+            ui->log->append("Resuming Session.");
+            therapyTimer.restart(); // restart and begin timer again
+            while(therapyTimer.elapsed() < remainingTime){ // execute the remaining time of the session
+                drainBattery(); // deplete battery
+                sleepy(150); // simulate real time
+                cout << device->getBattery()->getBatteryLevel() << endl; // monitor the battery level in the output
+            }
+            ui->log->append("Session Complete."); // log to control that session has completed
+            break; // session ends, break therapy loop
+        }
+
+        // Remainder of this function executes if session does not disconnect (standard use case)
         drainBattery();
         sleepy(150);
         cout << device->getBattery()->getBatteryLevel() << endl;
+        if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
+            ui->log->append("Session Complete.");
+            break; // session ends, break therapy loop
+        }
     }
 }
 
 void MainWindow::drainBattery(){
-    device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-1);
+    // Standard battery life on initialization is 100 units
+    device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-1); // decrement battery life by 1 unit
+
+    // Reflect battery life change on UI battery elements
     ui->batterySlider->setValue(device->getBattery()->getBatteryLevel());
     ui_initializeBattery();
 }
 
 bool MainWindow::checkBattery(){
+    // if battery life is >32 units than Device can turn on and session can start
     if(device->getBattery()->getBatteryLevel()>32){ return true; }
     return false;
 }
@@ -292,7 +318,7 @@ void MainWindow::changeConnectionSlider() {
             changeTextColor(ui->connectionMiddle, "gray");
             changeTextColor(ui->connectionBottom, "gray");
 
-            blinkTopSection();
+            controlTest();
         break;
         //OKAY CONNECTION - MIDDLE SECTION ON - ORANGE
         case 2:
@@ -320,13 +346,44 @@ void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
     text->setText(text->toPlainText());
 }
 
-void MainWindow::blinkTopSection() {
-    while (connectionIntensity == 1) {
+// controlTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
+void MainWindow::connectionTest() {
+    ui->log->append("Connection lost. Please try again in a moment."); // report connection loss to control log
+
+    setConnectionLock(false); // lock connection UI components for a moment
+
+    // Blink 7 and 8 graph sections to indicate No Connection
+    for(int i=10; i>0; i--){
         changeTextColor(ui->connectionTop, "red");
         sleepy(100);
         changeTextColor(ui->connectionTop, "gray");
         sleepy(100);
     }
+
+    // gray out Connection graph
+    changeTextColor(ui->connectionTop, "gray");
+    changeTextColor(ui->connectionMiddle, "gray");
+    changeTextColor(ui->connectionBottom, "gray");
+
+    // animate red, yellow, green lights strobing up and down Connection graph
+    for(int i=3; i>0; i--){
+        changeTextColor(ui->connectionBottom, "gray");
+        changeTextColor(ui->connectionTop, "red");
+        sleepy(400);
+        changeTextColor(ui->connectionTop, "gray");
+        changeTextColor(ui->connectionMiddle, "yellow");
+        sleepy(400);
+        changeTextColor(ui->connectionMiddle, "gray");
+        changeTextColor(ui->connectionBottom, "green");
+        sleepy(400);
+    }
+
+    // gray out Connection graph, indicate "Please connect now", and allow connection
+    changeTextColor(ui->connectionTop, "gray");
+    changeTextColor(ui->connectionMiddle, "gray");
+    changeTextColor(ui->connectionBottom, "gray");
+    ui->log->append("Please connect now.");
+    setConnectionLock(true); // unlock the UI connection components
 }
 
 void MainWindow::blinkBattery(){
@@ -444,3 +501,12 @@ void MainWindow::printHistoryButtonClicked() {
     }
     ui->historySpinBox->setMaximum(numRecordings);
 }
+
+// setConnectionLock() function used to enable and disable Connection UI elements, as to not let the user interrupt a process (works well (-_^))
+void MainWindow::setConnectionLock(bool status){
+    ui->connectEarclipsButton->setEnabled(status);
+    ui->disconnectEarclipsButton->setEnabled(status);
+    ui->connectionSlider->setEnabled(status);
+}
+
+
