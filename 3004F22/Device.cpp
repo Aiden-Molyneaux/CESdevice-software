@@ -12,7 +12,7 @@ Device::Device(const string& name): deviceName(name), isPowered(false), inSessio
     // Group and Sessions initialization
     groupTypes[0] = new Group(this, "20min", 4000);
     groupTypes[1] = new Group(this, "45min", 8500);
-    groupTypes[2] = new Group(this, "userDesignated", 5000);
+    groupTypes[2] = new Group(this, "userDesignated", 0);
 
     for(int i=0; i<3; i++){
         sessionTypes[i][0] = new Session(this, "delta", 5);
@@ -39,10 +39,6 @@ Device::~Device(){
 void Device::WidgetChanged(Widget*, const string& widgetName){
     if(widgetName == "powerButton"){
         isPowered ? powerOff() : powerOn();
-        cout << "Power: " << isPowered << endl;
-        cout << "powerLight: " << powerLight->getIsLightOn() << endl;
-    }
-    else if(widgetName == "upArrowButton"){
     }
 }
 

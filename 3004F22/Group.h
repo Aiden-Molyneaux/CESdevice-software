@@ -11,6 +11,7 @@ class Group : public Widget {
         ~Group();
 
         int getLengthMS();
+        void setLengthMS(int newLengthMS);
 
     private:
         string groupName;

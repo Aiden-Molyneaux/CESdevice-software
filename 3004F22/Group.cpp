@@ -5,3 +5,5 @@ Group::Group(DeviceMediator* device, const string& name, int lengthMS): groupNam
 Group::~Group(){ delete this; }
 
 int Group::getLengthMS(){ return this->lengthMS; }
+
+void Group::setLengthMS(int newLengthMS){ this->lengthMS = newLengthMS; }
