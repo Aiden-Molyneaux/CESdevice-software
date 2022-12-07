@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->addUserButton, SIGNAL(released()), this, SLOT (addUserButtonClicked()));
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
     connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
-    connect(ui->stopButton, SIGNAL(pressed()), this, SLOT (stopPressed()));
+    connect(ui->stopButton, SIGNAL(released()), this, SLOT (stopPressed()));
 }
 
 MainWindow::~MainWindow() {
@@ -256,7 +256,7 @@ void MainWindow::stopPressed() {
 }
 
 // therapy() is the provides the main functionality of the device - initiating and performing therapy sessions
-void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
+void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int overrideIntensity){
     string name = ui->nameComboBox->currentText().toStdString();
     int group = selectedGroup;
     int initialIntensity = device->getSessions(selectedGroup-1, selectedSession-1)->getIntensity();
@@ -268,20 +268,24 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
             recordingFlag = 0;
         } else {
             ui->log->append("THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name));
-        }
-    }
 
-    //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
-    changeBackgroundColor(ui->stopButton, "green", "stop", "20");
-    sleepy(20);
+            //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
+            changeBackgroundColor(ui->stopButton, "green", "stop", "20");
+            sleepy(1);
 
-    pauseTimer.start();
-    while (pauseTimer.elapsed() < 2000){
-        if (device->getRecordingFlag()){
-            //DO RECORDING NOW - DEFAULT INTENSITY
-            addRecording(name, group, batteryPercent, initialIntensity);
-            changeBackgroundColor(ui->stopButton, "white", "stop", "20");
-            return;
+            device->setRecordingFlag(false);
+            pauseTimer.restart();
+            pauseTimer.start();
+            while (pauseTimer.elapsed() < 5000){
+                sleepy(1);
+                if (device->getRecordingFlag()) {
+                    //DO RECORDING NOW - DEFAULT INTENSITY
+                    addRecording(name, group, batteryPercent, initialIntensity);
+                    changeBackgroundColor(ui->stopButton, "white", "stop", "20");
+                    device->setRecordingFlag(false);
+                    return;
+                }
+            }
         }
     }
 
@@ -320,7 +324,14 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     ui->log->append("");
 
     int therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); // get Group's associated therapy time length (in milliseconds)
-    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity()); // get Session's associated intensity level
+
+    //SET CURRENT DEVICE INTENSITY ACCORDING TO OVERWRITEN VALUE - USED FOR RECORDING REPLAY
+    if (overrideIntensity == -1) {
+        device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
+    } else {
+        device->setCurrentIntensity(overrideIntensity);
+    }
+
     updateIntensityLog(); // update Intensity log in UI
 
     setConnectionLock(true); // unlock Connection setting UI
@@ -748,6 +759,7 @@ void MainWindow::replayRecording(Recording *recording) {
     //GRAB PARAMETERS FROM RECORDING OBJECT
     int group = recording->getGroup();
     int initialIntensity = recording->getInitialIntensity();
+    int intensity = recording->getIntensity();
     double batteryPercent = recording->getBatteryPercent();
     int connection = recording->getConnection();
     int session;
@@ -799,7 +811,7 @@ void MainWindow::replayRecording(Recording *recording) {
     //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
     //(DO NOT RECORD THIS THERAPY)
     ui->log->append("**STARTING REPLAY**\n");
-    therapy(group, session, 0);
+    therapy(group, session, 0, intensity);
 }
 
 void MainWindow::updateIntensityLog(){
