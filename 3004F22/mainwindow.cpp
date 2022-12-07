@@ -21,13 +21,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->downArrowButton, SIGNAL(released()), this, SLOT (pressDownArrow()));
     connect(ui->connectionSlider, SIGNAL(sliderReleased()), this, SLOT (changeConnectionSlider()));
     connect(ui->batterySlider, SIGNAL(sliderReleased()), this, SLOT (changeBatterySlider()));
-    connect(ui->checkButton, SIGNAL(released()), this, SLOT (pressSelect()));
+    connect(ui->checkButton, SIGNAL(pressed()), this, SLOT (pressSelect()));
+    connect(ui->checkButton, SIGNAL(released()), this, SLOT (releaseSelect()));
     connect(ui->connectEarclipsButton, SIGNAL(released()), this, SLOT (connectEarClips()));
     connect(ui->disconnectEarclipsButton, SIGNAL(released()), this, SLOT (disconnectEarClips()));
     connect(ui->addUserButton, SIGNAL(released()), this, SLOT (addUserButtonClicked()));
-    connect(ui->addFakeRecordingButton, SIGNAL(released()), this, SLOT (addRecordingButtonClicked()));
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
     connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
+    connect(ui->stopButton, SIGNAL(released()), this, SLOT (stopPressed()));
 }
 
 MainWindow::~MainWindow() {
@@ -36,10 +37,45 @@ MainWindow::~MainWindow() {
 }
 
 // MAIN FUNCTION IMPLEMENTATIONS (therapy(), connectionTest(), and replayRecording())
-
 // therapy() is the provides the main functionality of the device - initiating and performing therapy sessions
-void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
-    if (ui->recordSessionRadioButton->isChecked() && !recordingFlag && (ui->nameComboBox->currentText() != NULL)) { addRecordingButtonClicked(); }
+void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int overrideIntensity){
+    string name = ui->nameComboBox->currentText().toStdString();
+    int group = selectedGroup;
+    int initialIntensity = device->getSessions(selectedGroup-1, selectedSession-1)->getIntensity();
+    double batteryPercent = device->getBattery()->getBatteryLevel();
+
+    if (recordingFlag) {
+        if (ui->nameComboBox->currentText() == NULL) {
+            ui->log->append("CANNOT RECORD - NO USER SPECIFIED");
+            recordingFlag = 0;
+        } else {
+            ui->log->append("THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name));
+
+            //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
+            changeBackgroundColor(ui->stopButton, "green", "stop", "20");
+            sleepy(1);
+
+            device->setRecordingFlag(false);
+            pauseTimer.restart();
+            pauseTimer.start();
+            while (pauseTimer.elapsed() < 5000){
+                sleepy(1);
+                if (device->getRecordingFlag()) {
+                    //DO RECORDING NOW - DEFAULT INTENSITY
+                    addRecording(name, group, batteryPercent, initialIntensity);
+                    changeBackgroundColor(ui->stopButton, "white", "stop", "20");
+                    device->setRecordingFlag(false);
+                    return;
+                }
+            }
+        }
+    }
+
+    //SET STOP BUTTON BACK TO WHITE
+    changeBackgroundColor(ui->stopButton, "white", "stop", "20");
+
+    //TO BE USED FOR RECORDING
+    int highestIntensity = initialIntensity;
 
     // Initial check to see if Battery needs to be replaced
     if(!checkBattery()){
@@ -53,10 +89,12 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
         ui->log->append("\nConnection level is poor. Please adjust.");
         return;
     }
+
     setConnectionLock(false); // lock all Connection setting UI until Session begins
 
+
     device->setIsInSession(true);
-    ui->log->append("Therapy session will begin in 5 seconds:");
+    ui->log->append("\nTherapy session will begin in 5 seconds:");
     blinkSession(sessionNum); // make the session icon blink for a couple seconds
 
     // Begin session with blinking session icon and 5 second count down
@@ -73,7 +111,13 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     if(groupNum == 3){ therapyLengthMS = device->getUserByName(ui->nameComboBox->currentText().toStdString())->getDuration()*1000; }
     else{ therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); }
 
-    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity()); // get Session's associated intensity level
+    //SET CURRENT DEVICE INTENSITY ACCORDING TO OVERWRITEN VALUE - USED FOR RECORDING REPLAY
+    if (overrideIntensity == -1) {
+        device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
+    } else {
+        device->setCurrentIntensity(overrideIntensity);
+    }
+
     updateIntensityLog(); // update Intensity log in UI
 
     setConnectionLock(true); // unlock Connection setting UI
@@ -98,6 +142,8 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
         if(timesIntensityAdjusted){
             therapyLengthMS+=(750*timesIntensityAdjusted);
             timesIntensityAdjusted=0;
+
+            if (device->getCurrentIntensity() > highestIntensity) { highestIntensity = device->getCurrentIntensity(); }
         }
 
         // Yet another check - this one is to catch if the user pressed the power button to end the session early
@@ -141,13 +187,21 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
             }
             ui->log->append("\nSession Complete."); // log to control that session has completed
             device->setIsInSession(false);
+
+            //DO RECORDING HERE
+            if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
+
             break; // session ends, break therapy loop
         }
 
         // Remainder of this function executes if session does not disconnect (standard use case)
         drainBattery(device->getCurrentIntensity());
+
         sleepy(150);
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
+           //DO RECORDING HERE
+            if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
+
             ui->log->append("Session Complete.");
             device->setIsInSession(false);
             break; // session ends, break therapy loop
@@ -203,12 +257,13 @@ void MainWindow::replayRecording(Recording *recording) {
     //GRAB PARAMETERS FROM RECORDING OBJECT
     int group = recording->getGroup();
     int intensity = recording->getIntensity();
+    int initialIntensity = recording->getInitialIntensity();
     double batteryPercent = recording->getBatteryPercent();
     int connection = recording->getConnection();
     int session;
 
     //MAP INTENSITY TO SESSION
-    switch (intensity) {
+    switch (initialIntensity) {
         case 5: session = 1;
         break;
         case 8: session = 2;
@@ -231,7 +286,7 @@ void MainWindow::replayRecording(Recording *recording) {
         sleepy(200);
     }
 
-    //SET CONNECTION AND SLIDER
+        //SET CONNECTION AND SLIDER
     connectionIntensity = connection;
     ui->connectionSlider->setValue(connectionIntensity);
     sleepy(200);
@@ -252,7 +307,7 @@ void MainWindow::replayRecording(Recording *recording) {
     //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
     //(DO NOT RECORD THIS THERAPY)
     ui->log->append("**STARTING REPLAY**\n");
-    therapy(group, session, 1);
+    therapy(group, session, 0, intensity);
 }
 
 // SLOT FUNCTIONS (UI EVENT HANDLERS)
@@ -271,25 +326,46 @@ void MainWindow::powerReleased(){
     }
 
     if(powerPressedTimer.elapsed() >= 200){ // check if Power Button was held for 2 seconds
-        // 2 of 4 uses of the power button - turn on the device
         if(!device->getIsPoweredOn() && !device->getIsSoftPoweredOn()){ // continue if DEVICE is OFF
+            // 2 of 4 uses of the power button - turn on the device
+            if (device->getFirstBoot()) {
+                ui->connectionSlider->setEnabled(true);
+                bootConnectionTest();
+
+                //CHECK IF TIMED OUT
+                if (device->getTimeout()) {
+                    cout << "DEVICE TIMED OUT" << endl;
+                    device->setTimeout(false);
+                    return;
+                }
+
+                device->setFirstBoot(false);
+            }
+
             ui_initializeBattery();
             if(device->getBattery()->getBatteryLevel() < 33){
                 device->setSoftPower(true);
                 device->getBattery()->setBlinkFlag(true);
 
-                ui->log->append("\nBattery level too low. Replace Batteries");
+                ui->log->append("Battery level too low. Replace Batteries");
+                ui->log->append("");
                 blinkBattery();
                 return;
             }
-
             powerLightOnOff(true);
             changeBackgroundColor(ui->deltaButton, "green", "delta");
             changeBackgroundColor(ui->group20Button, "green", "20");
+
         // 3 of 4 uses of the power button - turn the device off
         } else { // continue if DEVICE is ON - turn off
             powerLightOnOff(false);
             turnOffUI();
+
+            //ENSURE BOOT CONNECTION TEST
+            device->setFirstBoot(true);
+            ui->connectionSlider->setValue(1);
+            connectionIntensity = 1;
+            ui->connectionSlider->setEnabled(false);
         }
 
         device->getPowerButton()->pressed();
@@ -393,35 +469,19 @@ void MainWindow::pressDownArrow(){
 }
 
 void MainWindow::pressSelect(){
-    therapy(selectedGroup, selectedSession, 0);
+    selectTimer.start();
 }
 
-//USE STATE OF CONTROL WINDOW TO DETERMINE THE DESIRED RECORDING
+void MainWindow::stopPressed() {
+    device->setRecordingFlag(true);
+}
 
-void MainWindow::playReplayButtonClicked() {
-    //GET RECORDING NUMBER OF SPECIFIED USER, DO NOTHING IF 0
-    int desiredNum = ui->historySpinBox->value();
-    if (desiredNum == 0) { return; }
-
-    //GET USER NAME
-    string name = ui->nameComboBox->currentText().toStdString();
-    Recording* desiredRecording;
-
-    //LOOP THROUGH EACH RECORDING, COUNTING NUMBER OF RECORDINGS
-    //OF SPECIFIED USER, STOP WHEN COUNT IS EQUAL TO DESIRED NUM
-    int counter = 0;
-    for (int i = 0; i < device->getNumRecordings(); i ++) {
-        if (device->getRecordingAt(i)->getName() == name) {
-            counter++;
-            if (counter == desiredNum) {
-                desiredRecording = device->getRecordingAt(i);
-                break;
-            }
-        }
+void MainWindow::releaseSelect() {
+    if (selectTimer.elapsed() >= 1000) {
+        therapy(selectedGroup, selectedSession, 1);
+    } else {
+        therapy(selectedGroup, selectedSession, 0);
     }
-
-    //REPLAY THE DESIRED RECORDING
-    replayRecording(desiredRecording);
 }
 
 void MainWindow::connectEarClips(){
@@ -432,74 +492,6 @@ void MainWindow::connectEarClips(){
 void MainWindow::disconnectEarClips(){
     ui->connectionSlider->setValue(1);
     changeConnectionSlider();
-}
-
-void MainWindow::addUserButtonClicked() {
-    if (!device->getIsPoweredOn()) {return;}
-
-    string name = ui->userNameInput->toPlainText().toStdString();
-    int duration = ui->userDurationInput->toPlainText().toInt();
-
-    if (device->getUserByName(name)) {
-        ui->log->append("**USER " + QString::fromStdString(name) + " ALREADY EXISTS**");
-        return;
-    }
-
-    if (name == "" || duration == 0) {
-        ui->log->append("**COULD NOT ADD USER - BAD INPUT**");
-        return;
-    } else if (device->addUser(name, duration) == -1) {
-        ui->log->append("**COULD NOT ADD USER - MAX USERS**");
-        return;
-    } else {
-        ui->log->append("**ADDED USER " + QString::fromStdString(name) + "**");
-    }
-
-    ui->nameComboBox->addItem(QString::fromStdString(name));
-}
-
-void MainWindow::addRecordingButtonClicked() {
-
-    string name = ui->nameComboBox->currentText().toStdString();
-    int group = selectedGroup;
-    int batteryPercent = device->getBattery()->getBatteryLevel();
-    int intensity = device->getSessions(group-1, selectedSession-1)->getIntensity();
-
-    if (device->addRecording(name, intensity, group, batteryPercent, connectionIntensity) == -1) {
-        ui->log->append("**COULD NOT ADD RECORDING**");
-        return;
-    } else {
-        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
-    }
-}
-
-void MainWindow::printHistoryButtonClicked() {
-    string name = ui->nameComboBox->currentText().toStdString();
-
-    int numRecordings = 0;
-    for (int i = 0; i < device->getNumRecordings(); i++) {
-        Recording* recording = device->getRecordingAt(i);
-        if (recording->getName() == name) {
-            if (numRecordings == 0) {ui->historySpinBox->setMinimum(1);}
-            numRecordings++;
-
-            int intensity = recording->getIntensity();
-            int group = recording->getGroup();
-            int duration;
-
-            switch (group) {
-                case 1: duration = 20;
-                break;
-                case 2: duration = 45;
-                break;
-                case 3: duration = device->getUserByName(name)->getDuration();
-                break;
-            }
-
-            ui->log->append(QString::number(numRecordings) + ".\t INTENSITY: " + QString::number(intensity) + "\n\t DURATION: " + QString::number(duration));
-        }
-    }
-    ui->historySpinBox->setMaximum(numRecordings);
 }
 
 void MainWindow::cycleGroupButton() {
@@ -528,11 +520,10 @@ void MainWindow::cycleGroupButton() {
 }
 
 void MainWindow::changeConnectionSlider() {
-    if (!device->getIsPoweredOn()) {return;}
-
     ui->graphLabel->setText("Currently indicating: Connection");
 
     connectionIntensity = ui->connectionSlider->value();
+    if (!device->getIsPoweredOn()) {return;}
 
     switch (connectionIntensity) {
         //NO CONNECTION - TOP SECTION BLINKS
@@ -629,8 +620,8 @@ void MainWindow::blinkBattery(){
 }
 
 // OTHER HELPER FUNCTIONS
-void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image) {
-    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: 40;}");
+void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius){
+    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: " + radius + ";}");
 }
 
 void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
@@ -693,11 +684,34 @@ void MainWindow::turnOffUI() {
     if (device->getBattery()->getBlinkFlag()) {
         device->getBattery()->setBlinkFlag(false);
     }
-
     //TURN OFF BATTERY INDICATORS
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
     ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
+
+    //TURN OFF CES INDICATOR
+    changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
+}
+
+void MainWindow::bootConnectionTest() {
+    timeoutTimer.start();
+
+    while (connectionIntensity == 1) {
+        changeBackgroundColor(ui->CESButton, "green", "CES", "34");
+        changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
+        sleepy(100);
+        changeBackgroundColor(ui->CESButton, "white", "CES", "34");
+        changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
+        sleepy(100);
+
+        //CHECK FOR TIMEOUT - 2 MINS IS 120000 MS
+        if (timeoutTimer.elapsed() >= 15000) {
+            ui->log->append("**DEVICE TIMED OUT**");
+            device->setTimeout(true);
+            return;
+        }
+    }
+    changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
 }
 
 void MainWindow::softOff(){
@@ -749,14 +763,110 @@ void MainWindow::blinkSession(int sessionNum){
     changeBackgroundColor(button, "green", sessionType);
 }
 
+void MainWindow::addUserButtonClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    string name = ui->userNameInput->toPlainText().toStdString();
+    int duration = ui->userDurationInput->toPlainText().toInt();
+
+    if (device->getUserByName(name)) {
+        ui->log->append("**USER " + QString::fromStdString(name) + " ALREADY EXISTS**");
+        return;
+    }
+
+    if (name == "" || duration == 0) {
+        ui->log->append("**COULD NOT ADD USER - BAD INPUT**");
+        return;
+    } else if (device->addUser(name, duration) == -1) {
+        ui->log->append("**COULD NOT ADD USER - MAX USERS**");
+        return;
+    } else {
+        ui->log->append("**ADDED USER " + QString::fromStdString(name) + "**");
+    }
+
+    ui->nameComboBox->addItem(QString::fromStdString(name));
+}
+
+void MainWindow::addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity) {
+    //CHECK IF WE ARE USING DEFAULT INTENSITY
+    if (intensity == -1) { intensity = device->getSessions(group-1, selectedSession-1)->getIntensity(); }
+
+    if (device->addRecording(name, intensity, initialIntensity, group, batteryPercent, connectionIntensity) == -1) {
+        ui->log->append("**COULD NOT ADD RECORDING**");
+        return;
+    } else {
+        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
+    }
+}
+
+void MainWindow::printHistoryButtonClicked() {
+    string name = ui->nameComboBox->currentText().toStdString();
+
+    int numRecordings = 0;
+    for (int i = 0; i < device->getNumRecordings(); i++) {
+        Recording* recording = device->getRecordingAt(i);
+        if (recording->getName() == name) {
+            if (numRecordings == 0) {ui->historySpinBox->setMinimum(1);}
+            numRecordings++;
+
+            int intensity = recording->getIntensity();
+            int group = recording->getGroup();
+            int duration;
+
+            switch (group) {
+                case 1: duration = 20;
+                break;
+                case 2: duration = 45;
+                break;
+                case 3: duration = device->getUserByName(name)->getDuration();
+                break;
+            }
+
+            ui->log->append(QString::number(numRecordings) + ".\t INTENSITY: " + QString::number(intensity) + "\n\t DURATION: " + QString::number(duration));
+        }
+    }
+    ui->historySpinBox->setMaximum(numRecordings);
+}
+
 // setConnectionLock() function used to enable and disable Connection UI elements, as to not let the user interrupt a process (works well (-_^))
 void MainWindow::setConnectionLock(bool status){
     ui->connectEarclipsButton->setEnabled(status);
     ui->disconnectEarclipsButton->setEnabled(status);
     ui->connectionSlider->setEnabled(status);
+
+    ui->upArrowButton->setEnabled(status);
+    ui->downArrowButton->setEnabled(status);
+    ui->powerButton->setEnabled(status);
 }
 
-// updateIntensityLog() will update the textBrowser in the UI with the new intensity at time of call
+//USE STATE OF CONTROL WINDOW TO DETERMINE THE DESIRED RECORDING
+
+void MainWindow::playReplayButtonClicked() {
+    //GET RECORDING NUMBER OF SPECIFIED USER, DO NOTHING IF 0
+    int desiredNum = ui->historySpinBox->value();
+    if (desiredNum == 0) { return; }
+
+    //GET USER NAME
+    string name = ui->nameComboBox->currentText().toStdString();
+    Recording* desiredRecording;
+
+    //LOOP THROUGH EACH RECORDING, COUNTING NUMBER OF RECORDINGS
+    //OF SPECIFIED USER, STOP WHEN COUNT IS EQUAL TO DESIRED NUM
+    int counter = 0;
+    for (int i = 0; i < device->getNumRecordings(); i ++) {
+        if (device->getRecordingAt(i)->getName() == name) {
+            counter++;
+            if (counter == desiredNum) {
+                desiredRecording = device->getRecordingAt(i);
+                break;
+            }
+        }
+    }
+
+    //REPLAY THE DESIRED RECORDING
+    replayRecording(desiredRecording);
+}
+
 void MainWindow::updateIntensityLog(){
     QString text = "";
     text.append(QString::number(device->getCurrentIntensity()));

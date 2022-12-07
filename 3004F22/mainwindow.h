@@ -22,8 +22,7 @@ class MainWindow : public QMainWindow {
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
-        void ui_initializeBattery();
-        void ui_turnOffBattery();
+        bool flag = false;
 
     private:
         Ui::MainWindow *ui;
@@ -37,25 +36,33 @@ class MainWindow : public QMainWindow {
 
         QElapsedTimer blinkTimer;
         QElapsedTimer powerPressedTimer;
+        QElapsedTimer selectTimer;
+        QElapsedTimer pauseTimer;
         QElapsedTimer therapyTimer;
+        QElapsedTimer timeoutTimer;
 
         // MAIN FUNCTIONS
-        void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
+        void therapy(int groupNum, int sessionNum, int recordingFlag = 0, int overrideIntensity = -1);
         void connectionTest();
+        void addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity = -1);
         void replayRecording(Recording* recording);
 
         // HELPER FUNCTIONS
         void changeTextColor(QTextBrowser *text, QColor color);
-        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image);
+        void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius = "40");
+        void bootConnectionTest();
         void blinkSession(int sessionNum);
         void cycleGroupButton();
         void turnOffUI();
         void softOff();
-        void powerLightOnOff(bool status);
         void setConnectionLock(bool status);
         void updateIntensityLog();
         void displayIntensityOnGraph();
+        void powerLightOnOff(bool status);
         void endSessionEarly();
+
+        void ui_initializeBattery();
+        void ui_turnOffBattery();
 
         // Battery functions
         void blinkBattery();
@@ -72,12 +79,13 @@ class MainWindow : public QMainWindow {
         void pressUpArrow();
         void pressDownArrow();
         void pressSelect();
+        void releaseSelect();
+        void stopPressed();
 
         // CONTROL PANEL UI SLOTS
         void connectEarClips();
         void disconnectEarClips();
         void addUserButtonClicked();
-        void addRecordingButtonClicked();
         void printHistoryButtonClicked();
         void playReplayButtonClicked();
         void changeConnectionSlider();
