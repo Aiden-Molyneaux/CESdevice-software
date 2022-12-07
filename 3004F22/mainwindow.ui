@@ -670,32 +670,6 @@ p, li { white-space: pre-wrap; }
        <string>Play replay</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="addFakeRecordingButton">
-      <property name="geometry">
-       <rect>
-        <x>279</x>
-        <y>140</y>
-        <width>111</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>add fake recording</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="recordSessionRadioButton">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>140</y>
-        <width>131</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Record next session</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QPushButton" name="connectEarclipsButton">
      <property name="geometry">

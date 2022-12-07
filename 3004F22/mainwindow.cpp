@@ -29,228 +29,6 @@ MainWindow::~MainWindow() {
     delete device;
 }
 
-void MainWindow::powerReleased(){
-    if(elapsedTimer.elapsed() >= 200){ // check if Power Button was held for 2 seconds
-        if(!device->getIsPoweredOn() && !device->getIsSoftPoweredOn()){ // continue if DEVICE is OFF
-            if (device->getFirstBoot()) {
-                ui->connectionSlider->setEnabled(true);
-                bootConnectionTest();
-
-                //CHECK IF TIMED OUT
-                if (device->getTimeout()) {
-                    cout << "DEVICE TIMED OUT" << endl;
-                    device->setTimeout(false);
-                    return;
-                }
-
-                device->setFirstBoot(false);
-            }
-
-            ui_initializeBattery();
-            if(device->getBattery()->getBatteryLevel() < 33){
-                device->setSoftPower(true);
-                device->getBattery()->setBlinkFlag(true);
-
-                ui->log->append("Battery level too low. Replace Batteries");
-                ui->log->append("");
-                blinkBattery();
-                return;
-            }
-            changeBackgroundColor(ui->deltaButton, "green", "delta");
-            changeBackgroundColor(ui->group20Button, "green", "20");
-        } else { // continue if DEVICE is ON - turn off
-            turnOff();
-
-            //ENSURE BOOT CONNECTION TEST
-            device->setFirstBoot(true);
-            ui->connectionSlider->setValue(1);
-            connectionIntensity = 1;
-            ui->connectionSlider->setEnabled(false);
-        }
-
-        device->getPowerButton()->pressed();
-        changeConnectionSlider();
-    } else {
-        cycleGroupButton();
-    }
-}
-
-void MainWindow::turnOff() {
-    device->setSoftPower(false);
-
-    //TURN OFF GROUP BUTTON
-    switch (selectedGroup) {
-        case 1:
-            changeBackgroundColor(ui->group20Button, "white", "20");
-        break;
-        case 2:
-            changeBackgroundColor(ui->group45Button, "white", "45");
-        break;
-        case 3:
-            changeBackgroundColor(ui->groupUserButton, "white", "user");
-        break;
-    }
-
-    //TURN OFF SESSION BUTTON
-    switch (selectedSession) {
-        case 1:
-            changeBackgroundColor(ui->deltaButton, "white", "delta");
-        break;
-        case 2:
-            changeBackgroundColor(ui->thetaButton, "white", "theta");
-        break;
-        case 3:
-            changeBackgroundColor(ui->alphaButton, "white", "alpha");
-        break;
-        case 4:
-            changeBackgroundColor(ui->betaButton, "white", "beta");
-        break;
-    }
-
-    //TURN OFF CONNECTION INDICATOR
-    switch (connectionIntensity) {
-        case 1:
-            changeTextColor(ui->connectionTop, "gray");
-        break;
-        case 2:
-            changeTextColor(ui->connectionMiddle, "gray");
-        break;
-        case 3:
-            changeTextColor(ui->connectionBottom, "gray");
-        break;
-    }
-
-    //QUICKLY BREAK WHILE LOOP IN controlTest() IF IT IS BLINKING
-    if (connectionIntensity == 1) {
-        connectionIntensity = 2;
-    }
-
-    //QUICKLY BREAK WHILE LOOP IN blinkBattery() IF IT IS BLINKING
-    if (device->getBattery()->getBlinkFlag()) {
-        device->getBattery()->setBlinkFlag(false);
-    }
-
-    //TURN OFF BATTERY INDICATORS
-    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
-    ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
-    ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
-
-    //TURN OFF CES INDICATOR
-    changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
-}
-
-// pressPower() is called when the UI power button is pressed (before release) - starts a timer to get the elapsed time between press and release ...
-// so that we can differentiate between a button "press and release" and a button "press, hold, and release"
-void MainWindow::pressPower(){
-    elapsedTimer.start();
-}
-
-void MainWindow::pressUpArrow(){
-    if (!device->getIsPoweredOn()) {return;}
-
-    // 1 of 2 uses for the upArrowButton - if in session, buttons adjust intensity
-    if(device->getIsInSession()){
-        timesIntensityAdjusted++;
-        if(device->getCurrentIntensity()==100){
-            ui->log->append("Warning: Device's maximum intensity reached");
-            ui->log->append("");
-            displayIntensityOnGraph();
-            return;
-        }
-        device->setCurrentIntensity(device->getCurrentIntensity()+1);
-        updateIntensityLog();
-        displayIntensityOnGraph();
-        return;
-    }
-
-    // 2 of 2 uses for the upArrowButton - navigate through the Session types in UI
-    switch (selectedSession) {
-        //DELTA IS LIT UP, WE WANT THETA LIT INSTEAD
-        case 1:
-            changeBackgroundColor(ui->deltaButton, "white", "delta");
-            changeBackgroundColor(ui->thetaButton, "green", "theta");
-            selectedSession++;
-        break;
-        //THETA IS LIT UP, WE WANT ALPHA LIT INSTEAD
-        case 2:
-            changeBackgroundColor(ui->thetaButton, "white", "theta");
-            changeBackgroundColor(ui->alphaButton, "green", "alpha");
-            selectedSession++;
-        break;
-        //ALPHA IS LIT UP, WE WANT BETA LIT INSTEAD
-        case 3:
-            changeBackgroundColor(ui->alphaButton, "white", "alpha");
-            changeBackgroundColor(ui->betaButton, "green", "beta");
-            selectedSession++;
-        break;
-        //BETA IS LIT UP, WE WANT DELTA LIT INSTEAD
-        case 4:
-            changeBackgroundColor(ui->betaButton, "white", "beta");
-            changeBackgroundColor(ui->deltaButton, "green", "delta");
-            selectedSession = 1;
-        break;
-    }
-}
-
-void MainWindow::pressDownArrow(){
-    if (!device->getIsPoweredOn()) {return;}
-
-    // 1 of 2 uses for the downArrowButton - if in session, button decrements intensity
-    if(device->getIsInSession()){
-        timesIntensityAdjusted++;
-        if(device->getCurrentIntensity()==1){
-            ui->log->append("Warning: Device's minimum intensity reached");
-            ui->log->append("");
-            displayIntensityOnGraph();
-            return;
-        }
-        device->setCurrentIntensity(device->getCurrentIntensity()-1);
-        updateIntensityLog();
-        displayIntensityOnGraph();
-        return;
-    }
-
-    // 2 of 2 uses for the downArrowButton - navigate between Session types in UI
-    switch (selectedSession) {
-        //DELTA IS LIT UP, WE WANT BETA LIT INSTEAD
-        case 1:
-            changeBackgroundColor(ui->deltaButton, "white", "delta");
-            changeBackgroundColor(ui->betaButton, "green", "beta");
-            selectedSession = 4;
-        break;
-        //THETA IS LIT UP, WE WANT DELTA LIT INSTEAD
-        case 2:
-            changeBackgroundColor(ui->thetaButton, "white", "theta");
-            changeBackgroundColor(ui->deltaButton, "green", "delta");
-            selectedSession--;
-        break;
-        //ALPHA IS LIT UP, WE WANT THETA LIT INSTEAD
-        case 3:
-            changeBackgroundColor(ui->alphaButton, "white", "alpha");
-            changeBackgroundColor(ui->thetaButton, "green", "theta");
-            selectedSession--;
-        break;
-        //BETA IS LIT UP, WE WANT APLHA LIT INSTEAD
-        case 4:
-            changeBackgroundColor(ui->betaButton, "white", "beta");
-            changeBackgroundColor(ui->alphaButton, "green", "alpha");
-            selectedSession--;
-        break;
-    }
-}
-
-void MainWindow::pressSelect(){
-    selectTimer.start();
-}
-
-void MainWindow::releaseSelect() {
-    if (selectTimer.elapsed() >= 1000) {
-        therapy(selectedGroup, selectedSession, 1);
-    } else {
-        therapy(selectedGroup, selectedSession, 0);
-    }
-}
-
 void MainWindow::stopPressed() {
     device->setRecordingFlag(true);
 }
@@ -276,7 +54,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             device->setRecordingFlag(false);
             pauseTimer.restart();
             pauseTimer.start();
-            while (pauseTimer.elapsed() < 5000){
+            while (pauseTimer.elapsed() < 3000){
                 sleepy(1);
                 if (device->getRecordingFlag()) {
                     //DO RECORDING NOW - DEFAULT INTENSITY
@@ -411,39 +189,289 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
     }
 }
 
-void MainWindow::drainBattery(int intensity) {
-    // Standard battery life on initialization is 100 units
-    double drainRate = 0.5; // 0.5 is the base rate at which the battery depletes
-
-    // Simulating the device to not drain too quickly. Around max intensity battery will drain 2.5 units per loop
-    if(intensity>75){drainRate +=2;}
-    else if(intensity>50){drainRate+=1.5;}
-    else if(intensity>25){drainRate+=1;}
-    else if(intensity>10){drainRate+=.5;}
-
-    device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-drainRate); // decrement battery life by 1 unit
-
-    // Reflect battery life change on UI battery elements
-    ui->batterySlider->setValue(device->getBattery()->getBatteryLevel());
-    ui_initializeBattery();
-}
-
-bool MainWindow::checkBattery(){
-    // if battery life is >32 units than Device can turn on and session can start
-    if(device->getBattery()->getBatteryLevel()>32){ return true; }
-    return false;
-}
-
-void MainWindow::batteryWarning(){
-    ui->log->append("Battery level too low. Replace Batteries");
+// connectionTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
+void MainWindow::connectionTest() {
+    ui->graphLabel->setText("Currently indicating: Connection");
+    ui->log->append("Connection lost. Please try again in a moment."); // report connection loss to control log
     ui->log->append("");
-    ui->log->append("Session will now end early. Device will now power down via Soft Off protocol.");
-    device->getBattery()->setBlinkFlag(true);
-    blinkBattery();
+
+    setConnectionLock(false); // lock connection UI components for a moment
+
+    // Blink 7 and 8 graph sections to indicate No Connection
+    for(int i=10; i>0; i--){
+        changeTextColor(ui->connectionTop, "red");
+        sleepy(100);
+        changeTextColor(ui->connectionTop, "gray");
+        sleepy(100);
+    }
+
+    // gray out Connection graph
+    changeTextColor(ui->connectionTop, "gray");
+    changeTextColor(ui->connectionMiddle, "gray");
+    changeTextColor(ui->connectionBottom, "gray");
+
+    // animate red, yellow, green lights strobing up and down Connection graph
+    for(int i=3; i>0; i--){
+        changeTextColor(ui->connectionBottom, "gray");
+        changeTextColor(ui->connectionTop, "red");
+        sleepy(400);
+        changeTextColor(ui->connectionTop, "gray");
+        changeTextColor(ui->connectionMiddle, "yellow");
+        sleepy(400);
+        changeTextColor(ui->connectionMiddle, "gray");
+        changeTextColor(ui->connectionBottom, "green");
+        sleepy(400);
+    }
+
+    // gray out Connection graph, indicate "Please connect now", and allow connection
+    changeTextColor(ui->connectionTop, "gray");
+    changeTextColor(ui->connectionMiddle, "gray");
+    changeTextColor(ui->connectionBottom, "gray");
+    ui->log->append("Please connect now.");
+    ui->log->append("");
+    setConnectionLock(true); // unlock the UI connection components
 }
 
-void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius) {
-    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: " + radius + ";}");
+//REPLAY THE RECORDING SPECIFIED IN CONTROL WINDOW
+void MainWindow::replayRecording(Recording *recording) {
+    ui->log->append("\n**SETTING MACHINE STATE FOR REPLAY**");
+
+    //GRAB PARAMETERS FROM RECORDING OBJECT
+    int group = recording->getGroup();
+    int initialIntensity = recording->getInitialIntensity();
+    int intensity = recording->getIntensity();
+    double batteryPercent = recording->getBatteryPercent();
+    int connection = recording->getConnection();
+    int session;
+
+    cout << initialIntensity << endl;
+
+    //MAP INTENSITY TO SESSION
+    switch (initialIntensity) {
+        case 5: session = 1;
+        break;
+        case 8: session = 2;
+        break;
+        case 11: session = 3;
+        break;
+        case 15: session = 4;
+        break;
+    }
+
+    //GET TO PROPER GROUP BUTTON
+    while (group != selectedGroup) {
+        cycleGroupButton();
+        sleepy(200);
+    }
+
+    //GET TO PROPER SESSION BUTTON
+    while (session != selectedSession) {
+        pressUpArrow();
+        sleepy(200);
+    }
+
+    //SET CONNECTION AND SLIDER
+    connectionIntensity = connection;
+    ui->connectionSlider->setValue(connectionIntensity);
+    sleepy(200);
+
+    //SET BATTERY AND SLIDER
+    device->getBattery()->setBatteryLevel(batteryPercent);
+    while (ui->batterySlider->value() != ceil(batteryPercent)) {
+        if (ui->batterySlider->value() < batteryPercent) {
+            ui->batterySlider->setValue(ui->batterySlider->value() + 1);
+            sleepy(10);
+        } else {
+            ui->batterySlider->setValue(ui->batterySlider->value() - 1);
+            sleepy(10);
+        }
+    }
+    ui_initializeBattery();
+
+    //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
+    //(DO NOT RECORD THIS THERAPY)
+    ui->log->append("**STARTING REPLAY**\n");
+    therapy(group, session, 0, intensity);
+}
+
+// pressPower() is called when the UI power button is pressed (before release) - starts a timer to get the elapsed time between press and release ...
+// so that we can differentiate between a button "press and release" and a button "press, hold, and release"
+void MainWindow::pressPower(){
+    elapsedTimer.start();
+}
+
+void MainWindow::powerReleased(){
+    if(elapsedTimer.elapsed() >= 200){ // check if Power Button was held for 2 seconds
+        if(!device->getIsPoweredOn() && !device->getIsSoftPoweredOn()){ // continue if DEVICE is OFF
+            if (device->getFirstBoot()) {
+                ui->connectionSlider->setEnabled(true);
+                bootConnectionTest();
+
+                //CHECK IF TIMED OUT
+                if (device->getTimeout()) {
+                    cout << "DEVICE TIMED OUT" << endl;
+                    device->setTimeout(false);
+                    return;
+                }
+
+                device->setFirstBoot(false);
+            }
+
+            ui_initializeBattery();
+            if(device->getBattery()->getBatteryLevel() < 33){
+                device->setSoftPower(true);
+                device->getBattery()->setBlinkFlag(true);
+
+                ui->log->append("Battery level too low. Replace Batteries");
+                ui->log->append("");
+                blinkBattery();
+                return;
+            }
+            changeBackgroundColor(ui->deltaButton, "green", "delta");
+            changeBackgroundColor(ui->group20Button, "green", "20");
+        } else { // continue if DEVICE is ON - turn off
+            turnOff();
+
+            //ENSURE BOOT CONNECTION TEST
+            device->setFirstBoot(true);
+            ui->connectionSlider->setValue(1);
+            connectionIntensity = 1;
+            ui->connectionSlider->setEnabled(false);
+        }
+
+        device->getPowerButton()->pressed();
+        changeConnectionSlider();
+    } else {
+        cycleGroupButton();
+    }
+}
+
+void MainWindow::pressUpArrow(){
+    if (!device->getIsPoweredOn()) {return;}
+
+    // 1 of 2 uses for the upArrowButton - if in session, buttons adjust intensity
+    if(device->getIsInSession()){
+        timesIntensityAdjusted++;
+        if(device->getCurrentIntensity()==100){
+            ui->log->append("Warning: Device's maximum intensity reached");
+            ui->log->append("");
+            displayIntensityOnGraph();
+            return;
+        }
+        device->setCurrentIntensity(device->getCurrentIntensity()+1);
+        updateIntensityLog();
+        displayIntensityOnGraph();
+        return;
+    }
+
+    // 2 of 2 uses for the upArrowButton - navigate through the Session types in UI
+    switch (selectedSession) {
+        //DELTA IS LIT UP, WE WANT THETA LIT INSTEAD
+        case 1:
+            changeBackgroundColor(ui->deltaButton, "white", "delta");
+            changeBackgroundColor(ui->thetaButton, "green", "theta");
+            selectedSession++;
+        break;
+        //THETA IS LIT UP, WE WANT ALPHA LIT INSTEAD
+        case 2:
+            changeBackgroundColor(ui->thetaButton, "white", "theta");
+            changeBackgroundColor(ui->alphaButton, "green", "alpha");
+            selectedSession++;
+        break;
+        //ALPHA IS LIT UP, WE WANT BETA LIT INSTEAD
+        case 3:
+            changeBackgroundColor(ui->alphaButton, "white", "alpha");
+            changeBackgroundColor(ui->betaButton, "green", "beta");
+            selectedSession++;
+        break;
+        //BETA IS LIT UP, WE WANT DELTA LIT INSTEAD
+        case 4:
+            changeBackgroundColor(ui->betaButton, "white", "beta");
+            changeBackgroundColor(ui->deltaButton, "green", "delta");
+            selectedSession = 1;
+        break;
+    }
+}
+
+void MainWindow::pressDownArrow(){
+    if (!device->getIsPoweredOn()) {return;}
+
+    // 1 of 2 uses for the downArrowButton - if in session, button decrements intensity
+    if(device->getIsInSession()){
+        timesIntensityAdjusted++;
+        if(device->getCurrentIntensity()==1){
+            ui->log->append("Warning: Device's minimum intensity reached");
+            ui->log->append("");
+            displayIntensityOnGraph();
+            return;
+        }
+        device->setCurrentIntensity(device->getCurrentIntensity()-1);
+        updateIntensityLog();
+        displayIntensityOnGraph();
+        return;
+    }
+
+    // 2 of 2 uses for the downArrowButton - navigate between Session types in UI
+    switch (selectedSession) {
+        //DELTA IS LIT UP, WE WANT BETA LIT INSTEAD
+        case 1:
+            changeBackgroundColor(ui->deltaButton, "white", "delta");
+            changeBackgroundColor(ui->betaButton, "green", "beta");
+            selectedSession = 4;
+        break;
+        //THETA IS LIT UP, WE WANT DELTA LIT INSTEAD
+        case 2:
+            changeBackgroundColor(ui->thetaButton, "white", "theta");
+            changeBackgroundColor(ui->deltaButton, "green", "delta");
+            selectedSession--;
+        break;
+        //ALPHA IS LIT UP, WE WANT THETA LIT INSTEAD
+        case 3:
+            changeBackgroundColor(ui->alphaButton, "white", "alpha");
+            changeBackgroundColor(ui->thetaButton, "green", "theta");
+            selectedSession--;
+        break;
+        //BETA IS LIT UP, WE WANT APLHA LIT INSTEAD
+        case 4:
+            changeBackgroundColor(ui->betaButton, "white", "beta");
+            changeBackgroundColor(ui->alphaButton, "green", "alpha");
+            selectedSession--;
+        break;
+    }
+}
+
+void MainWindow::pressSelect(){
+    selectTimer.start();
+}
+
+void MainWindow::releaseSelect() {
+    if (selectTimer.elapsed() >= 1000) {
+        therapy(selectedGroup, selectedSession, 1);
+    } else {
+        therapy(selectedGroup, selectedSession, 0);
+    }
+}
+
+void MainWindow::connectEarClips(){
+    ui->connectionSlider->setValue(3);
+    changeConnectionSlider();
+}
+
+void MainWindow::disconnectEarClips(){
+    ui->connectionSlider->setValue(1);
+    changeConnectionSlider();
+}
+
+void MainWindow::addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity) {
+    //CHECK IF WE ARE USING DEFAULT INTENSITY
+    if (intensity == -1) { intensity = device->getSessions(group-1, selectedSession-1)->getIntensity(); }
+
+    if (device->addRecording(name, intensity, initialIntensity, group, batteryPercent, connectionIntensity) == -1) {
+        ui->log->append("**COULD NOT ADD RECORDING**");
+        return;
+    } else {
+        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
+    }
 }
 
 void MainWindow::cycleGroupButton() {
@@ -507,53 +535,129 @@ void MainWindow::changeBatterySlider(){
     ui_initializeBattery();
 }
 
+void MainWindow::drainBattery(int intensity) {
+    // Standard battery life on initialization is 100 units
+    double drainRate = 0.5; // 0.5 is the base rate at which the battery depletes
+
+    // Simulating the device to not drain too quickly. Around max intensity battery will drain 2.5 units per loop
+    if(intensity>75){drainRate +=2;}
+    else if(intensity>50){drainRate+=1.5;}
+    else if(intensity>25){drainRate+=1;}
+    else if(intensity>10){drainRate+=.5;}
+
+    device->getBattery()->setBatteryLevel(device->getBattery()->getBatteryLevel()-drainRate); // decrement battery life by 1 unit
+
+    // Reflect battery life change on UI battery elements
+    ui->batterySlider->setValue(device->getBattery()->getBatteryLevel());
+    ui_initializeBattery();
+}
+
+bool MainWindow::checkBattery(){
+    // if battery life is >32 units than Device can turn on and session can start
+    if(device->getBattery()->getBatteryLevel()>32){ return true; }
+    return false;
+}
+
+void MainWindow::batteryWarning(){
+    ui->log->append("Battery level too low. Replace Batteries");
+    ui->log->append("");
+    ui->log->append("Session will now end early. Device will now power down via Soft Off protocol.");
+    device->getBattery()->setBlinkFlag(true);
+    blinkBattery();
+}
+
+void MainWindow::ui_initializeBattery(){
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
+    if(device->getBattery()->getBatteryLevel()>=33){
+        ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: yellow;}");
+        if(device->getBattery()->getBatteryLevel()>=67){
+                ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: green;}");
+        } else{ ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}"); }
+    }else{ ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}"); }
+}
+
+void MainWindow::blinkBattery(){
+    while (device->getBattery()->getBlinkFlag()) {
+        ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+        sleepy(100);
+        ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
+        sleepy(100);
+    }
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+}
+
+void MainWindow::changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius) {
+    button->setStyleSheet("QPushButton {border-image: url(:/icons/" + image +".png); background-color: " + color + "; border-radius: " + radius + ";}");
+}
+
 void MainWindow::changeTextColor(QTextBrowser *text, QColor color) {
     text->setTextColor(color);
     text->setFontPointSize(18);
     text->setText(text->toPlainText());
 }
 
-// connectionTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
-void MainWindow::connectionTest() {
-    ui->graphLabel->setText("Currently indicating: Connection");
-    ui->log->append("Connection lost. Please try again in a moment."); // report connection loss to control log
-    ui->log->append("");
+void MainWindow::turnOff() {
+    device->setSoftPower(false);
 
-    setConnectionLock(false); // lock connection UI components for a moment
-
-    // Blink 7 and 8 graph sections to indicate No Connection
-    for(int i=10; i>0; i--){
-        changeTextColor(ui->connectionTop, "red");
-        sleepy(100);
-        changeTextColor(ui->connectionTop, "gray");
-        sleepy(100);
+    //TURN OFF GROUP BUTTON
+    switch (selectedGroup) {
+        case 1:
+            changeBackgroundColor(ui->group20Button, "white", "20");
+        break;
+        case 2:
+            changeBackgroundColor(ui->group45Button, "white", "45");
+        break;
+        case 3:
+            changeBackgroundColor(ui->groupUserButton, "white", "user");
+        break;
     }
 
-    // gray out Connection graph
-    changeTextColor(ui->connectionTop, "gray");
-    changeTextColor(ui->connectionMiddle, "gray");
-    changeTextColor(ui->connectionBottom, "gray");
-
-    // animate red, yellow, green lights strobing up and down Connection graph
-    for(int i=3; i>0; i--){
-        changeTextColor(ui->connectionBottom, "gray");
-        changeTextColor(ui->connectionTop, "red");
-        sleepy(400);
-        changeTextColor(ui->connectionTop, "gray");
-        changeTextColor(ui->connectionMiddle, "yellow");
-        sleepy(400);
-        changeTextColor(ui->connectionMiddle, "gray");
-        changeTextColor(ui->connectionBottom, "green");
-        sleepy(400);
+    //TURN OFF SESSION BUTTON
+    switch (selectedSession) {
+        case 1:
+            changeBackgroundColor(ui->deltaButton, "white", "delta");
+        break;
+        case 2:
+            changeBackgroundColor(ui->thetaButton, "white", "theta");
+        break;
+        case 3:
+            changeBackgroundColor(ui->alphaButton, "white", "alpha");
+        break;
+        case 4:
+            changeBackgroundColor(ui->betaButton, "white", "beta");
+        break;
     }
 
-    // gray out Connection graph, indicate "Please connect now", and allow connection
-    changeTextColor(ui->connectionTop, "gray");
-    changeTextColor(ui->connectionMiddle, "gray");
-    changeTextColor(ui->connectionBottom, "gray");
-    ui->log->append("Please connect now.");
-    ui->log->append("");
-    setConnectionLock(true); // unlock the UI connection components
+    //TURN OFF CONNECTION INDICATOR
+    switch (connectionIntensity) {
+        case 1:
+            changeTextColor(ui->connectionTop, "gray");
+        break;
+        case 2:
+            changeTextColor(ui->connectionMiddle, "gray");
+        break;
+        case 3:
+            changeTextColor(ui->connectionBottom, "gray");
+        break;
+    }
+
+    //QUICKLY BREAK WHILE LOOP IN controlTest() IF IT IS BLINKING
+    if (connectionIntensity == 1) {
+        connectionIntensity = 2;
+    }
+
+    //QUICKLY BREAK WHILE LOOP IN blinkBattery() IF IT IS BLINKING
+    if (device->getBattery()->getBlinkFlag()) {
+        device->getBattery()->setBlinkFlag(false);
+    }
+
+    //TURN OFF BATTERY INDICATORS
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+    ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}");
+    ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}");
+
+    //TURN OFF CES INDICATOR
+    changeBackgroundColor(ui->CES2Button, "white", "CES2", "34");
 }
 
 void MainWindow::bootConnectionTest() {
@@ -575,16 +679,6 @@ void MainWindow::bootConnectionTest() {
         }
     }
     changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
-}
-
-void MainWindow::blinkBattery(){
-    while (device->getBattery()->getBlinkFlag()) {
-        ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
-        sleepy(100);
-        ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
-        sleepy(100);
-    }
-    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
 }
 
 void MainWindow::blinkSession(int sessionNum){
@@ -626,30 +720,10 @@ void MainWindow::blinkSession(int sessionNum){
     changeBackgroundColor(button, "green", sessionType);
 }
 
-void MainWindow::ui_initializeBattery(){
-    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
-    if(device->getBattery()->getBatteryLevel()>=33){
-        ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: yellow;}");
-        if(device->getBattery()->getBatteryLevel()>=67){
-                ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: green;}");
-        } else{ ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}"); }
-    }else{ ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}"); }
-}
-
 void MainWindow::sleepy(int sleepTime) {
     QTime dieTime = QTime::currentTime().addMSecs(sleepTime);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-}
-
-void MainWindow::connectEarClips(){
-    ui->connectionSlider->setValue(3);
-    changeConnectionSlider();
-}
-
-void MainWindow::disconnectEarClips(){
-    ui->connectionSlider->setValue(1);
-    changeConnectionSlider();
 }
 
 void MainWindow::addUserButtonClicked() {
@@ -674,18 +748,6 @@ void MainWindow::addUserButtonClicked() {
     }
 
     ui->nameComboBox->addItem(QString::fromStdString(name));
-}
-
-void MainWindow::addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity) {
-    //CHECK IF WE ARE USING DEFAULT INTENSITY
-    if (intensity == -1) { intensity = device->getSessions(group-1, selectedSession-1)->getIntensity(); }
-
-    if (device->addRecording(name, intensity, initialIntensity, group, batteryPercent, connectionIntensity) == -1) {
-        ui->log->append("**COULD NOT ADD RECORDING**");
-        return;
-    } else {
-        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
-    }
 }
 
 void MainWindow::printHistoryButtonClicked() {
@@ -750,68 +812,6 @@ void MainWindow::playReplayButtonClicked() {
 
     //REPLAY THE DESIRED RECORDING
     replayRecording(desiredRecording);
-}
-
-//REPLAY THE RECORDING SPECIFIED IN CONTROL WINDOW
-void MainWindow::replayRecording(Recording *recording) {
-    ui->log->append("\n**SETTING MACHINE STATE FOR REPLAY**");
-
-    //GRAB PARAMETERS FROM RECORDING OBJECT
-    int group = recording->getGroup();
-    int initialIntensity = recording->getInitialIntensity();
-    int intensity = recording->getIntensity();
-    double batteryPercent = recording->getBatteryPercent();
-    int connection = recording->getConnection();
-    int session;
-
-    cout << initialIntensity << endl;
-
-    //MAP INTENSITY TO SESSION
-    switch (initialIntensity) {
-        case 5: session = 1;
-        break;
-        case 8: session = 2;
-        break;
-        case 11: session = 3;
-        break;
-        case 15: session = 4;
-        break;
-    }
-
-    //GET TO PROPER GROUP BUTTON
-    while (group != selectedGroup) {
-        cycleGroupButton();
-        sleepy(200);
-    }
-
-    //GET TO PROPER SESSION BUTTON
-    while (session != selectedSession) {
-        pressUpArrow();
-        sleepy(200);
-    }
-
-    //SET CONNECTION AND SLIDER
-    connectionIntensity = connection;
-    ui->connectionSlider->setValue(connectionIntensity);
-    sleepy(200);
-
-    //SET BATTERY AND SLIDER
-    device->getBattery()->setBatteryLevel(batteryPercent);
-    while (ui->batterySlider->value() != ceil(batteryPercent)) {
-        if (ui->batterySlider->value() < batteryPercent) {
-            ui->batterySlider->setValue(ui->batterySlider->value() + 1);
-            sleepy(10);
-        } else {
-            ui->batterySlider->setValue(ui->batterySlider->value() - 1);
-            sleepy(10);
-        }
-    }
-    ui_initializeBattery();
-
-    //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
-    //(DO NOT RECORD THIS THERAPY)
-    ui->log->append("**STARTING REPLAY**\n");
-    therapy(group, session, 0, intensity);
 }
 
 void MainWindow::updateIntensityLog(){
