@@ -53,7 +53,7 @@ class MainWindow : public QMainWindow {
         void cycleGroupButton();
         void turnOff();
 
-        void therapy(int groupNum, int sessionNum, int recordingFlag = 0);
+        void therapy(int groupNum, int sessionNum, int recordingFlag = 0, int overrideIntensity = -1);
         void replayRecording(Recording* recording);
         void addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity = -1);
         void drainBattery(int intensity);

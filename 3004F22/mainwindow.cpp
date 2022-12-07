@@ -256,7 +256,7 @@ void MainWindow::stopPressed() {
 }
 
 // therapy() is the provides the main functionality of the device - initiating and performing therapy sessions
-void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
+void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int overrideIntensity){
     string name = ui->nameComboBox->currentText().toStdString();
     int group = selectedGroup;
     int initialIntensity = device->getSessions(selectedGroup-1, selectedSession-1)->getIntensity();
@@ -324,7 +324,14 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag){
     ui->log->append("");
 
     int therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); // get Group's associated therapy time length (in milliseconds)
-    device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity()); // get Session's associated intensity level
+
+    //SET CURRENT DEVICE INTENSITY ACCORDING TO OVERWRITEN VALUE - USED FOR RECORDING REPLAY
+    if (overrideIntensity == -1) {
+        device->setCurrentIntensity(device->getSessions(groupNum-1, sessionNum-1)->getIntensity());
+    } else {
+        device->setCurrentIntensity(overrideIntensity);
+    }
+
     updateIntensityLog(); // update Intensity log in UI
 
     setConnectionLock(true); // unlock Connection setting UI
@@ -752,6 +759,7 @@ void MainWindow::replayRecording(Recording *recording) {
     //GRAB PARAMETERS FROM RECORDING OBJECT
     int group = recording->getGroup();
     int initialIntensity = recording->getInitialIntensity();
+    int intensity = recording->getIntensity();
     double batteryPercent = recording->getBatteryPercent();
     int connection = recording->getConnection();
     int session;
@@ -803,7 +811,7 @@ void MainWindow::replayRecording(Recording *recording) {
     //START THERAPY - FLAG 1 TO INDICATE THERAPY AS RECORDING
     //(DO NOT RECORD THIS THERAPY)
     ui->log->append("**STARTING REPLAY**\n");
-    therapy(group, session, 0);
+    therapy(group, session, 0, intensity);
 }
 
 void MainWindow::updateIntensityLog(){
