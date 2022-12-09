@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1599</width>
+    <width>1471</width>
     <height>590</height>
    </rect>
   </property>
@@ -467,9 +467,9 @@ p, li { white-space: pre-wrap; }
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>790</x>
       <y>-20</y>
-      <width>771</width>
+      <width>671</width>
       <height>571</height>
      </rect>
     </property>
@@ -479,9 +479,9 @@ p, li { white-space: pre-wrap; }
     <widget class="QTextBrowser" name="log">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>70</y>
-       <width>256</width>
+       <width>641</width>
        <height>291</height>
       </rect>
      </property>
@@ -489,103 +489,33 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>100</x>
+       <x>280</x>
        <y>50</y>
-       <width>81</width>
+       <width>101</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>CONSOLE</string>
-     </property>
-    </widget>
-    <widget class="QSlider" name="connectionSlider">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>410</y>
-       <width>160</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>3</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>390</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Connection</string>
-     </property>
-    </widget>
-    <widget class="QSlider" name="batterySlider">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>460</y>
-       <width>160</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>100</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>440</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Battery Level</string>
+      <string>Output Console</string>
      </property>
     </widget>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>50</y>
-       <width>441</width>
-       <height>131</height>
+       <x>400</x>
+       <y>370</y>
+       <width>261</width>
+       <height>191</height>
       </rect>
      </property>
      <property name="title">
-      <string>USER STUFF</string>
+      <string>User Add and Replay History </string>
      </property>
      <widget class="QPushButton" name="addUserButton">
       <property name="geometry">
        <rect>
-        <x>90</x>
-        <y>90</y>
+        <x>100</x>
+        <y>80</y>
         <width>80</width>
         <height>25</height>
        </rect>
@@ -600,7 +530,7 @@ p, li { white-space: pre-wrap; }
         <x>30</x>
         <y>40</y>
         <width>104</width>
-        <height>41</height>
+        <height>31</height>
        </rect>
       </property>
      </widget>
@@ -623,7 +553,7 @@ p, li { white-space: pre-wrap; }
         <x>140</x>
         <y>40</y>
         <width>104</width>
-        <height>41</height>
+        <height>31</height>
        </rect>
       </property>
      </widget>
@@ -643,8 +573,8 @@ p, li { white-space: pre-wrap; }
      <widget class="QComboBox" name="nameComboBox">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>40</y>
+        <x>60</x>
+        <y>120</y>
         <width>72</width>
         <height>25</height>
        </rect>
@@ -653,8 +583,8 @@ p, li { white-space: pre-wrap; }
      <widget class="QPushButton" name="printHistoryButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>40</y>
+        <x>140</x>
+        <y>120</y>
         <width>80</width>
         <height>25</height>
        </rect>
@@ -666,18 +596,21 @@ p, li { white-space: pre-wrap; }
      <widget class="QSpinBox" name="historySpinBox">
       <property name="geometry">
        <rect>
-        <x>290</x>
-        <y>80</y>
-        <width>45</width>
+        <x>64</x>
+        <y>150</y>
+        <width>71</width>
         <height>26</height>
        </rect>
+      </property>
+      <property name="maximum">
+       <number>0</number>
       </property>
      </widget>
      <widget class="QPushButton" name="playReplayButton">
       <property name="geometry">
        <rect>
-        <x>350</x>
-        <y>80</y>
+        <x>140</x>
+        <y>150</y>
         <width>80</width>
         <height>25</height>
        </rect>
@@ -687,58 +620,145 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </widget>
-    <widget class="QPushButton" name="connectEarclipsButton">
+    <widget class="QGroupBox" name="groupBox_5">
      <property name="geometry">
       <rect>
-       <x>280</x>
-       <y>280</y>
-       <width>121</width>
-       <height>25</height>
+       <x>29</x>
+       <y>369</y>
+       <width>351</width>
+       <height>191</height>
       </rect>
      </property>
-     <property name="text">
-      <string>Connect Earclips</string>
+     <property name="title">
+      <string>Connection, Battery Level and Intensity</string>
      </property>
+     <widget class="QTextBrowser" name="currentIntensityLog">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>160</y>
+        <width>61</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>140</y>
+        <width>101</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Current Intensity</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="batterySlider">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>120</y>
+        <width>160</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>100</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>90</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Battery Level</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="connectionSlider">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>70</y>
+        <width>160</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>3</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>40</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Connection</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="connectEarclipsButton">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>70</y>
+        <width>121</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Connect Earclips</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="disconnectEarclipsButton">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>120</y>
+        <width>121</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Disconnect Earclips</string>
+      </property>
+     </widget>
     </widget>
-    <widget class="QPushButton" name="disconnectEarclipsButton">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>310</y>
-       <width>121</width>
-       <height>25</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Disconnect Earclips</string>
-     </property>
-    </widget>
-    <widget class="QTextBrowser" name="currentIntensityLog">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>510</y>
-       <width>61</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>490</y>
-       <width>101</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Current Intensity</string>
-     </property>
-    </widget>
+    <zorder>groupBox_5</zorder>
+    <zorder>log</zorder>
+    <zorder>label_3</zorder>
+    <zorder>groupBox_3</zorder>
    </widget>
    <zorder>groupBox</zorder>
    <zorder>group45Button</zorder>
@@ -762,7 +782,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1599</width>
+     <width>1471</width>
      <height>22</height>
     </rect>
    </property>
