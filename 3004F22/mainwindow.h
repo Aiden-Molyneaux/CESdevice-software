@@ -22,9 +22,6 @@ class MainWindow : public QMainWindow {
         MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
-        void ui_initializeBattery();
-        void ui_turnOffBattery();
-
         bool flag = false;
 
     private:
@@ -35,50 +32,63 @@ class MainWindow : public QMainWindow {
         int selectedGroup = 1;
         int connectionIntensity = 1;
         int timesIntensityAdjusted;
+        bool endSessionEarlyFlag;
 
         QElapsedTimer blinkTimer;
-        QElapsedTimer elapsedTimer;
+        QElapsedTimer powerPressedTimer;
         QElapsedTimer selectTimer;
         QElapsedTimer pauseTimer;
         QElapsedTimer therapyTimer;
         QElapsedTimer timeoutTimer;
 
+        // MAIN FUNCTIONS
+        void therapy(int groupNum, int sessionNum, int recordingFlag = 0, int overrideIntensity = -1);
+        void connectionTest();
+        void addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity = -1);
+        void replayRecording(Recording* recording);
+
+        // HELPER FUNCTIONS
         void changeTextColor(QTextBrowser *text, QColor color);
         void changeBackgroundColor(QPushButton *button, const QString& color, const QString& image, const QString& radius = "40");
-        void connectionTest(); // formally blinkTopSection()
         void bootConnectionTest();
-        void blinkBattery();
         void blinkSession(int sessionNum);
-        void sleepy(int sleepTime);
         void cycleGroupButton();
-        void turnOff();
+        void turnOffUI();
+        void softOff();
+        void setConnectionLock(bool status);
+        void updateIntensityLog();
+        void displayIntensityOnGraph();
+        void powerLightOnOff(bool status);
+        void endSessionEarly();
 
-        void therapy(int groupNum, int sessionNum, int recordingFlag = 0, int overrideIntensity = -1);
-        void replayRecording(Recording* recording);
-        void addRecording(const string& name, int group, int batteryPercent, int initialIntensity, int intensity = -1);
+        void ui_initializeBattery();
+        void ui_turnOffBattery();
+
+        // Battery functions
+        void blinkBattery();
         void drainBattery(int intensity);
         bool checkBattery();
         void batteryWarning();
-        void setConnectionLock(bool status);
 
-        void updateIntensityLog();
-        void displayIntensityOnGraph();
-        void displayIntensityWarning(int flag);
+        void sleepy(int sleepTime);
 
     private slots:
+        // DEVICE UI SLOTS
         void pressPower();
         void powerReleased();
         void pressUpArrow();
         void pressDownArrow();
         void pressSelect();
         void releaseSelect();
-        void changeConnectionSlider();
-        void changeBatterySlider();
+        void stopPressed();
+
+        // CONTROL PANEL UI SLOTS
         void connectEarClips();
         void disconnectEarClips();
         void addUserButtonClicked();
         void printHistoryButtonClicked();
         void playReplayButtonClicked();
-        void stopPressed();
+        void changeConnectionSlider();
+        void changeBatterySlider();
 };
 #endif // MAINWINDOW_H

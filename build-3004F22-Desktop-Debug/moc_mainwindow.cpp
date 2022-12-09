@@ -39,23 +39,23 @@ QT_MOC_LITERAL(4, 37, 12), // "pressUpArrow"
 QT_MOC_LITERAL(5, 50, 14), // "pressDownArrow"
 QT_MOC_LITERAL(6, 65, 11), // "pressSelect"
 QT_MOC_LITERAL(7, 77, 13), // "releaseSelect"
-QT_MOC_LITERAL(8, 91, 22), // "changeConnectionSlider"
-QT_MOC_LITERAL(9, 114, 19), // "changeBatterySlider"
-QT_MOC_LITERAL(10, 134, 15), // "connectEarClips"
-QT_MOC_LITERAL(11, 150, 18), // "disconnectEarClips"
-QT_MOC_LITERAL(12, 169, 20), // "addUserButtonClicked"
-QT_MOC_LITERAL(13, 190, 25), // "printHistoryButtonClicked"
-QT_MOC_LITERAL(14, 216, 23), // "playReplayButtonClicked"
-QT_MOC_LITERAL(15, 240, 11) // "stopPressed"
+QT_MOC_LITERAL(8, 91, 11), // "stopPressed"
+QT_MOC_LITERAL(9, 103, 15), // "connectEarClips"
+QT_MOC_LITERAL(10, 119, 18), // "disconnectEarClips"
+QT_MOC_LITERAL(11, 138, 20), // "addUserButtonClicked"
+QT_MOC_LITERAL(12, 159, 25), // "printHistoryButtonClicked"
+QT_MOC_LITERAL(13, 185, 23), // "playReplayButtonClicked"
+QT_MOC_LITERAL(14, 209, 22), // "changeConnectionSlider"
+QT_MOC_LITERAL(15, 232, 19) // "changeBatterySlider"
 
     },
     "MainWindow\0pressPower\0\0powerReleased\0"
     "pressUpArrow\0pressDownArrow\0pressSelect\0"
-    "releaseSelect\0changeConnectionSlider\0"
-    "changeBatterySlider\0connectEarClips\0"
+    "releaseSelect\0stopPressed\0connectEarClips\0"
     "disconnectEarClips\0addUserButtonClicked\0"
     "printHistoryButtonClicked\0"
-    "playReplayButtonClicked\0stopPressed"
+    "playReplayButtonClicked\0changeConnectionSlider\0"
+    "changeBatterySlider"
 };
 #undef QT_MOC_LITERAL
 
@@ -119,14 +119,14 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->pressDownArrow(); break;
         case 4: _t->pressSelect(); break;
         case 5: _t->releaseSelect(); break;
-        case 6: _t->changeConnectionSlider(); break;
-        case 7: _t->changeBatterySlider(); break;
-        case 8: _t->connectEarClips(); break;
-        case 9: _t->disconnectEarClips(); break;
-        case 10: _t->addUserButtonClicked(); break;
-        case 11: _t->printHistoryButtonClicked(); break;
-        case 12: _t->playReplayButtonClicked(); break;
-        case 13: _t->stopPressed(); break;
+        case 6: _t->stopPressed(); break;
+        case 7: _t->connectEarClips(); break;
+        case 8: _t->disconnectEarClips(); break;
+        case 9: _t->addUserButtonClicked(); break;
+        case 10: _t->printHistoryButtonClicked(); break;
+        case 11: _t->playReplayButtonClicked(); break;
+        case 12: _t->changeConnectionSlider(); break;
+        case 13: _t->changeBatterySlider(); break;
         default: ;
         }
     }

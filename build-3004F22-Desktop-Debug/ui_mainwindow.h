@@ -18,11 +18,11 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -54,6 +54,7 @@ public:
     QPushButton *CES2Button;
     QPushButton *stopButton;
     QLabel *graphLabel;
+    QTextEdit *powerLight;
     QGroupBox *groupBox_2;
     QTextBrowser *log;
     QLabel *label_3;
@@ -71,8 +72,6 @@ public:
     QPushButton *printHistoryButton;
     QSpinBox *historySpinBox;
     QPushButton *playReplayButton;
-    QPushButton *addFakeRecordingButton;
-    QRadioButton *recordSessionRadioButton;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
     QTextBrowser *currentIntensityLog;
@@ -233,6 +232,11 @@ public:
         graphLabel = new QLabel(groupBox);
         graphLabel->setObjectName(QString::fromUtf8("graphLabel"));
         graphLabel->setGeometry(QRect(180, 230, 181, 17));
+        powerLight = new QTextEdit(groupBox);
+        powerLight->setObjectName(QString::fromUtf8("powerLight"));
+        powerLight->setGeometry(QRect(570, 430, 41, 21));
+        powerLight->setStyleSheet(QString::fromUtf8(""));
+        powerLight->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         groupBox_2 = new QGroupBox(centralwidget);
         groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
         groupBox_2->setGeometry(QRect(820, -20, 771, 571));
@@ -264,7 +268,7 @@ public:
         label_2->setGeometry(QRect(100, 440, 81, 20));
         groupBox_3 = new QGroupBox(groupBox_2);
         groupBox_3->setObjectName(QString::fromUtf8("groupBox_3"));
-        groupBox_3->setGeometry(QRect(280, 70, 441, 191));
+        groupBox_3->setGeometry(QRect(280, 50, 441, 131));
         addUserButton = new QPushButton(groupBox_3);
         addUserButton->setObjectName(QString::fromUtf8("addUserButton"));
         addUserButton->setGeometry(QRect(90, 90, 80, 25));
@@ -279,7 +283,7 @@ public:
         userDurationInput->setGeometry(QRect(140, 40, 104, 41));
         label_5 = new QLabel(groupBox_3);
         label_5->setObjectName(QString::fromUtf8("label_5"));
-        label_5->setGeometry(QRect(160, 20, 54, 17));
+        label_5->setGeometry(QRect(140, 20, 111, 17));
         nameComboBox = new QComboBox(groupBox_3);
         nameComboBox->setObjectName(QString::fromUtf8("nameComboBox"));
         nameComboBox->setGeometry(QRect(280, 40, 72, 25));
@@ -292,12 +296,6 @@ public:
         playReplayButton = new QPushButton(groupBox_3);
         playReplayButton->setObjectName(QString::fromUtf8("playReplayButton"));
         playReplayButton->setGeometry(QRect(350, 80, 80, 25));
-        addFakeRecordingButton = new QPushButton(groupBox_3);
-        addFakeRecordingButton->setObjectName(QString::fromUtf8("addFakeRecordingButton"));
-        addFakeRecordingButton->setGeometry(QRect(279, 140, 111, 25));
-        recordSessionRadioButton = new QRadioButton(groupBox_3);
-        recordSessionRadioButton->setObjectName(QString::fromUtf8("recordSessionRadioButton"));
-        recordSessionRadioButton->setGeometry(QRect(50, 140, 131, 23));
         connectEarclipsButton = new QPushButton(groupBox_2);
         connectEarclipsButton->setObjectName(QString::fromUtf8("connectEarclipsButton"));
         connectEarclipsButton->setGeometry(QRect(280, 280, 121, 25));
@@ -388,11 +386,9 @@ public:
         groupBox_3->setTitle(QApplication::translate("MainWindow", "USER STUFF", nullptr));
         addUserButton->setText(QApplication::translate("MainWindow", "Add User", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Name", nullptr));
-        label_5->setText(QApplication::translate("MainWindow", "Duration", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "Duration (minutes)", nullptr));
         printHistoryButton->setText(QApplication::translate("MainWindow", "Print history", nullptr));
         playReplayButton->setText(QApplication::translate("MainWindow", "Play replay", nullptr));
-        addFakeRecordingButton->setText(QApplication::translate("MainWindow", "add fake recording", nullptr));
-        recordSessionRadioButton->setText(QApplication::translate("MainWindow", "Record next session", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "Current Intensity", nullptr));
