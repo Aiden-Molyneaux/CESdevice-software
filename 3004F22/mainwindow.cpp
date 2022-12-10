@@ -95,8 +95,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
         return;
     }
 
-    setConnectionLock(false); // lock all Connection setting UI until Session begins
-
+    setTherapyLock(false); // lock all Connection, Intensity, and Power setting UI elements until Session begins
 
     device->setIsInSession(true);
     ui->log->append("\nTherapy session will begin in 5 seconds:\n");
@@ -111,7 +110,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
 
     int therapyLengthMS;
     // if groupNum == 3, then we need to get the user's designated session time length. Otherwise get the corresponding time length of the group chosen
-    if(groupNum == 3){ therapyLengthMS = device->getUserByName(ui->nameComboBox->currentText().toStdString())->getDuration()*1000; }
+    if(groupNum == 3){ therapyLengthMS = device->getUserByName(ui->nameComboBox->currentText().toStdString())->getDuration()*1000; } // *1000 because coverting seconds to milliseconds
     else{ therapyLengthMS = device->getGroups(groupNum-1)->getLengthMS(); }
 
     //SET CURRENT DEVICE INTENSITY ACCORDING TO OVERWRITEN VALUE - USED FOR RECORDING REPLAY
@@ -133,11 +132,11 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
 
     updateIntensityLog(); // update Intensity log in UI
 
-    setConnectionLock(true); // unlock Connection setting UI
+    setTherapyLock(true); // unlock all locked UI elements
 
-    int remainingTime = 0;
-    timesIntensityAdjusted = 0;
-    endSessionEarlyFlag = false;
+    int remainingTime = 0; // only used if connection issues cause disconnect mid-session
+    timesIntensityAdjusted = 0; // only used if intensity is adjusted during the session
+    endSessionEarlyFlag = false; // only used if user decides to end session early by clicking the power button
 
     therapyTimer.start(); // Timer tracks elapsed time
     while(true){
@@ -177,7 +176,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             sleepy(2000);
         }
 
-        if(flag){ // return to session
+        if(flag){ // flag is only true if session was disconnected due to connection issues - initiates return to session
             ui->log->append("\nResuming Session.");
             therapyTimer.restart(); // restart and begin timer again
             while(therapyTimer.elapsed() < remainingTime){ // execute the remaining time of the session
@@ -188,7 +187,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
                     return;
                 }
                 if(timesIntensityAdjusted){
-                    therapyLengthMS+(750*timesIntensityAdjusted);
+                    remainingTime+=(750*timesIntensityAdjusted);
                     timesIntensityAdjusted=0;
                 }
                 if(endSessionEarlyFlag){
@@ -222,12 +221,12 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
     }
 }
 
-// connectionTest function (previously blinkTopSection()) makes Connection UI elements flash to indicate Connection status
+// connectionTest function makes Connection UI elements flash to indicate Connection status
 void MainWindow::connectionTest() {
     ui->graphLabel->setText("Currently indicating: Connection");
     ui->log->append("\nConnection lost. Please try again in a moment."); // report connection loss to control log
 
-    setConnectionLock(false); // lock connection UI components for a moment
+    setTherapyLock(false); // lock connection UI components for a moment
 
     // Blink 7 and 8 graph sections to indicate No Connection
     for(int i=10; i>0; i--){
@@ -260,7 +259,7 @@ void MainWindow::connectionTest() {
     changeTextColor(ui->connectionMiddle, "gray");
     changeTextColor(ui->connectionBottom, "gray");
     ui->log->append("\nPlease connect now.");
-    setConnectionLock(true); // unlock the UI connection components
+    setTherapyLock(true); // unlock the UI connection components
 }
 
 //REPLAY THE RECORDING SPECIFIED IN CONTROL WINDOW
@@ -356,7 +355,7 @@ void MainWindow::powerReleased(){
             }
 
             ui_initializeBattery();
-            if(device->getBattery()->getBatteryLevel() < 33){
+            if(device->getBattery()->getBatteryLevel() < 33){ // check if battery is too low to boot
                 device->setSoftPower(true);
                 device->getBattery()->setBlinkFlag(true);
 
@@ -727,6 +726,7 @@ void MainWindow::bootConnectionTest() {
     changeBackgroundColor(ui->CES2Button, "green", "CES2", "34");
 }
 
+// softOff() is called when a session is ended early - decreases the intensity to it's lowest setting before powering off as per the Soft Off feature requirements
 void MainWindow::softOff(){
     while(device->getCurrentIntensity()>1){
         device->setCurrentIntensity(device->getCurrentIntensity()-1);
@@ -858,8 +858,8 @@ void MainWindow::printHistoryButtonClicked() {
     ui->historySpinBox->setMaximum(numRecordings);
 }
 
-// setConnectionLock() function used to enable and disable Connection UI elements, as to not let the user interrupt a process (works well (-_^))
-void MainWindow::setConnectionLock(bool status){
+// setTherapyLock() function used to enable and disable Connection, Intensity, and Power setting UI elements, as to not let the user interrupt a process (works well (-_^))
+void MainWindow::setTherapyLock(bool status){
     ui->connectEarclipsButton->setEnabled(status);
     ui->disconnectEarclipsButton->setEnabled(status);
     ui->connectionSlider->setEnabled(status);
@@ -939,10 +939,12 @@ void MainWindow::displayIntensityOnGraph(){
 // powerLightOnOff used to toggle the UI power light (above the power button)
 void MainWindow::powerLightOnOff(bool status){
     if(status){
-        ui->powerLight->setStyleSheet("QTextEdit {background-color: green;}");\
+        ui->powerLight->setStyleSheet("QTextEdit {background-color: green;}");
+        device->getPowerLight()->setIsLightOn(status);
         return;
     }
     ui->powerLight->setStyleSheet("QTextEdit {background-color: white;}");
+    device->getPowerLight()->setIsLightOn(status);
 }
 
 // endSessionEarly() is called in response to the power button being pressed during a session
@@ -953,6 +955,7 @@ void MainWindow::endSessionEarly(){
     softOff();
 }
 
+// sleepy() is used plenty throughout the implementation to simulate real-time waiting, as well as inside loops to make them iterate slower
 void MainWindow::sleepy(int sleepTime) {
     QTime dieTime = QTime::currentTime().addMSecs(sleepTime);
     while (QTime::currentTime() < dieTime)
