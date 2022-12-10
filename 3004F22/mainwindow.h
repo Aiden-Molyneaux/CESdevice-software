@@ -99,7 +99,9 @@ class MainWindow : public QMainWindow {
         void testTherapyClicked();
         void testRecordTherapyClicked();
         void testReplayClicked();
-        void testOnlyRecordClicked();
         void testOnlyRecordHelper();
+        void testOnlyRecordClicked();
+        void testLostConnectionHelper();
+        void testLostConnectionClicked();
 };
 #endif // MAINWINDOW_H

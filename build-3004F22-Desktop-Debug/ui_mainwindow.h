@@ -86,6 +86,7 @@ public:
     QPushButton *testRecordTherapy;
     QPushButton *testReplay;
     QPushButton *testOnlyRecord;
+    QPushButton *testLostConnection;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -353,7 +354,10 @@ public:
         testReplay->setGeometry(QRect(120, 380, 80, 25));
         testOnlyRecord = new QPushButton(groupBox_6);
         testOnlyRecord->setObjectName(QString::fromUtf8("testOnlyRecord"));
-        testOnlyRecord->setGeometry(QRect(130, 480, 80, 25));
+        testOnlyRecord->setGeometry(QRect(120, 410, 80, 25));
+        testLostConnection = new QPushButton(groupBox_6);
+        testLostConnection->setObjectName(QString::fromUtf8("testLostConnection"));
+        testLostConnection->setGeometry(QRect(210, 440, 111, 25));
         MainWindow->setCentralWidget(centralwidget);
         groupBox->raise();
         group45Button->raise();
@@ -447,6 +451,7 @@ public:
         testRecordTherapy->setText(QApplication::translate("MainWindow", "Record Therapy", nullptr));
         testReplay->setText(QApplication::translate("MainWindow", "Test Replay", nullptr));
         testOnlyRecord->setText(QApplication::translate("MainWindow", "Only Record", nullptr));
+        testLostConnection->setText(QApplication::translate("MainWindow", "Lost Connection", nullptr));
     } // retranslateUi
 
 };

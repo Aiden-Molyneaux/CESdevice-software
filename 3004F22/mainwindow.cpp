@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->testRecordTherapy, SIGNAL(released()), this, SLOT (testRecordTherapyClicked()));
     connect(ui->testReplay, SIGNAL(released()), this, SLOT (testReplayClicked()));
     connect(ui->testOnlyRecord, SIGNAL(released()), this, SLOT (testOnlyRecordClicked()));
+    connect(ui->testLostConnection, SIGNAL(released()), this, SLOT (testLostConnectionClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -987,7 +988,7 @@ void MainWindow::testAddUserClicked() {
 
     ui->userDurationInput->clear();
     ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
-    sleepy(3000);
+    sleepy(300);
 
     ui->testLog->append("CLICKING ADD USER BUTTON...");
     sleepy(100);
@@ -1008,7 +1009,7 @@ void MainWindow::testAddBadUserClicked() {
 
     ui->userDurationInput->clear();
     ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
-    sleepy(3000);
+    sleepy(300);
 
     ui->testLog->append("CLICKING ADD USER BUTTON...");
     sleepy(1000);
@@ -1145,4 +1146,31 @@ void MainWindow::testOnlyRecordClicked() {
     therapy(selectedGroup, selectedSession, 1);
     first.join();
     ui->testLog->append("CANCELING RECORDED SESSION...\n**TEST COMPLETE**\n");
+}
+
+void MainWindow::testLostConnectionHelper() {
+    testingTimer.restart();
+
+    while (testingTimer.elapsed() < 5000) {}
+    ui->connectionSlider->setValue(1);
+    connectionIntensity = ui->connectionSlider->value();
+
+    while (testingTimer.elapsed() < 10000) {}
+    ui->connectionSlider->setValue(3);
+    connectionIntensity = ui->connectionSlider->value();
+    return;
+}
+
+void MainWindow::testLostConnectionClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING LOST CONNECTION FUNCTIONALITY**\nSTARTING A SESSION AS NORMAL...");
+    sleepy(100);
+
+    while (selectedGroup != 1) { cycleGroupButton(); sleepy(100);}
+    while (selectedSession != 1) { pressUpArrow(); sleepy(100); }
+
+    std::thread first (&MainWindow::testLostConnectionHelper, this);
+    therapy(selectedGroup, selectedSession, 0);
+    first.join();
 }
