@@ -77,6 +77,11 @@ public:
     QLabel *label;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
+    QGroupBox *groupBox_6;
+    QTextBrowser *testLog;
+    QLabel *label_7;
+    QPushButton *testAddUser;
+    QPushButton *testAddBadUser;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -84,7 +89,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1471, 590);
+        MainWindow->resize(1830, 590);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         powerButton = new QPushButton(centralwidget);
@@ -192,7 +197,7 @@ public:
         groupUserButton->setCheckable(false);
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(20, -20, 781, 581));
+        groupBox->setGeometry(QRect(20, -20, 761, 571));
         CESButton = new QPushButton(groupBox);
         CESButton->setObjectName(QString::fromUtf8("CESButton"));
         CESButton->setGeometry(QRect(510, 50, 71, 71));
@@ -318,6 +323,21 @@ public:
         log->raise();
         label_3->raise();
         groupBox_3->raise();
+        groupBox_6 = new QGroupBox(centralwidget);
+        groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
+        groupBox_6->setGeometry(QRect(1470, -20, 341, 571));
+        testLog = new QTextBrowser(groupBox_6);
+        testLog->setObjectName(QString::fromUtf8("testLog"));
+        testLog->setGeometry(QRect(10, 70, 321, 291));
+        label_7 = new QLabel(groupBox_6);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setGeometry(QRect(100, 50, 141, 17));
+        testAddUser = new QPushButton(groupBox_6);
+        testAddUser->setObjectName(QString::fromUtf8("testAddUser"));
+        testAddUser->setGeometry(QRect(20, 380, 80, 25));
+        testAddBadUser = new QPushButton(groupBox_6);
+        testAddBadUser->setObjectName(QString::fromUtf8("testAddBadUser"));
+        testAddBadUser->setGeometry(QRect(110, 380, 91, 25));
         MainWindow->setCentralWidget(centralwidget);
         groupBox->raise();
         group45Button->raise();
@@ -335,9 +355,10 @@ public:
         thetaButton->raise();
         group20Button->raise();
         groupBox_2->raise();
+        groupBox_6->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1471, 22));
+        menubar->setGeometry(QRect(0, 0, 1830, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -402,6 +423,10 @@ public:
         label->setText(QApplication::translate("MainWindow", "Connection", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
+        groupBox_6->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "Testing Output Console", nullptr));
+        testAddUser->setText(QApplication::translate("MainWindow", "Add A User", nullptr));
+        testAddBadUser->setText(QApplication::translate("MainWindow", "Add Bad User", nullptr));
     } // retranslateUi
 
 };

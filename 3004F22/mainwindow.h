@@ -90,5 +90,9 @@ class MainWindow : public QMainWindow {
         void playReplayButtonClicked();
         void changeConnectionSlider();
         void changeBatterySlider();
+
+        // TESTING SLOTS
+        void testAddUserClicked();
+        void testAddBadUserClicked();
 };
 #endif // MAINWINDOW_H

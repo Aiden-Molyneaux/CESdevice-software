@@ -3,6 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    srand(time(0));
 
     // Initialize member variables
     selectedSession = 1;
@@ -29,6 +30,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
     connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
     connect(ui->stopButton, SIGNAL(released()), this, SLOT (stopPressed()));
+
+    //TEST SLOTS
+    connect(ui->testAddUser, SIGNAL(released()), this, SLOT (testAddUserClicked()));
+    connect(ui->testAddBadUser, SIGNAL(released()), this, SLOT (testAddBadUserClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -54,7 +59,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             ui->log->append("CANNOT RECORD - NO USER SPECIFIED");
             recordingFlag = 0;
         } else {
-            ui->log->append("THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name));
+            ui->log->append("**THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name) + "**");
 
             //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
             changeBackgroundColor(ui->stopButton, "green", "stop", "20");
@@ -197,7 +202,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
                 drainBattery(device->getCurrentIntensity()); // deplete battery
                 sleepy(150); // simulate real time
             }
-            ui->log->append("\nSession Complete."); // log to control that session has completed
+            ui->log->append("Session Complete.\n"); // log to control that session has completed
             device->setIsInSession(false);
 
             //DO RECORDING HERE
@@ -211,10 +216,9 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
 
         sleepy(150);
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
-           //DO RECORDING HERE
-            if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
-
             ui->log->append("Session Complete.");
+            //DO RECORDING HERE
+            if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
             device->setIsInSession(false);
             break; // session ends, break therapy loop
         }
@@ -960,4 +964,81 @@ void MainWindow::sleepy(int sleepTime) {
     QTime dieTime = QTime::currentTime().addMSecs(sleepTime);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
+// TESTING SLOTS
+
+void MainWindow::testAddUserClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING ADD USER FUNCTIONALITY**\nFILLING IN NAME AND DURATION FIELDS...");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    ui->userNameInput->appendPlainText("User " + QString::number(device->getNumUsers() + 1));
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
+    sleepy(3000);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(100);
+
+    addUserButtonClicked();
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testAddBadUserClicked() {
+    //EMPTY NAME
+    ui->testLog->append("**TESTING ADD USER FUNCTIONALITY**\nADDING USER WITH EMPTY NAME...");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
+    sleepy(3000);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(1000);
+
+    addUserButtonClicked();
+
+    //STRING DURATION/EMPTY DURATION
+    ui->testLog->append("ADDING USER WITH STRING DURATION...");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    ui->userNameInput->appendPlainText("User " + QString::number(device->getNumUsers() + 1));
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText("wym duration??");
+    sleepy(3000);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(1000);
+
+    addUserButtonClicked();
+
+    //DUPLICATE NAME - ENSURE THAT USER 1 ALREADY EXISTS
+    ui->testLog->append("ADDING USER WITH DUPLICATE NAME...\n(ENSURE THAT USER 1 ALREADY EXISTS)");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    ui->userNameInput->appendPlainText("User 1");
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
+    sleepy(3000);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(1000);
+
+    addUserButtonClicked();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
 }
