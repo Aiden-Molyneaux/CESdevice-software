@@ -34,6 +34,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     //TEST SLOTS
     connect(ui->testAddUser, SIGNAL(released()), this, SLOT (testAddUserClicked()));
     connect(ui->testAddBadUser, SIGNAL(released()), this, SLOT (testAddBadUserClicked()));
+    connect(ui->testTherapy, SIGNAL(released()), this, SLOT (testTherapyClicked()));
+    connect(ui->testRecordTherapy, SIGNAL(released()), this, SLOT (testRecordTherapyClicked()));
+    connect(ui->testReplay, SIGNAL(released()), this, SLOT (testReplayClicked()));
+    connect(ui->testOnlyRecord, SIGNAL(released()), this, SLOT (testOnlyRecordClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -71,6 +75,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             while (pauseTimer.elapsed() < 3000){
                 sleepy(1);
                 if (device->getRecordingFlag()) {
+                    ui->log->append("**SESSION CANCELED**");
                     //DO RECORDING NOW - DEFAULT INTENSITY
                     addRecording(name, group, batteryPercent, initialIntensity);
                     changeBackgroundColor(ui->stopButton, "white", "stop", "20");
@@ -103,7 +108,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
     setTherapyLock(false); // lock all Connection, Intensity, and Power setting UI elements until Session begins
 
     device->setIsInSession(true);
-    ui->log->append("\nTherapy session will begin in 5 seconds:\n");
+    ui->log->append("Therapy session will begin in 5 seconds:\n");
     blinkSession(sessionNum); // make the session icon blink for a couple seconds
 
     // Begin session with blinking session icon and 5 second count down
@@ -216,7 +221,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
 
         sleepy(150);
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
-            ui->log->append("Session Complete.");
+            ui->log->append("Session Complete.\n");
             //DO RECORDING HERE
             if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
             device->setIsInSession(false);
@@ -824,10 +829,10 @@ void MainWindow::addRecording(const string& name, int group, int batteryPercent,
     if (intensity == -1) { intensity = device->getSessions(group-1, selectedSession-1)->getIntensity(); }
 
     if (device->addRecording(name, intensity, initialIntensity, group, batteryPercent, connectionIntensity) == -1) {
-        ui->log->append("**COULD NOT ADD RECORDING**");
+        ui->log->append("**COULD NOT ADD RECORDING - MAX RECORDINGS**\n");
         return;
     } else {
-        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
+        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**\n");
     }
 }
 
@@ -992,6 +997,8 @@ void MainWindow::testAddUserClicked() {
 }
 
 void MainWindow::testAddBadUserClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
     //EMPTY NAME
     ui->testLog->append("**TESTING ADD USER FUNCTIONALITY**\nADDING USER WITH EMPTY NAME...");
     sleepy(100);
@@ -1043,4 +1050,99 @@ void MainWindow::testAddBadUserClicked() {
     addUserButtonClicked();
 
     ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testTherapyClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING THERAPY FUNCTIONALITY**\nSELECTING RANDOM GROUP AND SESSION...");
+    sleepy(100);
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        pressUpArrow();
+        sleepy(200);
+    }
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        cycleGroupButton();
+        sleepy(200);
+    }
+
+    ui->testLog->append("STARTING THERAPY SESSION...");
+    therapy(selectedGroup, selectedSession, 0);
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testRecordTherapyClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING RECORD THERAPY FUNCTIONALITY**\nSELECTING RANDOM GROUP AND SESSION...");
+    sleepy(100);
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        pressUpArrow();
+        sleepy(200);
+    }
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        cycleGroupButton();
+        sleepy(200);
+    }
+
+    ui->testLog->append("STARTING RECORDED THERAPY SESSION...");
+    therapy(selectedGroup, selectedSession, 1);
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testReplayClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING REPLAY FUNCTIONALITY**\nPRINTING USER'S REPLAY HISTORY...");
+    sleepy(100);
+
+    printHistoryButtonClicked();
+    sleepy(1000);
+
+    if (ui->historySpinBox->maximum() == 0) {
+        ui->testLog->append("CANNOT PLAY REPLAY - USER HAS NO HISTORY...\n**TEST COMPLETE**\n");
+        return;
+    }
+
+    ui->testLog->append("SELECTING RANDOM REPLAY...");
+    ui->historySpinBox->setValue((rand() % ui->historySpinBox->maximum()) + 1);
+    sleepy(100);
+
+    ui->testLog->append("STARTING REPLAY...");
+    sleepy(100);
+    playReplayButtonClicked();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testOnlyRecordHelper() {
+    testingTimer.restart();
+
+    while (testingTimer.elapsed() < 1000) {}
+    stopPressed();
+    return;
+}
+
+void MainWindow::testOnlyRecordClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING ONLY RECORD FUNCTIONALITY**");
+
+    if (ui->nameComboBox->currentText() == NULL) {
+        ui->testLog->append("THIS TEST REQUIRES A USER TO BE SPECIFIED...\n**TEST COMPLETE**\n");
+        return;
+    }
+
+    ui->testLog->append("STARTING RECORDED SESSION TO BE CANCELED AFTER 1 SECOND...");
+    sleepy(100);
+
+    std::thread first (&MainWindow::testOnlyRecordHelper, this);
+    therapy(selectedGroup, selectedSession, 1);
+    first.join();
+    ui->testLog->append("CANCELING RECORDED SESSION...\n**TEST COMPLETE**\n");
 }

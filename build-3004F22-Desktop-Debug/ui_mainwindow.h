@@ -82,6 +82,10 @@ public:
     QLabel *label_7;
     QPushButton *testAddUser;
     QPushButton *testAddBadUser;
+    QPushButton *testTherapy;
+    QPushButton *testRecordTherapy;
+    QPushButton *testReplay;
+    QPushButton *testOnlyRecord;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -334,10 +338,22 @@ public:
         label_7->setGeometry(QRect(100, 50, 141, 17));
         testAddUser = new QPushButton(groupBox_6);
         testAddUser->setObjectName(QString::fromUtf8("testAddUser"));
-        testAddUser->setGeometry(QRect(20, 380, 80, 25));
+        testAddUser->setGeometry(QRect(20, 380, 91, 25));
         testAddBadUser = new QPushButton(groupBox_6);
         testAddBadUser->setObjectName(QString::fromUtf8("testAddBadUser"));
-        testAddBadUser->setGeometry(QRect(110, 380, 91, 25));
+        testAddBadUser->setGeometry(QRect(20, 410, 91, 25));
+        testTherapy = new QPushButton(groupBox_6);
+        testTherapy->setObjectName(QString::fromUtf8("testTherapy"));
+        testTherapy->setGeometry(QRect(210, 380, 111, 25));
+        testRecordTherapy = new QPushButton(groupBox_6);
+        testRecordTherapy->setObjectName(QString::fromUtf8("testRecordTherapy"));
+        testRecordTherapy->setGeometry(QRect(210, 410, 111, 25));
+        testReplay = new QPushButton(groupBox_6);
+        testReplay->setObjectName(QString::fromUtf8("testReplay"));
+        testReplay->setGeometry(QRect(120, 380, 80, 25));
+        testOnlyRecord = new QPushButton(groupBox_6);
+        testOnlyRecord->setObjectName(QString::fromUtf8("testOnlyRecord"));
+        testOnlyRecord->setGeometry(QRect(130, 480, 80, 25));
         MainWindow->setCentralWidget(centralwidget);
         groupBox->raise();
         group45Button->raise();
@@ -427,6 +443,10 @@ public:
         label_7->setText(QApplication::translate("MainWindow", "Testing Output Console", nullptr));
         testAddUser->setText(QApplication::translate("MainWindow", "Add A User", nullptr));
         testAddBadUser->setText(QApplication::translate("MainWindow", "Add Bad User", nullptr));
+        testTherapy->setText(QApplication::translate("MainWindow", "Perform Therapy", nullptr));
+        testRecordTherapy->setText(QApplication::translate("MainWindow", "Record Therapy", nullptr));
+        testReplay->setText(QApplication::translate("MainWindow", "Test Replay", nullptr));
+        testOnlyRecord->setText(QApplication::translate("MainWindow", "Only Record", nullptr));
     } // retranslateUi
 
 };

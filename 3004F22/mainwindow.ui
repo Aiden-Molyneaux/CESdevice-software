@@ -800,7 +800,7 @@ p, li { white-space: pre-wrap; }
       <rect>
        <x>20</x>
        <y>380</y>
-       <width>80</width>
+       <width>91</width>
        <height>25</height>
       </rect>
      </property>
@@ -811,14 +811,66 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="testAddBadUser">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>380</y>
+       <x>20</x>
+       <y>410</y>
        <width>91</width>
        <height>25</height>
       </rect>
      </property>
      <property name="text">
       <string>Add Bad User</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="testTherapy">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>380</y>
+       <width>111</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Perform Therapy</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="testRecordTherapy">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>410</y>
+       <width>111</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Record Therapy</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="testReplay">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>380</y>
+       <width>80</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Test Replay</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="testOnlyRecord">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>410</y>
+       <width>80</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Only Record</string>
      </property>
     </widget>
    </widget>
