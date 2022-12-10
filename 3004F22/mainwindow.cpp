@@ -36,13 +36,18 @@ MainWindow::~MainWindow() {
     delete device; // make sure to delete our allocated device
 }
 
-// MAIN FUNCTION IMPLEMENTATIONS (therapy(), connectionTest(), and replayRecording())
 // therapy() is the provides the main functionality of the device - initiating and performing therapy sessions
 void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int overrideIntensity){
     string name = ui->nameComboBox->currentText().toStdString();
     int group = selectedGroup;
     int initialIntensity = device->getSessions(selectedGroup-1, selectedSession-1)->getIntensity();
     double batteryPercent = device->getBattery()->getBatteryLevel();
+
+    //DO NOT ALLOW GROUP 3 TO BE USED WITH NO USER SPECIFIED
+    if (group == 3 && ui->nameComboBox->currentText() == NULL) {
+        ui->log->append("**CANNOT PERFORM THERAPY OF GROUP 3 - NO USER SPECIFIED**");
+        return;
+    }
 
     if (recordingFlag) {
         if (ui->nameComboBox->currentText() == NULL) {
@@ -58,7 +63,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             device->setRecordingFlag(false);
             pauseTimer.restart();
             pauseTimer.start();
-            while (pauseTimer.elapsed() < 5000){
+            while (pauseTimer.elapsed() < 3000){
                 sleepy(1);
                 if (device->getRecordingFlag()) {
                     //DO RECORDING NOW - DEFAULT INTENSITY
@@ -94,17 +99,15 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
 
 
     device->setIsInSession(true);
-    ui->log->append("\nTherapy session will begin in 5 seconds:");
+    ui->log->append("\nTherapy session will begin in 5 seconds:\n");
     blinkSession(sessionNum); // make the session icon blink for a couple seconds
 
     // Begin session with blinking session icon and 5 second count down
     for(int i=5; i>0; i--){
-        QString text = "";
-        text.append(QString::number(i));
-        ui->log->append(text);
-        sleepy(100); // small sleep to simulate count down
+        ui->log->moveCursor(QTextCursor::End);
+        ui->log->insertPlainText(QString::number(i) + "... ");
+        sleepy(500); // small sleep to simulate count down
     }
-    ui->log->append("");
 
     int therapyLengthMS;
     // if groupNum == 3, then we need to get the user's designated session time length. Otherwise get the corresponding time length of the group chosen
@@ -117,6 +120,16 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
     } else {
         device->setCurrentIntensity(overrideIntensity);
     }
+
+    //GET DURATION IN MINUTES - USED FOR FOLLOWING log->append()
+    int durationMinutes;
+    switch (group) {
+        case 1: durationMinutes = 20; break;
+        case 2: durationMinutes = 45; break;
+        case 3: durationMinutes = device->getUserByName(name)->getDuration(); break;
+    }
+
+    ui->log->append("Starting therapy session with:\n\tDuration: " + QString::number(durationMinutes) + "\n\tIntensity: " + QString::number(device->getCurrentIntensity()));
 
     updateIntensityLog(); // update Intensity log in UI
 
@@ -764,26 +777,41 @@ void MainWindow::blinkSession(int sessionNum){
 }
 
 void MainWindow::addUserButtonClicked() {
+    //STOP USER FROM ADDING USERS IF DEVICE IS OFF
     if (!device->getIsPoweredOn()) {return;}
 
+    //GET VALUES FROM INPUT FIELDS
     string name = ui->userNameInput->toPlainText().toStdString();
     int duration = ui->userDurationInput->toPlainText().toInt();
 
+    //CHECK IF USER ALREADY EXISTS UNDER THAT NAME
     if (device->getUserByName(name)) {
         ui->log->append("**USER " + QString::fromStdString(name) + " ALREADY EXISTS**");
         return;
     }
 
+    //CHECK IF USER SPECIFIED BAD INPUT
     if (name == "" || duration == 0) {
         ui->log->append("**COULD NOT ADD USER - BAD INPUT**");
         return;
+    //CHECK IF MAX NUMBER OF USERS IS REACHED
     } else if (device->addUser(name, duration) == -1) {
         ui->log->append("**COULD NOT ADD USER - MAX USERS**");
+
+        //CLEAR INPUT FIELDS
+        ui->userNameInput->clear();
+        ui->userDurationInput->clear();
         return;
+    //USER ADDED SUCCESSFULLY
     } else {
         ui->log->append("**ADDED USER " + QString::fromStdString(name) + "**");
+
+        //CLEAR INPUT FIELDS
+        ui->userNameInput->clear();
+        ui->userDurationInput->clear();
     }
 
+    //ADD NEW USER TO NAME COMBO BOX
     ui->nameComboBox->addItem(QString::fromStdString(name));
 }
 
@@ -801,6 +829,8 @@ void MainWindow::addRecording(const string& name, int group, int batteryPercent,
 
 void MainWindow::printHistoryButtonClicked() {
     string name = ui->nameComboBox->currentText().toStdString();
+
+    ui->log->append('**PRINTING HISTORY OF USER' + QString::fromStdString(name) + "**");
 
     int numRecordings = 0;
     for (int i = 0; i < device->getNumRecordings(); i++) {

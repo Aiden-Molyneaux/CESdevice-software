@@ -12,5 +12,7 @@
         <file>../icons/delta.png</file>
         <file>../icons/check.png</file>
         <file>../icons/45.png</file>
+        <file>../icons/CES2.png</file>
+        <file>../icons/stop.png</file>
     </qresource>
 </RCC>
