@@ -1,15 +1,16 @@
 #include "Device.h"
 
 Device::Device(const string& name): deviceName(name), isPowered(false), inSession(false), currentIntensity(0) {
+    // Battery initialization
     battery = new Battery(this);
 
-    // Buttons initialization
+    // Button initialization
     powerButton = new Button(this, "powerButton");
 
-    // Lights initialization
+    // Light initialization
     powerLight = new Light(this, "powerLight");
 
-    // Group and Sessions initialization
+    // Groups and Sessions initialization
     groupTypes[0] = new Group(this, "20min", 4000);
     groupTypes[1] = new Group(this, "45min", 8500);
     groupTypes[2] = new Group(this, "userDesignated", 0);
@@ -44,7 +45,6 @@ void Device::WidgetChanged(Widget*, const string& widgetName){
 
 void Device::powerOn(){
     if(battery->getBatteryLevel()<33){
-        cout << "Battery level too low" << endl;
         return;
     }
     isPowered = true;
@@ -56,17 +56,6 @@ void Device::setSoftPower(bool value){
 }
 
 void Device::powerOff(){
-    // implement soft-off
-    if(inSession){
-        for(int i=0; i<10; i++){
-            currentIntensity-=10;
-            if(currentIntensity<=0){
-                currentIntensity=0;
-                break;
-            }
-        }
-        inSession=false;
-    }
     powerLight->setIsLightOn(false);
     isPowered = false;
 }

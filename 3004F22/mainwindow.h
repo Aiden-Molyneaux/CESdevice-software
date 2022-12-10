@@ -55,7 +55,7 @@ class MainWindow : public QMainWindow {
         void cycleGroupButton();
         void turnOffUI();
         void softOff();
-        void setConnectionLock(bool status);
+        void setTherapyLock(bool status);
         void updateIntensityLog();
         void displayIntensityOnGraph();
         void powerLightOnOff(bool status);
