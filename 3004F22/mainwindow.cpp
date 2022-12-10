@@ -834,7 +834,7 @@ void MainWindow::addRecording(const string& name, int group, int batteryPercent,
 void MainWindow::printHistoryButtonClicked() {
     string name = ui->nameComboBox->currentText().toStdString();
 
-    ui->log->append('**PRINTING HISTORY OF USER' + QString::fromStdString(name) + "**");
+    ui->log->append("**PRINTING HISTORY OF USER " + QString::fromStdString(name) + "**");
 
     int numRecordings = 0;
     for (int i = 0; i < device->getNumRecordings(); i++) {
@@ -860,6 +860,8 @@ void MainWindow::printHistoryButtonClicked() {
         }
     }
     ui->historySpinBox->setMaximum(numRecordings);
+
+    if (numRecordings == 0) {ui->log->append("**USER " + QString::fromStdString(name) + " HAS NO TREATMENT HISTORY**\n");}
 }
 
 // setTherapyLock() function used to enable and disable Connection, Intensity, and Power setting UI elements, as to not let the user interrupt a process (works well (-_^))
