@@ -886,6 +886,32 @@ p, li { white-space: pre-wrap; }
       <string>Lost Connection</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="testChangeIntensity">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>470</y>
+       <width>111</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Change Intensity</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="testDepleteBattery">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>440</y>
+       <width>91</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Deplete Battery</string>
+     </property>
+    </widget>
    </widget>
    <zorder>groupBox</zorder>
    <zorder>group45Button</zorder>

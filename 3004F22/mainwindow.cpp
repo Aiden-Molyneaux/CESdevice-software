@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->testReplay, SIGNAL(released()), this, SLOT (testReplayClicked()));
     connect(ui->testOnlyRecord, SIGNAL(released()), this, SLOT (testOnlyRecordClicked()));
     connect(ui->testLostConnection, SIGNAL(released()), this, SLOT (testLostConnectionClicked()));
+    connect(ui->testChangeIntensity, SIGNAL(released()), this, SLOT (testChangingIntensityClicked()));
+    connect(ui->testDepleteBattery, SIGNAL(released()), this, SLOT (testDepleteBatteryClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -356,7 +358,6 @@ void MainWindow::powerReleased(){
 
                 //CHECK IF TIMED OUT
                 if (device->getTimeout()) {
-                    cout << "DEVICE TIMED OUT" << endl;
                     device->setTimeout(false);
                     return;
                 }
@@ -577,6 +578,7 @@ void MainWindow::changeBatterySlider(){
         device->getBattery()->setBlinkFlag(false);
     }
     ui_initializeBattery();
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
 }
 
 // BATTERY HELPER FUNCTIONS
@@ -614,13 +616,14 @@ bool MainWindow::checkBattery(){
 // batteryWarning() is called the battery level drops below 33 units during a session
 void MainWindow::batteryWarning(){
     ui->log->append("\nBattery level too low. Replace Batteries");
-    ui->log->append("\nSession will now end early. Device will now power down via Soft Off protocol.");
+    ui->log->append("Session will now end early. Device will now power down via Soft Off protocol.");
     device->getBattery()->setBlinkFlag(true);
     blinkBattery();
 }
 
 // ui_initializeBattery() is called to change the UI Battery icon according to the current battery level
 void MainWindow::ui_initializeBattery(){
+    sleepy(10);
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
     if(device->getBattery()->getBatteryLevel()>=33){
         ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: yellow;}");
@@ -628,6 +631,7 @@ void MainWindow::ui_initializeBattery(){
                 ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: green;}");
         } else{ ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}"); }
     }else{ ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}"); }
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
 }
 
 // blinkBattery() is called when the battery level reaches <33 units, so that UI can notify the user to change the battery
@@ -638,7 +642,7 @@ void MainWindow::blinkBattery(){
         ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
         sleepy(100);
     }
-    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
 }
 
 // OTHER HELPER FUNCTIONS
@@ -1148,29 +1152,57 @@ void MainWindow::testOnlyRecordClicked() {
     ui->testLog->append("CANCELING RECORDED SESSION...\n**TEST COMPLETE**\n");
 }
 
-void MainWindow::testLostConnectionHelper() {
-    testingTimer.restart();
-
-    while (testingTimer.elapsed() < 5000) {}
-    ui->connectionSlider->setValue(1);
-    connectionIntensity = ui->connectionSlider->value();
-
-    while (testingTimer.elapsed() < 10000) {}
-    ui->connectionSlider->setValue(3);
-    connectionIntensity = ui->connectionSlider->value();
-    return;
-}
-
 void MainWindow::testLostConnectionClicked() {
     if (!device->getIsPoweredOn()) {return;}
 
-    ui->testLog->append("**TESTING LOST CONNECTION FUNCTIONALITY**\nSTARTING A SESSION AS NORMAL...");
+    ui->testLog->append("**TESTING LOST CONNECTION FUNCTIONALITY**\nSTARTING A SESSION TO BE INTURUPTED...");
     sleepy(100);
 
     while (selectedGroup != 1) { cycleGroupButton(); sleepy(100);}
     while (selectedSession != 1) { pressUpArrow(); sleepy(100); }
 
-    std::thread first (&MainWindow::testLostConnectionHelper, this);
+    ui->testLog->append("ONCE THE \"Disconnect Earclips\" BUTTON BECOMES AVAILABLE, CLICK IT!");
+    ui->testLog->append("AFTER THE CONNECTION LIGHTS STOP FLASHING, CLICK THE \"Connect Earclips\" BUTTON!");
     therapy(selectedGroup, selectedSession, 0);
-    first.join();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testChangingIntensityClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING CHANGING INENSITY FUNCTIONALITY**");
+
+    if (ui->nameComboBox->currentText() == NULL) {
+        ui->testLog->append("THIS TEST REQUIRES A USER TO BE SPECIFIED...\n**TEST COMPLETE**\n");
+        return;
+    }
+
+    ui->testLog->append("STARTING A SESSION TO BE RECORDED AND HAVE INTENSITY UPDATED...");
+    sleepy(100);
+
+    while (selectedGroup != 2) { cycleGroupButton(); sleepy(100);}
+    while (selectedSession != 1) { pressUpArrow(); sleepy(100); }
+
+    ui->testLog->append("ONCE THE CONSOLE LOG REPORTS COMPLETES IT'S COUNTDOWN, CLICK THE UP/DOWN BUTTON TO OBSERVE THE CHANGES IN INTENSITY!");
+    therapy(selectedGroup, selectedSession, 1);
+
+    ui->testLog->append("NOW OBSERVE THE PRINTED HISTORY TO ENSURE THAT THE HIGHEST RECORDED INTENSITY WAS SAVED!");
+    printHistoryButtonClicked();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testDepleteBatteryClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING DEPLETE BATTERY FUNCTIONALITY**");
+
+    while (selectedGroup != 2) { cycleGroupButton(); sleepy(100); }
+
+    ui->testLog->append("STARTING THERAPY SESSION...\nONCE THE BATTERY IS DEPLETED, DRAG THE \"Battery Level\" SLIDER TO THE RIGHT TO COMPLETE THE TEST!");
+
+    therapy(selectedGroup, selectedSession, 0, 99);
+
+    ui->testLog->append("**TEST COMPLETE**\n");
 }

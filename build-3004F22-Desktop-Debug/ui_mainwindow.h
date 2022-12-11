@@ -87,6 +87,8 @@ public:
     QPushButton *testReplay;
     QPushButton *testOnlyRecord;
     QPushButton *testLostConnection;
+    QPushButton *testChangeIntensity;
+    QPushButton *testDepleteBattery;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -358,6 +360,12 @@ public:
         testLostConnection = new QPushButton(groupBox_6);
         testLostConnection->setObjectName(QString::fromUtf8("testLostConnection"));
         testLostConnection->setGeometry(QRect(210, 440, 111, 25));
+        testChangeIntensity = new QPushButton(groupBox_6);
+        testChangeIntensity->setObjectName(QString::fromUtf8("testChangeIntensity"));
+        testChangeIntensity->setGeometry(QRect(210, 470, 111, 25));
+        testDepleteBattery = new QPushButton(groupBox_6);
+        testDepleteBattery->setObjectName(QString::fromUtf8("testDepleteBattery"));
+        testDepleteBattery->setGeometry(QRect(20, 440, 91, 25));
         MainWindow->setCentralWidget(centralwidget);
         groupBox->raise();
         group45Button->raise();
@@ -452,6 +460,8 @@ public:
         testReplay->setText(QApplication::translate("MainWindow", "Test Replay", nullptr));
         testOnlyRecord->setText(QApplication::translate("MainWindow", "Only Record", nullptr));
         testLostConnection->setText(QApplication::translate("MainWindow", "Lost Connection", nullptr));
+        testChangeIntensity->setText(QApplication::translate("MainWindow", "Change Intensity", nullptr));
+        testDepleteBattery->setText(QApplication::translate("MainWindow", "Deplete Battery", nullptr));
     } // retranslateUi
 
 };

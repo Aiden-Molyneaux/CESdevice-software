@@ -101,7 +101,8 @@ class MainWindow : public QMainWindow {
         void testReplayClicked();
         void testOnlyRecordHelper();
         void testOnlyRecordClicked();
-        void testLostConnectionHelper();
         void testLostConnectionClicked();
+        void testChangingIntensityClicked();
+        void testDepleteBatteryClicked();
 };
 #endif // MAINWINDOW_H
