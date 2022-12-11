@@ -20,12 +20,10 @@ Aiden's contributions:
 - programmed about half of the Oasis Pro implementation
   - specifically the main therapy() and connectionTest() functions as well as many other support functions
 - contributed to QT UI development and implementation
+- wrote about half of the testing documentation
 
 Patrick's contributions:
-- programmed about half of the Oasis Pro implementation
-  - specifically functionality regarding adding users, creating treatment history & replaying sessions, testing scripts
-- contributed to QT UI development and implementation
-- contributed to witten testing documentation
+
 
 Joshua's contributions:
 
@@ -73,6 +71,13 @@ Files included in this project:
 ---- TESTED SCENARIOS ----
 
 Tested scenarios that work:
-
+- Power On Scenario
+- Power Off Scenario
+- Low Battery Scenario
+- Select a Session Scenario
+- Connection Test Scenario
+- Change Intensity Scenario
+- Record a Session Scenario
+- Replay a Session Scenario
 
 Test scenarios that don't work:
