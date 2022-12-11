@@ -22,7 +22,10 @@ Aiden's contributions:
 - contributed to QT UI development and implementation
 
 Patrick's contributions:
-
+- programmed about half of the Oasis Pro implementation
+  - specifically functionality regarding adding users, creating treatment history & replaying sessions, testing scripts
+- contributed to QT UI development and implementation
+- contributed to witten testing documentation
 
 Joshua's contributions:
 
