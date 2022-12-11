@@ -77,6 +77,18 @@ public:
     QLabel *label;
     QPushButton *connectEarclipsButton;
     QPushButton *disconnectEarclipsButton;
+    QGroupBox *groupBox_6;
+    QTextBrowser *testLog;
+    QLabel *label_7;
+    QPushButton *testAddUser;
+    QPushButton *testAddBadUser;
+    QPushButton *testTherapy;
+    QPushButton *testRecordTherapy;
+    QPushButton *testReplay;
+    QPushButton *testOnlyRecord;
+    QPushButton *testLostConnection;
+    QPushButton *testChangeIntensity;
+    QPushButton *testDepleteBattery;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -84,7 +96,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1471, 590);
+        MainWindow->resize(1830, 590);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         powerButton = new QPushButton(centralwidget);
@@ -192,7 +204,7 @@ public:
         groupUserButton->setCheckable(false);
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setGeometry(QRect(20, -20, 781, 581));
+        groupBox->setGeometry(QRect(20, -20, 761, 571));
         CESButton = new QPushButton(groupBox);
         CESButton->setObjectName(QString::fromUtf8("CESButton"));
         CESButton->setGeometry(QRect(510, 50, 71, 71));
@@ -318,6 +330,42 @@ public:
         log->raise();
         label_3->raise();
         groupBox_3->raise();
+        groupBox_6 = new QGroupBox(centralwidget);
+        groupBox_6->setObjectName(QString::fromUtf8("groupBox_6"));
+        groupBox_6->setGeometry(QRect(1470, -20, 341, 571));
+        testLog = new QTextBrowser(groupBox_6);
+        testLog->setObjectName(QString::fromUtf8("testLog"));
+        testLog->setGeometry(QRect(10, 70, 321, 291));
+        label_7 = new QLabel(groupBox_6);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setGeometry(QRect(100, 50, 141, 17));
+        testAddUser = new QPushButton(groupBox_6);
+        testAddUser->setObjectName(QString::fromUtf8("testAddUser"));
+        testAddUser->setGeometry(QRect(20, 380, 91, 25));
+        testAddBadUser = new QPushButton(groupBox_6);
+        testAddBadUser->setObjectName(QString::fromUtf8("testAddBadUser"));
+        testAddBadUser->setGeometry(QRect(20, 410, 91, 25));
+        testTherapy = new QPushButton(groupBox_6);
+        testTherapy->setObjectName(QString::fromUtf8("testTherapy"));
+        testTherapy->setGeometry(QRect(210, 380, 111, 25));
+        testRecordTherapy = new QPushButton(groupBox_6);
+        testRecordTherapy->setObjectName(QString::fromUtf8("testRecordTherapy"));
+        testRecordTherapy->setGeometry(QRect(210, 410, 111, 25));
+        testReplay = new QPushButton(groupBox_6);
+        testReplay->setObjectName(QString::fromUtf8("testReplay"));
+        testReplay->setGeometry(QRect(120, 380, 80, 25));
+        testOnlyRecord = new QPushButton(groupBox_6);
+        testOnlyRecord->setObjectName(QString::fromUtf8("testOnlyRecord"));
+        testOnlyRecord->setGeometry(QRect(120, 410, 80, 25));
+        testLostConnection = new QPushButton(groupBox_6);
+        testLostConnection->setObjectName(QString::fromUtf8("testLostConnection"));
+        testLostConnection->setGeometry(QRect(210, 440, 111, 25));
+        testChangeIntensity = new QPushButton(groupBox_6);
+        testChangeIntensity->setObjectName(QString::fromUtf8("testChangeIntensity"));
+        testChangeIntensity->setGeometry(QRect(210, 470, 111, 25));
+        testDepleteBattery = new QPushButton(groupBox_6);
+        testDepleteBattery->setObjectName(QString::fromUtf8("testDepleteBattery"));
+        testDepleteBattery->setGeometry(QRect(20, 440, 91, 25));
         MainWindow->setCentralWidget(centralwidget);
         groupBox->raise();
         group45Button->raise();
@@ -335,9 +383,10 @@ public:
         thetaButton->raise();
         group20Button->raise();
         groupBox_2->raise();
+        groupBox_6->raise();
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1471, 22));
+        menubar->setGeometry(QRect(0, 0, 1830, 22));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -402,6 +451,17 @@ public:
         label->setText(QApplication::translate("MainWindow", "Connection", nullptr));
         connectEarclipsButton->setText(QApplication::translate("MainWindow", "Connect Earclips", nullptr));
         disconnectEarclipsButton->setText(QApplication::translate("MainWindow", "Disconnect Earclips", nullptr));
+        groupBox_6->setTitle(QApplication::translate("MainWindow", "GroupBox", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "Testing Output Console", nullptr));
+        testAddUser->setText(QApplication::translate("MainWindow", "Add A User", nullptr));
+        testAddBadUser->setText(QApplication::translate("MainWindow", "Add Bad User", nullptr));
+        testTherapy->setText(QApplication::translate("MainWindow", "Perform Therapy", nullptr));
+        testRecordTherapy->setText(QApplication::translate("MainWindow", "Record Therapy", nullptr));
+        testReplay->setText(QApplication::translate("MainWindow", "Test Replay", nullptr));
+        testOnlyRecord->setText(QApplication::translate("MainWindow", "Only Record", nullptr));
+        testLostConnection->setText(QApplication::translate("MainWindow", "Lost Connection", nullptr));
+        testChangeIntensity->setText(QApplication::translate("MainWindow", "Change Intensity", nullptr));
+        testDepleteBattery->setText(QApplication::translate("MainWindow", "Deplete Battery", nullptr));
     } // retranslateUi
 
 };

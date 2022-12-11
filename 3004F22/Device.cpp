@@ -107,6 +107,8 @@ Recording* Device::getRecordingAt(int index) { return this->recordings[index]; }
 
 int Device::getNumRecordings() { return this->numRecordings; }
 
+int Device::getNumUsers() { return this->numUsers; }
+
 User* Device::getUserByName(const string& name) {
     for (int i = 0; i < numUsers; i++) {
         if (users[i]->getName() == name) {

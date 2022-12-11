@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[16];
-    char stringdata0[252];
+    QByteArrayData data[26];
+    char stringdata0[479];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -46,7 +46,17 @@ QT_MOC_LITERAL(11, 138, 20), // "addUserButtonClicked"
 QT_MOC_LITERAL(12, 159, 25), // "printHistoryButtonClicked"
 QT_MOC_LITERAL(13, 185, 23), // "playReplayButtonClicked"
 QT_MOC_LITERAL(14, 209, 22), // "changeConnectionSlider"
-QT_MOC_LITERAL(15, 232, 19) // "changeBatterySlider"
+QT_MOC_LITERAL(15, 232, 19), // "changeBatterySlider"
+QT_MOC_LITERAL(16, 252, 18), // "testAddUserClicked"
+QT_MOC_LITERAL(17, 271, 21), // "testAddBadUserClicked"
+QT_MOC_LITERAL(18, 293, 18), // "testTherapyClicked"
+QT_MOC_LITERAL(19, 312, 24), // "testRecordTherapyClicked"
+QT_MOC_LITERAL(20, 337, 17), // "testReplayClicked"
+QT_MOC_LITERAL(21, 355, 20), // "testOnlyRecordHelper"
+QT_MOC_LITERAL(22, 376, 21), // "testOnlyRecordClicked"
+QT_MOC_LITERAL(23, 398, 25), // "testLostConnectionClicked"
+QT_MOC_LITERAL(24, 424, 28), // "testChangingIntensityClicked"
+QT_MOC_LITERAL(25, 453, 25) // "testDepleteBatteryClicked"
 
     },
     "MainWindow\0pressPower\0\0powerReleased\0"
@@ -55,7 +65,13 @@ QT_MOC_LITERAL(15, 232, 19) // "changeBatterySlider"
     "disconnectEarClips\0addUserButtonClicked\0"
     "printHistoryButtonClicked\0"
     "playReplayButtonClicked\0changeConnectionSlider\0"
-    "changeBatterySlider"
+    "changeBatterySlider\0testAddUserClicked\0"
+    "testAddBadUserClicked\0testTherapyClicked\0"
+    "testRecordTherapyClicked\0testReplayClicked\0"
+    "testOnlyRecordHelper\0testOnlyRecordClicked\0"
+    "testLostConnectionClicked\0"
+    "testChangingIntensityClicked\0"
+    "testDepleteBatteryClicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -65,7 +81,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      14,   14, // methods
+      24,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -73,22 +89,42 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   84,    2, 0x08 /* Private */,
-       3,    0,   85,    2, 0x08 /* Private */,
-       4,    0,   86,    2, 0x08 /* Private */,
-       5,    0,   87,    2, 0x08 /* Private */,
-       6,    0,   88,    2, 0x08 /* Private */,
-       7,    0,   89,    2, 0x08 /* Private */,
-       8,    0,   90,    2, 0x08 /* Private */,
-       9,    0,   91,    2, 0x08 /* Private */,
-      10,    0,   92,    2, 0x08 /* Private */,
-      11,    0,   93,    2, 0x08 /* Private */,
-      12,    0,   94,    2, 0x08 /* Private */,
-      13,    0,   95,    2, 0x08 /* Private */,
-      14,    0,   96,    2, 0x08 /* Private */,
-      15,    0,   97,    2, 0x08 /* Private */,
+       1,    0,  134,    2, 0x08 /* Private */,
+       3,    0,  135,    2, 0x08 /* Private */,
+       4,    0,  136,    2, 0x08 /* Private */,
+       5,    0,  137,    2, 0x08 /* Private */,
+       6,    0,  138,    2, 0x08 /* Private */,
+       7,    0,  139,    2, 0x08 /* Private */,
+       8,    0,  140,    2, 0x08 /* Private */,
+       9,    0,  141,    2, 0x08 /* Private */,
+      10,    0,  142,    2, 0x08 /* Private */,
+      11,    0,  143,    2, 0x08 /* Private */,
+      12,    0,  144,    2, 0x08 /* Private */,
+      13,    0,  145,    2, 0x08 /* Private */,
+      14,    0,  146,    2, 0x08 /* Private */,
+      15,    0,  147,    2, 0x08 /* Private */,
+      16,    0,  148,    2, 0x08 /* Private */,
+      17,    0,  149,    2, 0x08 /* Private */,
+      18,    0,  150,    2, 0x08 /* Private */,
+      19,    0,  151,    2, 0x08 /* Private */,
+      20,    0,  152,    2, 0x08 /* Private */,
+      21,    0,  153,    2, 0x08 /* Private */,
+      22,    0,  154,    2, 0x08 /* Private */,
+      23,    0,  155,    2, 0x08 /* Private */,
+      24,    0,  156,    2, 0x08 /* Private */,
+      25,    0,  157,    2, 0x08 /* Private */,
 
  // slots: parameters
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -127,6 +163,16 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 11: _t->playReplayButtonClicked(); break;
         case 12: _t->changeConnectionSlider(); break;
         case 13: _t->changeBatterySlider(); break;
+        case 14: _t->testAddUserClicked(); break;
+        case 15: _t->testAddBadUserClicked(); break;
+        case 16: _t->testTherapyClicked(); break;
+        case 17: _t->testRecordTherapyClicked(); break;
+        case 18: _t->testReplayClicked(); break;
+        case 19: _t->testOnlyRecordHelper(); break;
+        case 20: _t->testOnlyRecordClicked(); break;
+        case 21: _t->testLostConnectionClicked(); break;
+        case 22: _t->testChangingIntensityClicked(); break;
+        case 23: _t->testDepleteBatteryClicked(); break;
         default: ;
         }
     }
@@ -162,13 +208,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 14)
+        if (_id < 24)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 14;
+        _id -= 24;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 14)
+        if (_id < 24)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 14;
+        _id -= 24;
     }
     return _id;
 }

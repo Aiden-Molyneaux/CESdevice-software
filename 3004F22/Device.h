@@ -27,6 +27,7 @@ class Device : public DeviceMediator {
         int addUser(const string& name, int intensity);
         int addRecording(const string& name, int intensity, int initialIntensity, int group, int batteryPercent, int connection);
         int getNumRecordings();
+        int getNumUsers();
         Recording* getRecordingAt(int index);
         User* getUserByName(const string& name);
 

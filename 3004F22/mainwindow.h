@@ -10,6 +10,7 @@
 #include "Device.h"
 #include <string>
 #include <iostream>
+#include <thread>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,6 +41,7 @@ class MainWindow : public QMainWindow {
         QElapsedTimer pauseTimer;
         QElapsedTimer therapyTimer;
         QElapsedTimer timeoutTimer;
+        QElapsedTimer testingTimer;
 
         // MAIN FUNCTIONS
         void therapy(int groupNum, int sessionNum, int recordingFlag = 0, int overrideIntensity = -1);
@@ -90,5 +92,17 @@ class MainWindow : public QMainWindow {
         void playReplayButtonClicked();
         void changeConnectionSlider();
         void changeBatterySlider();
+
+        // TESTING SLOTS
+        void testAddUserClicked();
+        void testAddBadUserClicked();
+        void testTherapyClicked();
+        void testRecordTherapyClicked();
+        void testReplayClicked();
+        void testOnlyRecordHelper();
+        void testOnlyRecordClicked();
+        void testLostConnectionClicked();
+        void testChangingIntensityClicked();
+        void testDepleteBatteryClicked();
 };
 #endif // MAINWINDOW_H

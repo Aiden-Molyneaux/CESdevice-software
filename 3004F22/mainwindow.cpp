@@ -3,6 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    srand(time(0));
 
     // Initialize member variables
     selectedSession = 1;
@@ -29,6 +30,17 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->printHistoryButton, SIGNAL(released()), this, SLOT (printHistoryButtonClicked()));
     connect(ui->playReplayButton, SIGNAL(released()), this, SLOT (playReplayButtonClicked()));
     connect(ui->stopButton, SIGNAL(released()), this, SLOT (stopPressed()));
+
+    //TEST SLOTS
+    connect(ui->testAddUser, SIGNAL(released()), this, SLOT (testAddUserClicked()));
+    connect(ui->testAddBadUser, SIGNAL(released()), this, SLOT (testAddBadUserClicked()));
+    connect(ui->testTherapy, SIGNAL(released()), this, SLOT (testTherapyClicked()));
+    connect(ui->testRecordTherapy, SIGNAL(released()), this, SLOT (testRecordTherapyClicked()));
+    connect(ui->testReplay, SIGNAL(released()), this, SLOT (testReplayClicked()));
+    connect(ui->testOnlyRecord, SIGNAL(released()), this, SLOT (testOnlyRecordClicked()));
+    connect(ui->testLostConnection, SIGNAL(released()), this, SLOT (testLostConnectionClicked()));
+    connect(ui->testChangeIntensity, SIGNAL(released()), this, SLOT (testChangingIntensityClicked()));
+    connect(ui->testDepleteBattery, SIGNAL(released()), this, SLOT (testDepleteBatteryClicked()));
 }
 
 MainWindow::~MainWindow() {
@@ -54,7 +66,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             ui->log->append("CANNOT RECORD - NO USER SPECIFIED");
             recordingFlag = 0;
         } else {
-            ui->log->append("THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name));
+            ui->log->append("**THIS SESSION WILL BE RECORDED UNDER USER " + QString::fromStdString(name) + "**");
 
             //CHECK IF USER WANTS TO JUST RECORD, OR DO SESSION AT THE SAME TIME
             changeBackgroundColor(ui->stopButton, "green", "stop", "20");
@@ -66,6 +78,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
             while (pauseTimer.elapsed() < 3000){
                 sleepy(1);
                 if (device->getRecordingFlag()) {
+                    ui->log->append("**SESSION CANCELED**");
                     //DO RECORDING NOW - DEFAULT INTENSITY
                     addRecording(name, group, batteryPercent, initialIntensity);
                     changeBackgroundColor(ui->stopButton, "white", "stop", "20");
@@ -98,7 +111,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
     setTherapyLock(false); // lock all Connection, Intensity, and Power setting UI elements until Session begins
 
     device->setIsInSession(true);
-    ui->log->append("\nTherapy session will begin in 5 seconds:\n");
+    ui->log->append("Therapy session will begin in 5 seconds:\n");
     blinkSession(sessionNum); // make the session icon blink for a couple seconds
 
     // Begin session with blinking session icon and 5 second count down
@@ -197,7 +210,7 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
                 drainBattery(device->getCurrentIntensity()); // deplete battery
                 sleepy(150); // simulate real time
             }
-            ui->log->append("\nSession Complete."); // log to control that session has completed
+            ui->log->append("Session Complete.\n"); // log to control that session has completed
             device->setIsInSession(false);
 
             //DO RECORDING HERE
@@ -211,10 +224,9 @@ void MainWindow::therapy(int groupNum, int sessionNum, int recordingFlag, int ov
 
         sleepy(150);
         if(therapyTimer.elapsed() >= therapyLengthMS && connectionIntensity!=1){
-           //DO RECORDING HERE
+            ui->log->append("Session Complete.\n");
+            //DO RECORDING HERE
             if (recordingFlag) {addRecording(name, group, batteryPercent, initialIntensity, highestIntensity);}
-
-            ui->log->append("Session Complete.");
             device->setIsInSession(false);
             break; // session ends, break therapy loop
         }
@@ -346,7 +358,6 @@ void MainWindow::powerReleased(){
 
                 //CHECK IF TIMED OUT
                 if (device->getTimeout()) {
-                    cout << "DEVICE TIMED OUT" << endl;
                     device->setTimeout(false);
                     return;
                 }
@@ -567,6 +578,7 @@ void MainWindow::changeBatterySlider(){
         device->getBattery()->setBlinkFlag(false);
     }
     ui_initializeBattery();
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
 }
 
 // BATTERY HELPER FUNCTIONS
@@ -604,13 +616,14 @@ bool MainWindow::checkBattery(){
 // batteryWarning() is called the battery level drops below 33 units during a session
 void MainWindow::batteryWarning(){
     ui->log->append("\nBattery level too low. Replace Batteries");
-    ui->log->append("\nSession will now end early. Device will now power down via Soft Off protocol.");
+    ui->log->append("Session will now end early. Device will now power down via Soft Off protocol.");
     device->getBattery()->setBlinkFlag(true);
     blinkBattery();
 }
 
 // ui_initializeBattery() is called to change the UI Battery icon according to the current battery level
 void MainWindow::ui_initializeBattery(){
+    sleepy(10);
     ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
     if(device->getBattery()->getBatteryLevel()>=33){
         ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: yellow;}");
@@ -618,6 +631,7 @@ void MainWindow::ui_initializeBattery(){
                 ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: green;}");
         } else{ ui->batteryLevel3->setStyleSheet("QTextBrowser {background-color: white;}"); }
     }else{ ui->batteryLevel2->setStyleSheet("QTextBrowser {background-color: white;}"); }
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
 }
 
 // blinkBattery() is called when the battery level reaches <33 units, so that UI can notify the user to change the battery
@@ -628,7 +642,7 @@ void MainWindow::blinkBattery(){
         ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
         sleepy(100);
     }
-    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: white;}");
+    ui->batteryLevel1->setStyleSheet("QTextBrowser {background-color: red;}");
 }
 
 // OTHER HELPER FUNCTIONS
@@ -820,17 +834,17 @@ void MainWindow::addRecording(const string& name, int group, int batteryPercent,
     if (intensity == -1) { intensity = device->getSessions(group-1, selectedSession-1)->getIntensity(); }
 
     if (device->addRecording(name, intensity, initialIntensity, group, batteryPercent, connectionIntensity) == -1) {
-        ui->log->append("**COULD NOT ADD RECORDING**");
+        ui->log->append("**COULD NOT ADD RECORDING - MAX RECORDINGS**\n");
         return;
     } else {
-        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**");
+        ui->log->append("**ADDED RECORDING UNDER USER " + QString::fromStdString(name) + "**\n");
     }
 }
 
 void MainWindow::printHistoryButtonClicked() {
     string name = ui->nameComboBox->currentText().toStdString();
 
-    ui->log->append('**PRINTING HISTORY OF USER' + QString::fromStdString(name) + "**");
+    ui->log->append("**PRINTING HISTORY OF USER " + QString::fromStdString(name) + "**");
 
     int numRecordings = 0;
     for (int i = 0; i < device->getNumRecordings(); i++) {
@@ -856,6 +870,8 @@ void MainWindow::printHistoryButtonClicked() {
         }
     }
     ui->historySpinBox->setMaximum(numRecordings);
+
+    if (numRecordings == 0) {ui->log->append("**USER " + QString::fromStdString(name) + " HAS NO TREATMENT HISTORY**\n");}
 }
 
 // setTherapyLock() function used to enable and disable Connection, Intensity, and Power setting UI elements, as to not let the user interrupt a process (works well (-_^))
@@ -960,4 +976,233 @@ void MainWindow::sleepy(int sleepTime) {
     QTime dieTime = QTime::currentTime().addMSecs(sleepTime);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
+// TESTING SLOTS
+
+void MainWindow::testAddUserClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING ADD USER FUNCTIONALITY**\nFILLING IN NAME AND DURATION FIELDS...");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    ui->userNameInput->appendPlainText("User " + QString::number(device->getNumUsers() + 1));
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
+    sleepy(300);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(100);
+
+    addUserButtonClicked();
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testAddBadUserClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    //EMPTY NAME
+    ui->testLog->append("**TESTING ADD USER FUNCTIONALITY**\nADDING USER WITH EMPTY NAME...");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
+    sleepy(300);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(1000);
+
+    addUserButtonClicked();
+
+    //STRING DURATION/EMPTY DURATION
+    ui->testLog->append("ADDING USER WITH STRING DURATION...");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    ui->userNameInput->appendPlainText("User " + QString::number(device->getNumUsers() + 1));
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText("wym duration??");
+    sleepy(3000);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(1000);
+
+    addUserButtonClicked();
+
+    //DUPLICATE NAME - ENSURE THAT USER 1 ALREADY EXISTS
+    ui->testLog->append("ADDING USER WITH DUPLICATE NAME...\n(ENSURE THAT USER 1 ALREADY EXISTS)");
+    sleepy(100);
+
+    ui->userNameInput->clear();
+    ui->userNameInput->appendPlainText("User 1");
+    sleepy(100);
+
+    ui->userDurationInput->clear();
+    ui->userDurationInput->appendPlainText(QString::number((rand() % 20) + 1));
+    sleepy(3000);
+
+    ui->testLog->append("CLICKING ADD USER BUTTON...");
+    sleepy(1000);
+
+    addUserButtonClicked();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testTherapyClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING THERAPY FUNCTIONALITY**\nSELECTING RANDOM GROUP AND SESSION...");
+    sleepy(100);
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        pressUpArrow();
+        sleepy(200);
+    }
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        cycleGroupButton();
+        sleepy(200);
+    }
+
+    ui->testLog->append("STARTING THERAPY SESSION...");
+    therapy(selectedGroup, selectedSession, 0);
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testRecordTherapyClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING RECORD THERAPY FUNCTIONALITY**\nSELECTING RANDOM GROUP AND SESSION...");
+    sleepy(100);
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        pressUpArrow();
+        sleepy(200);
+    }
+
+    for (int i = 0; i < (rand() % 6) + 1; i++) {
+        cycleGroupButton();
+        sleepy(200);
+    }
+
+    ui->testLog->append("STARTING RECORDED THERAPY SESSION...");
+    therapy(selectedGroup, selectedSession, 1);
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testReplayClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING REPLAY FUNCTIONALITY**\nPRINTING USER'S REPLAY HISTORY...");
+    sleepy(100);
+
+    printHistoryButtonClicked();
+    sleepy(1000);
+
+    if (ui->historySpinBox->maximum() == 0) {
+        ui->testLog->append("CANNOT PLAY REPLAY - USER HAS NO HISTORY...\n**TEST COMPLETE**\n");
+        return;
+    }
+
+    ui->testLog->append("SELECTING RANDOM REPLAY...");
+    ui->historySpinBox->setValue((rand() % ui->historySpinBox->maximum()) + 1);
+    sleepy(100);
+
+    ui->testLog->append("STARTING REPLAY...");
+    sleepy(100);
+    playReplayButtonClicked();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testOnlyRecordHelper() {
+    testingTimer.restart();
+
+    while (testingTimer.elapsed() < 1000) {}
+    stopPressed();
+    return;
+}
+
+void MainWindow::testOnlyRecordClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING ONLY RECORD FUNCTIONALITY**");
+
+    if (ui->nameComboBox->currentText() == NULL) {
+        ui->testLog->append("THIS TEST REQUIRES A USER TO BE SPECIFIED...\n**TEST COMPLETE**\n");
+        return;
+    }
+
+    ui->testLog->append("STARTING RECORDED SESSION TO BE CANCELED AFTER 1 SECOND...");
+    sleepy(100);
+
+    std::thread first (&MainWindow::testOnlyRecordHelper, this);
+    therapy(selectedGroup, selectedSession, 1);
+    first.join();
+    ui->testLog->append("CANCELING RECORDED SESSION...\n**TEST COMPLETE**\n");
+}
+
+void MainWindow::testLostConnectionClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING LOST CONNECTION FUNCTIONALITY**\nSTARTING A SESSION TO BE INTURUPTED...");
+    sleepy(100);
+
+    while (selectedGroup != 1) { cycleGroupButton(); sleepy(100);}
+    while (selectedSession != 1) { pressUpArrow(); sleepy(100); }
+
+    ui->testLog->append("ONCE THE \"Disconnect Earclips\" BUTTON BECOMES AVAILABLE, CLICK IT!");
+    ui->testLog->append("AFTER THE CONNECTION LIGHTS STOP FLASHING, CLICK THE \"Connect Earclips\" BUTTON!");
+    therapy(selectedGroup, selectedSession, 0);
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testChangingIntensityClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING CHANGING INENSITY FUNCTIONALITY**");
+
+    if (ui->nameComboBox->currentText() == NULL) {
+        ui->testLog->append("THIS TEST REQUIRES A USER TO BE SPECIFIED...\n**TEST COMPLETE**\n");
+        return;
+    }
+
+    ui->testLog->append("STARTING A SESSION TO BE RECORDED AND HAVE INTENSITY UPDATED...");
+    sleepy(100);
+
+    while (selectedGroup != 2) { cycleGroupButton(); sleepy(100);}
+    while (selectedSession != 1) { pressUpArrow(); sleepy(100); }
+
+    ui->testLog->append("ONCE THE CONSOLE LOG REPORTS COMPLETES IT'S COUNTDOWN, CLICK THE UP/DOWN BUTTON TO OBSERVE THE CHANGES IN INTENSITY!");
+    therapy(selectedGroup, selectedSession, 1);
+
+    ui->testLog->append("NOW OBSERVE THE PRINTED HISTORY TO ENSURE THAT THE HIGHEST RECORDED INTENSITY WAS SAVED!");
+    printHistoryButtonClicked();
+
+    ui->testLog->append("**TEST COMPLETE**\n");
+}
+
+void MainWindow::testDepleteBatteryClicked() {
+    if (!device->getIsPoweredOn()) {return;}
+
+    ui->testLog->append("**TESTING DEPLETE BATTERY FUNCTIONALITY**");
+
+    while (selectedGroup != 2) { cycleGroupButton(); sleepy(100); }
+
+    ui->testLog->append("STARTING THERAPY SESSION...\nONCE THE BATTERY IS DEPLETED, DRAG THE \"Battery Level\" SLIDER TO THE RIGHT TO COMPLETE THE TEST!");
+
+    therapy(selectedGroup, selectedSession, 0, 99);
+
+    ui->testLog->append("**TEST COMPLETE**\n");
 }
