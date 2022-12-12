@@ -29,10 +29,10 @@ Patrick's contributions:
 - contributed to witten testing documentation
 
 Joshua's contributions:
--Use cases 1-4
--traceability matrix
--use case diagram
--sequence diagrams 1-4
+- Use cases 1-4
+- Traceability matrix
+- Use case diagram
+- Sequence diagrams 1-4
 
 Bret's contributions:
 
