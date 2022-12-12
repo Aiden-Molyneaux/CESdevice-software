@@ -26,7 +26,7 @@ Patrick's contributions:
 - programmed about half of the Oasis Pro implementation
   - specifically functionality regarding adding users, creating treatment history & replaying sessions, testing scripts
 - contributed to QT UI development and implementation
-- contributed to witten testing documentation
+- contributed to written testing documentation
 
 Joshua's contributions:
 - Use cases 1-4
@@ -38,7 +38,6 @@ Bret's contributions:
 - Use cases 5-8
 - UML diagram
 - Sequence diagrams 5-8
-
 
 ---- DELIVERABLES ----
 
@@ -73,10 +72,11 @@ Files included in this project:
   - res.qrc
   - .gitignore
 - Folder 'icons' contains all .png files required for UI implementation
-- Folder 'Documentation' contains all documentation for the Project - Use cases, UML class diagrams, sequence diagrams, traceability matrix, testing, 
+- Folder 'Documentation' contains all documentation for the Project - Use cases, UML class diagrams, sequence diagrams, traceability matrix, testing
+  - UML & Sequence Diagrams.pdf
+  - Use Case - UC Diagram - Traceability Matrix.pdf
 - README.md
-  
-
+ 
 ---- TESTED SCENARIOS ----
 
 Tested scenarios that work:
