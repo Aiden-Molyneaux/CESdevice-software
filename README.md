@@ -35,6 +35,9 @@ Joshua's contributions:
 - Sequence diagrams 1-4
 
 Bret's contributions:
+- Use cases 5-8
+- UML diagram
+- Sequence diagrams 5-8
 
 
 ---- DELIVERABLES ----
