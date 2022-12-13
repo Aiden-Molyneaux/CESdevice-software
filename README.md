@@ -75,6 +75,7 @@ Files included in this project:
 - Folder 'Documentation' contains all documentation for the Project - Use cases, UML class diagrams, sequence diagrams, traceability matrix, testing
   - UML & Sequence Diagrams.pdf
   - Use Case - UC Diagram - Traceability Matrix.pdf
+  - Team Project - Tests
 - README.md
  
 ---- TESTED SCENARIOS ----
