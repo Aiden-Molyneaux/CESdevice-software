@@ -1,4 +1,4 @@
-## Oasis Pro medical software prototype
+## CES Device Prototype Software
 ### OVERVIEW
 This software was developed as a submission for a term project in a university-level 'Objected-Oriented Software Engineering' course. The project is a software-based prototype mimicking the functionality of a medical device called a Cranio-Electric Stimulation (CES) device.
 
